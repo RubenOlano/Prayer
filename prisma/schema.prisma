@@ -14,8 +14,15 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id String @id @default(cuid())
+model Post {
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    annonymous Boolean  @default(false)
+    title      String
+    content    String?
+    author     User     @relation(fields: [authorId], references: [id])
+    authorId   String
+    Duration   DateTime
 }
 
 // Necessary for Next auth
@@ -53,6 +60,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Post          Post[]
 }
 
 model VerificationToken {
