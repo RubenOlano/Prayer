@@ -15,11 +15,11 @@ interface Props {
 const Login: FC<Props> = ({ providers }) => {
   return (
     <div className="w-full justify-center">
-      <EmailLogin />
+      <EmailLogin provider={providers.credentials} />
       <div className="w-full">
         <p className="text-align">or</p>
       </div>
-      <GoogleSignIn providers={providers} />
+      <GoogleSignIn provider={providers.google} />
     </div>
   );
 };

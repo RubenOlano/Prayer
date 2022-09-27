@@ -19,7 +19,10 @@ const NavBar = () => {
               Log out
             </a>
             <Image
-              src={user.user?.image || ""}
+              src={
+                user.user?.image ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"
+              }
               alt={user?.user?.name || "username"}
               width={30}
               height={30}
