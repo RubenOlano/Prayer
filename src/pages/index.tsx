@@ -1,11 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { Session } from "next-auth";
+import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import NavBar from "../components/NavBar";
 
 interface Props {
-  user: Session["user"];
+  user: User;
 }
 
 const Home: NextPage<Props> = ({ user }) => {
@@ -19,7 +19,7 @@ const Home: NextPage<Props> = ({ user }) => {
 
       <NavBar />
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl font-bold">Welcome {user?.name || ""}</h1>
+        <h1 className="text-4xl font-bold">Welcome {user?.fname || ""}</h1>
       </main>
     </>
   );

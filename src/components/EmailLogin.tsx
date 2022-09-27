@@ -23,7 +23,7 @@ const EmailLogin: FC<Props> = ({ provider }) => {
   };
 
   return (
-    <div className="text-center rounded-sm p-2 box-border justify-center w-full flex flex-col">
+    <div className="text-center rounded-sm p-2 box-border justify-center  flex flex-col">
       <h1 className="text-2xl font-bold">Login with email</h1>
       <div className="items-center flex justify-center p-12">
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -23,17 +24,22 @@ const EmailForm = () => {
 
   const onSubmit = async (vals: createUserInput) => {
     mutate(vals);
+    signIn("credentials", {
+      email: vals.email,
+      password: vals.password,
+      callbackUrl: "/",
+    });
   };
 
   return (
-    <div className="text-center rounded-sm p-2 box-border justify-center w-full flex flex-col">
+    <div className="text-center rounded-sm p-2 box-border justify-center flex flex-col backdrop-sepia-10 bg-white/70">
       {error && (
         <p className="text-red-500">
           <strong>{error.message}</strong>
         </p>
       )}
       <h1 className="text-2xl font-bold">Sign Up with email</h1>
-      <div className="items-center flex justify-center p-12">
+      <div className="items-center flex justify-center p-5">
         <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="fname">First Name</label>
           <input

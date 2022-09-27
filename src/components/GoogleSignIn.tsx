@@ -9,7 +9,7 @@ interface Props {
 
 const GoogleSignIn: FC<Props> = ({ provider }) => {
   return (
-    <div className="flex flex-col items-center justify-center w-full pt-10">
+    <div className="flex flex-col items-center justify-center pt-10">
       <div key={provider.name}>
         <button
           onClick={() => signIn(provider.id, { callbackUrl: "/" })}

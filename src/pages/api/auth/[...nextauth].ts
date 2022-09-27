@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -10,6 +10,13 @@ import { fromDate, generateSessionToken } from "../../../utils/uuid";
 import { encode, decode } from "next-auth/jwt";
 import Cookies from "cookies";
 
+export const options: NextAuthOptions = {
+  // Include user.id on session
+  providers: [],
+  adapter: PrismaAdapter(prisma),
+  secret: env.NEXTAUTH_SECRET,
+};
+
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   return NextAuth(req, res, {
     // Include user.id on session
@@ -17,6 +24,9 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       session({ session, user }) {
         if (session.user) {
           session.user.id = user.id;
+          session.user.fname = user.fname;
+          session.user.lname = user.lname;
+          session.user.email = user.email;
         }
         return session;
       },
@@ -148,7 +158,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           if (!isMatch) {
             return null;
           }
-
           return user;
         },
       }),

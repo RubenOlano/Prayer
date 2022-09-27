@@ -14,11 +14,8 @@ interface Props {
 
 const Login: FC<Props> = ({ providers }) => {
   return (
-    <div className="w-full justify-center">
+    <div className="w-[110%] justify-center align-middle backdrop-sepia-10 bg-white/70 pb-12">
       <EmailLogin provider={providers.credentials} />
-      <div className="w-full">
-        <p className="text-align">or</p>
-      </div>
       <GoogleSignIn provider={providers.google} />
     </div>
   );

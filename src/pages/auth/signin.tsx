@@ -9,6 +9,7 @@ import Head from "next/head";
 import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
+import styles from "../../styles/login.module.css";
 
 interface Props {
   providers: Record<
@@ -24,9 +25,17 @@ const SignIn: NextPage<Props> = ({ providers }) => {
         <title>Prayer App Sign in</title>
       </Head>
       <main>
-        <div className="flex justify-center items-center align-middle absolute min-h-full ">
-          <EmailForm />
-          <Login providers={providers} />
+        <div className={`${styles.background}`}>
+          <div
+            className={`flex justify-center align-middle items-center ${styles.backdrop}`}
+          >
+            <div className="max-w-md pr-12">
+              <EmailForm />
+            </div>
+            <div className="max-w-md pl-12">
+              <Login providers={providers} />
+            </div>
+          </div>
         </div>
       </main>
     </>
