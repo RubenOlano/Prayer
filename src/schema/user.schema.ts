@@ -28,3 +28,9 @@ export const emailLoginUserSchema = z.object({
 });
 
 export type emailLoginUserInput = z.TypeOf<typeof emailLoginUserSchema>;
+
+export const fetchUserSchema = z.object({
+  id: z.string(),
+});
+
+export type fetchUserInput = z.TypeOf<typeof fetchUserSchema>;

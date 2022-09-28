@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
+import GroupForm from "../components/GroupList";
 import NavBar from "../components/NavBar";
 
 interface Props {
@@ -20,6 +21,9 @@ const Home: NextPage<Props> = ({ user }) => {
       <NavBar />
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
         <h1 className="text-4xl font-bold">Welcome {user?.fname || ""}</h1>
+        <div className="flex p-12">
+          <GroupForm user={user} />
+        </div>
       </main>
     </>
   );

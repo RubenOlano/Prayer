@@ -43,16 +43,19 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   fname         String?
   lname         String?
-  email         String?   @unique
+  email         String?        @unique
   emailVerified DateTime?
   password      String
   image         String?
   accounts      Account[]
   sessions      Session[]
   Post          Post[]
+  GroupMember   GroupMember[]
+  GroupAdmins   GroupAdmins[]
+  GroupInvites  GroupInvites[]
 }
 
 model VerificationToken {
@@ -72,4 +75,50 @@ model Post {
   author     User     @relation(fields: [authorId], references: [id])
   authorId   String
   Duration   DateTime
+  groupId    String?
+  Group      Group?   @relation(fields: [groupId], references: [id])
+}
+
+model Group {
+  id           String         @id @default(cuid())
+  name         String
+  description  String?
+  createdAt    DateTime       @default(now())
+  posts        Post[]
+  GroupMembers GroupMember[]
+  GroupAdmins  GroupAdmins[]
+  GroupInvites GroupInvites[]
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  Group    Group    @relation(fields: [groupId], references: [id])
+  User     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model GroupAdmins {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  Group    Group    @relation(fields: [groupId], references: [id])
+  User     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model GroupInvites {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  Group    Group    @relation(fields: [groupId], references: [id])
+  User     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
 }
