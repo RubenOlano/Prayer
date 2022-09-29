@@ -25,3 +25,10 @@ export type fetchGroupsInput = z.TypeOf<typeof fetchGroupsSchema>;
 export const fetchGroupSchema = z.object({
   id: z.string(),
 });
+
+export const fetchUserIsAdminSchema = z.object({
+  userId: z.string(),
+  groupId: z.string(),
+});
+
+export type fetchUserIsAdminInput = z.TypeOf<typeof fetchUserIsAdminSchema>;

@@ -7,14 +7,15 @@ import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import CreateGroupForm from "../../components/CreateGroupForm";
+import NavBar from "../../components/NavBar";
 
 interface Props {
   user: User;
 }
 
 const create: NextPage<Props> = ({
-      user,
-    }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
@@ -22,10 +23,13 @@ const create: NextPage<Props> = ({
         <meta name="description" content="Pray with company" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NavBar />
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl font-bold">Create Group</h1>
+        <h1 className="text-4xl font-bold p-3">Create Group</h1>
         <p className="text-xl">Create a group to pray with your friends</p>
-        <CreateGroupForm user={user} />
+        <div className="flex flex-col items-center justify-center p-4">
+          <CreateGroupForm user={user} />
+        </div>
       </main>
     </>
   );

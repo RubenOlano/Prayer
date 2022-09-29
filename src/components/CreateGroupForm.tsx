@@ -1,4 +1,5 @@
 import { User } from "next-auth";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
@@ -19,12 +20,12 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
   const router = useRouter();
   const { mutate } = trpc.useMutation(["groups.registerGroup"], {
     onSuccess: (data) => {
-      router.replace(`/groups/${data.groupId}`);
+      router.push(`/groups/${data.groupId}`);
     },
   });
 
   const onSubmit = (data: createGroupInput) => {
-    if (!user) return router.replace("/auth/signin");
+    if (!user) return signIn(undefined, { callbackUrl: "/groups/create" });
     mutate({
       ...data,
       userId: user.id,
@@ -32,30 +33,31 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
   };
 
   return (
-    <div className="flex flex-col">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="text"
-          placeholder="Group Name"
-          className="border-2 border-gray-300 p-2 rounded-md"
-          {...register("name", { required: true })}
-        />
-        {errors.name && <span>This field is required</span>}
-        <input
-          type="text"
-          placeholder="Group Description"
-          className="border-2 border-gray-300 p-2 rounded-md"
-          {...register("description")}
-        />
-        {errors.description && <span>This field is required</span>}
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          type="submit"
-        >
-          Create Group
-        </button>
-      </form>
-    </div>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col justify-center items-center w-full m-2"
+    >
+      <input
+        type="text"
+        placeholder="Group Name"
+        className="border-2 border-gray-300 p-2 rounded-md flex"
+        {...register("name", { required: true })}
+      />
+      {errors.name && <span>This field is required</span>}
+      <input
+        type="area"
+        placeholder="Group Description"
+        className="border-2 border-gray-300 p-2 rounded-md flex"
+        {...register("description")}
+      />
+      {errors.description && <span>This field is required</span>}
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center"
+        type="submit"
+      >
+        Create Group
+      </button>
+    </form>
   );
 };
 

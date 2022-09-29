@@ -10,8 +10,6 @@ export const userRouter = createRouter()
     resolve: async ({ ctx, input }) => {
       const { fname, lname, email, password, confirmPassword } = input;
       if (password !== confirmPassword) {
-        console.log({ password, confirmPassword });
-
         throw new TRPCError({
           code: "CONFLICT",
           message: "Passwords do not match",

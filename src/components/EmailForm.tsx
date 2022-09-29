@@ -18,7 +18,7 @@ const EmailForm = () => {
   const router = useRouter();
   const { mutate, error } = trpc.useMutation(["users.registerUser"], {
     onSuccess: () => {
-      router.replace("/");
+      router.push("/");
     },
   });
 

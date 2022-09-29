@@ -116,8 +116,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           },
         },
         profile(profile) {
-          console.log(profile);
-
           return {
             id: profile.sub,
             fname: profile.given_name,

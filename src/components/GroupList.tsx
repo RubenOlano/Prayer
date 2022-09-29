@@ -1,7 +1,9 @@
-import { User } from "next-auth";
+import { User } from "@prisma/client";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { FC } from "react";
 import { trpc } from "../utils/trpc";
+import GroupItem from "./GroupItem";
 
 interface Props {
   user: User;
@@ -10,7 +12,7 @@ interface Props {
 const GroupList: FC<Props> = ({ user }) => {
   const router = useRouter();
   if (!user) {
-    router.push("/auth/signin");
+    signIn(undefined, { callbackUrl: "/groups" });
     return <div>Redirecting...</div>;
   }
   const { data, isLoading } = trpc.useQuery([
@@ -32,13 +34,14 @@ const GroupList: FC<Props> = ({ user }) => {
   }
 
   return (
-    <>
-      {data?.map((group) => (
-        <div key={group.id}>
-          <h1>{group.name}</h1>
-        </div>
-      ))}
-    </>
+    <div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
+      <h2 className="text-2xl justify-center font-bold flex pb-5">Groups</h2>
+      <div className="overflow-scroll h-[55vh]">
+        {data?.map((group) => (
+          <GroupItem key={group.id} group={group} />
+        ))}
+      </div>
+    </div>
   );
 };
 

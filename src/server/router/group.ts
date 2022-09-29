@@ -6,17 +6,16 @@ import {
   createGroupSchema,
   fetchGroupSchema,
   fetchGroupsSchema,
+  fetchUserIsAdminSchema,
 } from "../../schema/group.schema";
-import { createRouter } from "./context";
+import { createProtectedRouter } from "./context";
 
-export const groupRouter = createRouter()
+export const groupRouter = createProtectedRouter()
   .mutation("registerGroup", {
     input: createGroupSchema,
     output: createGroupOutputSchema,
     resolve: async ({ ctx, input }) => {
       const { name, description, userId } = input;
-      console.log(input);
-
       try {
         const group = await ctx.prisma.group.create({
           data: {
@@ -116,6 +115,51 @@ export const groupRouter = createRouter()
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "Something went wrong",
+          });
+        }
+      }
+    },
+  })
+  .query("fetchUserIsAdmin", {
+    input: fetchUserIsAdminSchema,
+    resolve: async ({ ctx, input }) => {
+      const { userId, groupId } = input;
+      try {
+        const group = await ctx.prisma.group.findUnique({
+          where: {
+            id: groupId,
+          },
+          include: {
+            GroupAdmins: true,
+          },
+        });
+
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Group not found",
+          });
+        }
+
+        return group.GroupAdmins.some((admin) => admin.userId === userId);
+      } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError) {
+          if (error.code === "P2002") {
+            throw new TRPCError({
+              code: "CONFLICT",
+              message: error.message,
+            });
+          } else {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: error.message,
+            });
+          }
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Something went wrong",
+            cause: error,
           });
         }
       }
