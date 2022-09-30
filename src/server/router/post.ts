@@ -4,6 +4,7 @@ import {
   createPostOutput,
   createPostOutputSchema,
   createPostSchema,
+  deletePostSchema,
   fetchAuthorPostsSchema,
   fetchGroupPostsSchema,
   fetchPostWithIdSchema,
@@ -61,7 +62,7 @@ export const postRouter = createProtectedRouter()
             id: userId,
           },
           data: {
-            Post: {
+            Posts: {
               connect: {
                 id: post.id,
               },
@@ -245,6 +246,61 @@ export const postRouter = createProtectedRouter()
         }
 
         return post;
+      } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError) {
+          if (error.code === "P2002") {
+            throw new TRPCError({
+              code: "CONFLICT",
+              message: error.message,
+            });
+          } else {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: error.message,
+            });
+          }
+        }
+      }
+    },
+  })
+  .mutation("deletePost", {
+    input: deletePostSchema,
+    resolve: async ({ ctx, input }) => {
+      const { postId } = input;
+      try {
+        const post = await ctx.prisma.post.findUnique({
+          where: {
+            id: postId,
+          },
+        });
+        if (!post) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Post not found",
+          });
+        }
+        console.log(post);
+
+        // await ctx.prisma.group.update({
+        //   where: {
+        //     id: post.groupId,
+        //   },
+        //   data: {
+        //     posts: {
+        //       disconnect: {
+        //         id: postId,
+        //       },
+        //     },
+        //   },
+        // });
+
+        await ctx.prisma.post.delete({
+          where: {
+            id: postId,
+          },
+        });
+
+        return true;
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
           if (error.code === "P2002") {

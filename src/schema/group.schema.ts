@@ -32,3 +32,31 @@ export const fetchUserIsAdminSchema = z.object({
 });
 
 export type fetchUserIsAdminInput = z.TypeOf<typeof fetchUserIsAdminSchema>;
+
+export const fetchGroupAdminsSchema = z.object({
+  groupId: z.string(),
+});
+
+export type fetchGroupAdminsInput = z.TypeOf<typeof fetchGroupAdminsSchema>;
+
+export const fetchGroupNonAdminsSchema = z.object({
+  groupId: z.string(),
+});
+
+export type fetchGroupNonAdminsInput = z.TypeOf<
+  typeof fetchGroupNonAdminsSchema
+>;
+
+export const removeGroupAdminSchema = z.object({
+  adminId: z.string(),
+});
+
+export type removeGroupAdminInput = z.TypeOf<typeof removeGroupAdminSchema>;
+
+export const removeUserFromGroupSchema = z.object({
+  memberId: z.string(),
+});
+
+export const deleteGroupSchema = z.object({
+  groupId: z.string(),
+});

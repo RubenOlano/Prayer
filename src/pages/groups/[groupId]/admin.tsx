@@ -5,6 +5,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { trpc } from "../../../utils/trpc";
 import Navbar from "../../../components/NavBar";
+import NavBar from "../../../components/NavBar";
+import AdminUserList from "../../../components/AdminUserList";
+import AdminPosts from "../../../components/AdminPosts";
 
 interface Props {
   user: User;
@@ -17,6 +20,19 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
     "groups.fetchUserIsAdmin",
     { userId: user.id, groupId },
   ]);
+
+  const { mutate } = trpc.useMutation("groups.deleteGroup");
+
+  const deleteGroup = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this group?"
+    );
+    if (confirm) {
+      mutate({ groupId });
+      router.replace("/");
+    }
+    return;
+  };
 
   if (isLoading) {
     return (
@@ -46,10 +62,29 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
         <meta name="description" content="Pray with company" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar />
+      <NavBar />
       <main>
-        <div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
-          Admin
+        <div className="flex flex-row min-w-full p-2">
+          <div className="flex flex-col absolute">
+            <AdminUserList groupId={groupId} userId={user.id} />
+          </div>
+          <div className="flex flex-col items-center justify-center py-2 my-0 m-auto">
+            <AdminPosts groupId={groupId} />
+          </div>
+          <div className="flex flex-col absolute right-5 top-30">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => router.push(`/groups/${groupId}`)}
+            >
+              Back to Group
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-32 rounded"
+              onClick={deleteGroup}
+            >
+              Delete Group
+            </button>
+          </div>
         </div>
       </main>
     </>

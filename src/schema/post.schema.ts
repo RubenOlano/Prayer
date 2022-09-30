@@ -35,3 +35,9 @@ export const fetchPostWithIdSchema = z.object({
   postId: z.string(),
   userId: z.string(),
 });
+
+export type fetchPostWithIdInput = z.TypeOf<typeof fetchPostWithIdSchema>;
+
+export const deletePostSchema = z.object({
+  postId: z.string(),
+});

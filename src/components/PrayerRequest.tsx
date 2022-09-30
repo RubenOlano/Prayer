@@ -1,6 +1,6 @@
 import { Post, User } from "@prisma/client";
 import { useRouter } from "next/router";
-import React, { FC } from "react";
+import { FC } from "react";
 
 interface Props {
   regPosts?: (Post & {

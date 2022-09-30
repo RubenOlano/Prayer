@@ -1,9 +1,16 @@
-import { GroupMember, User } from "@prisma/client";
+import { GroupMember } from "@prisma/client";
 import { FC } from "react";
 import UserComp from "./UserComp";
 
 interface Props {
-  members: (GroupMember & { User: User })[];
+  members: (GroupMember & {
+    User: {
+      fname: string;
+      lname: string;
+      image?: string | null;
+      id: string;
+    };
+  })[];
 }
 
 const MemberList: FC<Props> = ({ members }) => {

@@ -1,9 +1,16 @@
-import { GroupMember, User } from "@prisma/client";
+import { GroupMember } from "@prisma/client";
 import { FC } from "react";
 import Image from "next/image";
 
 interface Props {
-  user: GroupMember & { User: User };
+  user: GroupMember & {
+    User: {
+      fname: string;
+      lname: string;
+      image?: string | null;
+      id: string;
+    };
+  };
 }
 
 const UserComp: FC<Props> = ({ user }) => {
