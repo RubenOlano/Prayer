@@ -1,7 +1,6 @@
 import { ClientSafeProvider, signIn } from "next-auth/react";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import useCallbackUrl from "../hooks/useCallbackUrl";
 import { emailLoginUserInput } from "../schema/user.schema";
 
 interface Props {
@@ -15,11 +14,9 @@ const EmailLogin: FC<Props> = ({ provider }) => {
     formState: { errors },
   } = useForm<emailLoginUserInput>();
 
-  const url = useCallbackUrl();
-
   const onSubmit = async (vals: emailLoginUserInput) => {
     signIn(provider.id, {
-      callbackUrl: url,
+      callbackUrl: "/",
       email: vals.email,
       password: vals.password,
     });
