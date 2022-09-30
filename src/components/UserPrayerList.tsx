@@ -1,16 +1,15 @@
-import { User } from "@prisma/client";
 import { FC } from "react";
 import { trpc } from "../utils/trpc";
 import PostItem from "./PostItem";
 
 interface Props {
-  user: User;
+  userId: string;
 }
 
-const UserPrayerList: FC<Props> = ({ user }) => {
+const UserPrayerList: FC<Props> = ({ userId }) => {
   const { isLoading, data } = trpc.useQuery([
     "posts.getAuthorPosts",
-    { userId: user.id },
+    { userId },
   ]);
   if (isLoading) {
     return <div>Loading...</div>;

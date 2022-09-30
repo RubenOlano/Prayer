@@ -8,6 +8,7 @@ import { trpc } from "../utils/trpc";
 
 const EmailForm = () => {
   const {
+    getValues,
     register,
     handleSubmit,
     watch,
@@ -18,17 +19,17 @@ const EmailForm = () => {
   const router = useRouter();
   const { mutate, error } = trpc.useMutation(["users.registerUser"], {
     onSuccess: () => {
+      signIn("credentials", {
+        callbackUrl: "/",
+        email: getValues("email"),
+        password: getValues("password"),
+      });
       router.push("/");
     },
   });
 
   const onSubmit = async (vals: createUserInput) => {
     mutate(vals);
-    signIn("credentials", {
-      email: vals.email,
-      password: vals.password,
-      callbackUrl: "/",
-    });
   };
 
   return (
@@ -132,7 +133,7 @@ const EmailForm = () => {
             </span>
           )}
           <div className="p-12">
-            <button className=" flex items-center justify-center w-full h-12 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-blue-400 hover:text-white pt=">
+            <button className=" flex items-center justify-center w-full h-12 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-blue-400 hover:text-white">
               Sign Up
             </button>
           </div>
