@@ -5,8 +5,8 @@ import Image from "next/image";
 interface Props {
   user: GroupMember & {
     User: {
-      fname: string;
-      lname: string;
+      fname: string | null;
+      lname: string | null;
       image?: string | null;
       id: string;
     };

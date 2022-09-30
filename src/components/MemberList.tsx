@@ -5,9 +5,9 @@ import UserComp from "./UserComp";
 interface Props {
   members: (GroupMember & {
     User: {
-      fname: string;
-      lname: string;
-      image?: string | null;
+      fname: string | null;
+      lname: string | null;
+      image: string | null;
       id: string;
     };
   })[];

@@ -3,6 +3,7 @@ import { BuiltInProviderType } from "next-auth/providers";
 import {
   ClientSafeProvider,
   getProviders,
+  getSession,
   LiteralUnion,
 } from "next-auth/react";
 import Head from "next/head";
@@ -44,8 +45,17 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 
 export default SignIn;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getSession(ctx);
   const providers = await getProviders();
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
   return {
     props: { providers },
   };
