@@ -24,9 +24,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       session({ session, user }) {
         if (session.user) {
           session.user.id = user.id;
-          session.user.fname = user.fname;
-          session.user.lname = user.lname;
-          session.user.email = user.email;
+          session.user.name = user.fname + " " + user.lname;
         }
         return session;
       },
