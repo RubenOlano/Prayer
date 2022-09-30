@@ -12,7 +12,6 @@ import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
 import styles from "../../styles/login.module.css";
-import { env } from "../../env/server.mjs";
 interface Props {
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
@@ -21,8 +20,6 @@ interface Props {
 }
 
 const SignIn: NextPage<Props> = ({ providers }) => {
-  console.log(env);
-
   return (
     <>
       <Head>
