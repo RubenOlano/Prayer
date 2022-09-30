@@ -161,5 +161,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       // ...add more providers here
     ],
     secret: env.NEXTAUTH_SECRET,
+    debug: true,
   });
 }
