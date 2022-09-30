@@ -7,11 +7,11 @@ import {
   LiteralUnion,
 } from "next-auth/react";
 import Head from "next/head";
-import Image from "next/image";
 import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
 import styles from "../../styles/login.module.css";
+
 interface Props {
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
@@ -25,24 +25,17 @@ const SignIn: NextPage<Props> = ({ providers }) => {
       <Head>
         <title>Prayer App Sign in</title>
       </Head>
-      <main className="w-full h-full relative">
-        <Image
-          src="/background.png "
-          alt="background"
-          layout="fill"
-          objectFit="cover"
-          objectPosition={"center"}
-          className={styles.background}
-          quality={100}
-        />
-        <div
-          className={`flex justify-center align-middle items-center ${styles.backdrop}`}
-        >
-          <div className="max-w-md pr-12">
-            <EmailForm />
-          </div>
-          <div className="max-w-md pl-12">
-            <Login providers={providers} />
+      <main>
+        <div className={`${styles.background}`}>
+          <div
+            className={`flex justify-center align-middle items-center ${styles.backdrop}`}
+          >
+            <div className="max-w-md pr-12">
+              <EmailForm />
+            </div>
+            <div className="max-w-md pl-12">
+              <Login providers={providers} />
+            </div>
           </div>
         </div>
       </main>
