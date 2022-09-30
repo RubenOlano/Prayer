@@ -74,7 +74,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     adapter: PrismaAdapter(prisma),
     jwt: {
-      secret: env.JWT_SECRET || "bruh",
+      secret: env.JWT_SECRET,
       async encode({ token, secret, maxAge }) {
         if (
           req?.query?.nextauth?.includes("callback") &&
@@ -157,7 +157,9 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           return user;
         },
       }),
+
       // ...add more providers here
     ],
+    secret: env.NEXTAUTH_SECRET,
   });
 }
