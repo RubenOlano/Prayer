@@ -9,6 +9,7 @@ interface Props {
 }
 
 const GroupList: FC<Props> = ({ userId }) => {
+  const [text, setText] = React.useState("Create Group");
   const router = useRouter();
   if (!userId) {
     signIn(undefined, { callbackUrl: "/groups" });
@@ -22,14 +23,19 @@ const GroupList: FC<Props> = ({ userId }) => {
 
   if (data?.length == 0 && !isLoading) {
     return (
-      <div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
-        <h2 className="text-2xl justify-center font-bold flex pb-5">Groups</h2>
-        <div className="overflow-scroll h-[55vh]">
+      <div className="text-center backdrop-sepia-0 bg-white/60 mx-3">
+        <h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">
+          Groups
+        </h2>
+        <div className="overflow-y-scroll h-[55vh]">
           <button
-            onClick={() => router.push("/groups/create")}
+            onClick={() => {
+              setText("Loading...");
+              router.push("/groups/create");
+            }}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Create Group
+            {text}
           </button>
         </div>
       </div>

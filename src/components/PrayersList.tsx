@@ -19,14 +19,25 @@ const PrayersList = () => {
   if (isLoading) return <div>Loading...</div>;
   if ((!data || data.length < 1) && (!anonPosts || anonPosts.length < 1)) {
     return (
-      <div className="flex flex-col items-center justify-center m-5">
-        <h2 className="text-center text-2xl font-bold flex">
+      <>
+        <h2
+          className="
+          text-lg
+          md:text-2xl
+        "
+        >
           No prayer requests yet
         </h2>
-        <p className="text-center text-xl flex">
+        <p
+          className="
+          text-sm
+          gray-500
+        md:text-xl
+        "
+        >
           Be the first to add a request!
         </p>
-      </div>
+      </>
     );
   } else {
     return (

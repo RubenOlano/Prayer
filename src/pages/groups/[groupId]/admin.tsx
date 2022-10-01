@@ -64,14 +64,14 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
       </Head>
       <NavBar />
       <main>
-        <div className="flex flex-row min-w-full p-2">
-          <div className="flex flex-col absolute">
+        <div className="md:grid grid-rows-2 md:grid-cols-4 p-3">
+          <div className="md:col-start-1 md:col-end-2 col-start-1 col-end-1">
             <AdminUserList groupId={groupId} userId={user.id} />
           </div>
-          <div className="flex flex-col items-center justify-center py-2 my-0 m-auto">
+          <div className="md:col-start-2 md:col-end-4">
             <AdminPosts groupId={groupId} />
           </div>
-          <div className="flex flex-col absolute right-5 top-30">
+          <div className="md:col-start-4 md:col-end-5 p-4 md:row-start-1 md:row-end-2">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => router.push(`/groups/${groupId}`)}
@@ -79,7 +79,7 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
               Back to Group
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-32 rounded"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 md:mt-32 rounded"
               onClick={deleteGroup}
             >
               Delete Group

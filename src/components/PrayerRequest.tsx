@@ -19,7 +19,7 @@ const PrayerRequest: FC<Props> = ({ regPosts, anon }) => {
 
   return (
     <>
-      <div className="flex flex-col py-2 h-[30rem] overflow-scroll">
+      <div className="flex flex-col py-2 overflow-scroll">
         {regPosts &&
           regPosts.length > 0 &&
           regPosts?.map((post) => (

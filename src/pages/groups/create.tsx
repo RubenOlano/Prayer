@@ -25,8 +25,10 @@ const create: NextPage<Props> = ({
       </Head>
       <NavBar />
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl font-bold p-3">Create Group</h1>
-        <p className="text-xl">Create a group to pray with your friends</p>
+        <h1 className="text-4xl text-center font-bold p-3">Create Group</h1>
+        <p className="text-xl text-center ">
+          Create a group to pray with your friends
+        </p>
         <div className="flex flex-col items-center justify-center p-4">
           <CreateGroupForm user={user} />
         </div>

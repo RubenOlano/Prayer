@@ -20,13 +20,15 @@ const Home: NextPage<Props> = ({ user }) => {
       </Head>
 
       <NavBar />
-      <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl font-bold">Welcome {user?.name || ""}</h1>
-        <div className="flex p-12 flex-row w-full ">
-          <div className="mx-auto w-[25vw]">
+      <main className="py-3 grid md:grid-cols-6">
+        <h1 className="text-2xl md:text-4xl font-bold row-start-1 row-end-2 col-start-3 text-center col-end-5 py-3">
+          Welcome {user?.name?.split(" ")[0] || ""}
+        </h1>
+        <div className="row-start-2 col-span-6 grid grid-cols-1 grid-rows-2 md:grid-cols-6 justify-center">
+          <div className="md:col-start-2 md:col-end-4">
             <GroupList userId={user.id} />
           </div>
-          <div className="mx-auto w-[25vw]">
+          <div className="md:col-start-4 md:col-end-6">
             <UserPrayerList userId={user.id} />
           </div>
         </div>

@@ -61,21 +61,23 @@ const SpecificGroup = ({
       </Head>
       <NavBar />
       <main>
-        <div className="flex flex-row min-w-full p-2">
-          <div className="flex flex-col absolute">
-            <div className="flex flex-col ">
-              <h1 className="text-6xl font-bold">{data?.name}</h1>
-              <p className="text-2xl">{data?.description}</p>
-            </div>
-            <div className="flex flex-col items-start justify-start py-2">
-              {data?.GroupMembers && <MemberList members={data.GroupMembers} />}
-            </div>
+        <div className="grid grid-cols-4 grid-rows-6 md:grid-cols-8 md:grid-rows-5 md:p-5 p-2 h-[95vh] ">
+          <div className="col-start-1 col-end-3 md:col-end-3 row-start-1 row-end-1">
+            <h1 className="text-2xl stroke-gray-800 font-bold text-center">
+              {data?.name}
+            </h1>
+            <p className="text-center text-sm text-gray-500">
+              {data?.description}
+            </p>
           </div>
-          <div className="flex flex-col items-center justify-center py-2 my-0 m-auto">
+          <div className="col-start-1 row-start-5 hidden md:block p-2 md:row-start-2 md:row-end-5 md:col-end-4 w-fit">
+            {data?.GroupMembers && <MemberList members={data.GroupMembers} />}
+          </div>
+          <div className="col-start-1 col-end-5 row-end-3 md:col-start-4 md:col-end-9 row-start-2 p-2">
             <PrayerSection />
           </div>
           {isAdmin && (
-            <div className="flex flex-col items-center justify-center py-2 my-0 absolute right-4">
+            <div className="col-start-4 col-end-4 md:col-start-8 md:col-end-8 justify-self-end ">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={goToAdmin}

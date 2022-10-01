@@ -1,5 +1,5 @@
 import { ClientSafeProvider, signIn } from "next-auth/react";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { emailLoginUserInput } from "../schema/user.schema";
 
@@ -8,6 +8,8 @@ interface Props {
 }
 
 const EmailLogin: FC<Props> = ({ provider }) => {
+  const [text, setText] = useState("Login");
+
   const {
     register,
     handleSubmit,
@@ -15,6 +17,7 @@ const EmailLogin: FC<Props> = ({ provider }) => {
   } = useForm<emailLoginUserInput>();
 
   const onSubmit = async (vals: emailLoginUserInput) => {
+    setText("Loading...");
     signIn(provider.id, {
       callbackUrl: "/",
       email: vals.email,
@@ -61,7 +64,7 @@ const EmailLogin: FC<Props> = ({ provider }) => {
             type="submit"
             className="p-4 w-full bg-blue-500 text-white rounded-md mt-12"
           >
-            Login
+            {text}
           </button>
         </form>
       </div>

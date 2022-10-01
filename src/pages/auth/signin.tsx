@@ -10,7 +10,6 @@ import Head from "next/head";
 import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
-import styles from "../../styles/login.module.css";
 
 interface Props {
   providers: Record<
@@ -20,23 +19,28 @@ interface Props {
 }
 
 const SignIn: NextPage<Props> = ({ providers }) => {
+  const [register, setRegister] = React.useState(true);
+
   return (
     <>
       <Head>
         <title>Prayer App Sign in</title>
+        <meta name="description" content="Pray with company" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div className={`${styles.background}`}>
-          <div
-            className={`flex justify-center align-middle items-center ${styles.backdrop}`}
+
+      <main className="bg-[url('/background.png')] min-h-screen py-5 grid md:grid-cols-6 relative">
+        <div className="absolute left-[50%] translate-x-[-50%] bottom-0 p-2 md:top-0 md:h-12">
+          <button
+            onClick={() => setRegister(!register)}
+            className="bg-blue-500 text-white rounded-md p-5 
+            hover:bg-blue-600 transition duration-200"
           >
-            <div className="max-w-md pr-12">
-              <EmailForm />
-            </div>
-            <div className="max-w-md pl-12">
-              <Login providers={providers} />
-            </div>
-          </div>
+            {register ? "Log in" : "Register"}
+          </button>
+        </div>
+        <div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5">
+          {register ? <EmailForm /> : <Login providers={providers} />}
         </div>
       </main>
     </>

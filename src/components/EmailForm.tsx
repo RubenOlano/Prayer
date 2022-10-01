@@ -1,12 +1,14 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createUserInput } from "../schema/user.schema";
 import { trpc } from "../utils/trpc";
 
 const EmailForm = () => {
+  const [text, setText] = useState("Sign Up");
+
   const {
     getValues,
     register,
@@ -29,6 +31,7 @@ const EmailForm = () => {
   });
 
   const onSubmit = async (vals: createUserInput) => {
+    setText("Loading...");
     mutate(vals);
   };
 
@@ -134,7 +137,7 @@ const EmailForm = () => {
           )}
           <div className="p-12">
             <button className=" flex items-center justify-center w-full h-12 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-blue-400 hover:text-white">
-              Sign Up
+              {text}
             </button>
           </div>
         </form>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createPostInput } from "../schema/post.schema";
 import { trpc } from "../utils/trpc";
@@ -9,6 +9,8 @@ interface Props {
 }
 
 const CreatePostForm: FC<Props> = ({ userId }) => {
+  const [text, setText] = useState("Create Post");
+
   const {
     register,
     handleSubmit,
@@ -28,7 +30,7 @@ const CreatePostForm: FC<Props> = ({ userId }) => {
   });
 
   const onSubmit = (data: createPostInput) => {
-    console.log(data);
+    setText("Loading...");
 
     mutate({ ...data, groupId: groupId as string, userId });
   };
@@ -74,7 +76,7 @@ const CreatePostForm: FC<Props> = ({ userId }) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded"
         type="submit"
       >
-        Create Post
+        {text}
       </button>
     </form>
   );

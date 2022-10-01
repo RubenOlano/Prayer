@@ -1,7 +1,7 @@
 import { User } from "next-auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createGroupInput } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
@@ -11,6 +11,8 @@ interface Props {
 }
 
 const CreateGroupForm: FC<Props> = ({ user }) => {
+  const [text, setText] = useState("Create Group");
+
   const {
     register,
     handleSubmit,
@@ -25,6 +27,7 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
   });
 
   const onSubmit = (data: createGroupInput) => {
+    setText("Loading...");
     if (!user) return signIn(undefined, { callbackUrl: "/groups/create" });
     mutate({
       ...data,
@@ -55,7 +58,7 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center"
         type="submit"
       >
-        Create Group
+        {text}
       </button>
     </form>
   );

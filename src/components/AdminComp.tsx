@@ -33,7 +33,6 @@ const AdminComp: FC<Props> = ({ member }) => {
         {user.fname} {user.lname}
       </h1>
       <button className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-        {/* Create down arrow icon to remove admin users*/}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 350 100"
