@@ -21,6 +21,10 @@ export default defineNextConfig({
     defaultLocale: "en",
   },
   images: {
-    domains: ["lh3.googleusercontent.com", "cdn.pixabay.com"],
+    domains: [
+      "lh3.googleusercontent.com",
+      "cdn.pixabay.com",
+      "res.cloudinary.com",
+    ],
   },
 });

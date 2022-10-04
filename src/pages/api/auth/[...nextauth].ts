@@ -113,13 +113,12 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             response_type: "code",
           },
         },
-        profile(profile) {
+        async profile(profile) {
           return {
             id: profile.sub,
             fname: profile.given_name,
             lname: profile.family_name,
             email: profile.email,
-            image: profile.picture,
             password: profile.sub,
           };
         },

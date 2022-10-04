@@ -43,10 +43,10 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String        @id @default(cuid())
   fname         String?
   lname         String?
-  email         String?        @unique
+  email         String?       @unique
   emailVerified DateTime?
   password      String
   image         String?
@@ -55,7 +55,6 @@ model User {
   Posts         Post[]
   GroupMember   GroupMember[]
   GroupAdmins   GroupAdmins[]
-  GroupInvites  GroupInvites[]
 }
 
 model VerificationToken {
@@ -114,12 +113,9 @@ model GroupAdmins {
 }
 
 model GroupInvites {
-  id       String   @id @default(cuid())
-  groupId  String
-  userId   String
-  Group    Group    @relation(fields: [groupId], references: [id])
-  User     User     @relation(fields: [userId], references: [id])
-  joinedAt DateTime @default(now())
+  id      String @id @default(cuid())
+  groupId String
+  Group   Group  @relation(fields: [groupId], references: [id])
 
-  @@unique([groupId, userId])
+  @@unique([groupId])
 }

@@ -7,6 +7,7 @@ import {
   LiteralUnion,
 } from "next-auth/react";
 import Head from "next/head";
+import Image from "next/image";
 import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
@@ -29,8 +30,16 @@ const SignIn: NextPage<Props> = ({ providers }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-[url('/background.png')] min-h-screen py-5 grid md:grid-cols-6 relative">
-        <div className="absolute left-[50%] translate-x-[-50%] bottom-0 p-2 md:top-0 md:h-12">
+      <main className="min-h-screen py-5 grid md:grid-cols-6 relative">
+        <Image
+          src="/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+          alt="background"
+          style={{ zIndex: -1 }}
+        />
+        <div className="absolute left-[50%] translate-x-[-50%] bottom-0 p-2 md:top-0 md:h-12 z-50">
           <button
             onClick={() => setRegister(!register)}
             className="bg-blue-500 text-white rounded-md p-5 
@@ -39,7 +48,7 @@ const SignIn: NextPage<Props> = ({ providers }) => {
             {register ? "Log in" : "Register"}
           </button>
         </div>
-        <div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5">
+        <div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5 z-50">
           {register ? <EmailForm /> : <Login providers={providers} />}
         </div>
       </main>

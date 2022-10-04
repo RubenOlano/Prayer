@@ -1,6 +1,7 @@
 import { GroupMember } from "@prisma/client";
 import Image from "next/image";
 import React, { FC } from "react";
+import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -20,10 +21,7 @@ const AdminUserComp: FC<Props> = ({ member }) => {
   return (
     <div className="flex flex-row items-center justify-center m-2">
       <Image
-        src={
-          user.image ||
-          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"
-        }
+        src={getImage(user.image)}
         alt={`${user.fname} ${user.lname}`}
         width={30}
         height={30}

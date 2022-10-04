@@ -1,20 +1,13 @@
 import { FC } from "react";
 import { useQueryClient } from "react-query";
+import { debounce } from "../utils/debounce";
 import { trpc } from "../utils/trpc";
 
 interface Props {
   postId: string;
 }
 
-const debounce = (fn: () => void, ms: number) => {
-  let timeoutId: NodeJS.Timeout;
-  return () => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      fn();
-    }, ms);
-  };
-};
+
 
 const PostDeleteButton: FC<Props> = ({ postId }) => {
   const queryClient = useQueryClient();

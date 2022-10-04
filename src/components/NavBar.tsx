@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { getImage } from "../utils/defaultUserImage";
 
 const NavBar = () => {
+  const router = useRouter();
   const { data: user } = useSession();
 
   return (
@@ -25,12 +28,12 @@ const NavBar = () => {
             >
               Log out
             </a>
-            <div className="col-start-7 col-end-7 align-middle justify-center items-center flex">
+            <div
+              className="col-start-7 col-end-7 align-middle justify-center items-center flex hover:cursor-pointer"
+              onClick={() => router.push("/profile")}
+            >
               <Image
-                src={
-                  user.user?.image ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"
-                }
+                src={getImage(user?.user?.image)}
                 alt={`${user.user?.name}` || "user"}
                 width={30}
                 height={30}

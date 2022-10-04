@@ -21,7 +21,7 @@ const EmailForm = () => {
   const router = useRouter();
   const { mutate, error } = trpc.useMutation(["users.registerUser"], {
     onSuccess: () => {
-      signIn("credentials", {
+      signIn("email", {
         callbackUrl: "/",
         email: getValues("email"),
         password: getValues("password"),
