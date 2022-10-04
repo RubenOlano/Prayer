@@ -1,17 +1,17 @@
 import { GetServerSideProps, NextPage } from "next";
-import { User } from "next-auth";
-import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { getSession, signIn } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
 import Navbar from "../../components/NavBar";
 import { useRouter } from "next/router";
 
 interface Props {
-	user: User;
+	session: Session | null;
 	inviteId: string;
 }
 
-const Invites: NextPage<Props> = ({ user, inviteId }) => {
+const Invites: NextPage<Props> = ({ session, inviteId }) => {
 	const router = useRouter();
 	const { data, isLoading } = trpc.useQuery([
 		"invites.getGroupFromInvite",
@@ -22,6 +22,12 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 			router.replace("/groups/" + data?.id);
 		},
 	});
+
+	if (!session) {
+		signIn(undefined, { callbackUrl: "/invites/" + inviteId });
+		return <div>Redirecting...</div>;
+	}
+
 	if (isLoading) {
 		return (
 			<>
@@ -73,7 +79,12 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 					</h1>
 					<button
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-						onClick={() => mutate({ inviteId, userId: user.id })}
+						onClick={() =>
+							mutate({
+								inviteId,
+								userId: session.user?.id as string,
+							})
+						}
 					>
 						Join Group
 					</button>
@@ -86,38 +97,11 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 export default Invites;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const session = await getSession(ctx);
 	const { inviteId } = ctx.query;
-	if (!inviteId) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-	const { user } = session;
-	if (!user) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
 	return {
 		props: {
-			user,
-			inviteId: inviteId as string,
+			session: await getSession(ctx),
+			inviteId,
 		},
 	};
 };
