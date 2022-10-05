@@ -12,15 +12,27 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 		onSuccess: async (res) => {
 			if (res) {
 				setText("Loading...");
-				const inviteLink =
-					window.location.origin + "/invites/" + res.id;
+
 				if (iosDetect() && navigator?.share) {
-					// Use iOS share sheet
-					await navigator.share({
-						title: "Invite Link",
-						text: inviteLink,
-					});
+					// Get base url if on ios
+					if (window !== undefined) {
+						const baseUrl = window.location.origin;
+						await navigator.share({
+							title: "Group Pray",
+							text: `Join my group on Group Pray!`,
+							url: `${baseUrl}/invites/${res.id}`,
+						});
+					} else {
+						// If window is undefined, then on ios safari and can't use window.location.origin
+						await navigator.share({
+							title: "Group Pray",
+							text: `Join my group on Group Pray!`,
+							url: `https://group-pray.vercel.app/invites/${res.id}`,
+						});
+					}
 				} else {
+					const inviteLink =
+						window.location.origin + "/invites/" + res.id;
 					const clipText = new ClipboardItem({
 						"text/plain": new Blob([inviteLink], {
 							type: "text/plain",
