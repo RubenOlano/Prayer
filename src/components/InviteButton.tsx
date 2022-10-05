@@ -17,7 +17,7 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 					// Use iOS share sheet
 					await navigator.share({
 						title: "Invite Link",
-						text: `${window.location.origin}/invites/${res}`,
+						text: `${window.location.origin}/invites/${res.id}`,
 					});
 				} else {
 					const clipText = new ClipboardItem({
