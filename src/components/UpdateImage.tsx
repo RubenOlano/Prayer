@@ -42,7 +42,7 @@ const UpdateImage: FC<Props> = ({ user }) => {
 			formData.append("file", newFile[0]);
 			formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
-			const data = await fetch(CLOUDINARY_URL, {
+			await fetch(CLOUDINARY_URL, {
 				method: "POST",
 				body: formData,
 			})
@@ -55,8 +55,6 @@ const UpdateImage: FC<Props> = ({ user }) => {
 				.catch((err) => {
 					console.log(err);
 				});
-
-			console.log(data);
 		},
 
 		[user.id, mutate]
