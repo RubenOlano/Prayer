@@ -13,7 +13,7 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 			if (res) {
 				setText("Loading...");
 				// Check if client is on IOS
-				if (iosDetect()) {
+				if (iosDetect() && navigator?.share) {
 					// Use iOS share sheet
 					await navigator.share({
 						title: "Invite Link",
