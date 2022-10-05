@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { getBaseUrl, iosDetect } from "../utils/checkIOS";
+import { iosDetect } from "../utils/checkIOS";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -12,7 +12,8 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 		onSuccess: async (res) => {
 			if (res) {
 				setText("Loading...");
-				const inviteLink = getBaseUrl() + "/invites/" + res.id;
+				const inviteLink =
+					window.location.origin + "/invites/" + res.id;
 				if (iosDetect() && navigator?.share) {
 					// Use iOS share sheet
 					await navigator.share({
