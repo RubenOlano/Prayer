@@ -10,9 +10,10 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 	const { mutate } = trpc.useMutation("invites.createInvite", {
 		onSuccess: async (res) => {
 			if (res) {
+				setText("Loading...");
 				const clipText = new ClipboardItem({
-					"text-plain": new Blob(
-						[`${window.location.origin}/invites/${res}`],
+					"text/plain": new Blob(
+						[`${window.location.origin}/invites/${res.id}`],
 						{ type: "text/plain" }
 					),
 				});
