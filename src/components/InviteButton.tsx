@@ -8,12 +8,20 @@ interface Props {
 const InviteButton: FC<Props> = ({ groupId, userId }) => {
 	const [text, setText] = useState("Generate Invite Link");
 	const { mutate } = trpc.useMutation("invites.createInvite", {
-		onSuccess: (res) => {
+		onSuccess: async (res) => {
 			// Copy Invite Link to clipboard
 			if (res) {
-				navigator.clipboard.writeText(
-					`${window.location.origin}/invites/${res.id}`
-				);
+				if ("clipboard" in navigator) {
+					await navigator.clipboard.writeText(
+						`${window.location.origin}/invites/${res}`
+					);
+				} else {
+					document.execCommand(
+						"copy",
+						false,
+						`${window.location.origin}/invites/${res}`
+					);
+				}
 				setText("Copied to clipboard!");
 				setTimeout(() => {
 					setText("Generate Invite Link");
