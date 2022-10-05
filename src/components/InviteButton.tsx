@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { iosDetect } from "../utils/checkIOS";
+import { getBaseUrl, iosDetect } from "../utils/checkIOS";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -12,19 +12,18 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 		onSuccess: async (res) => {
 			if (res) {
 				setText("Loading...");
-				// Check if client is on IOS
+				const inviteLink = getBaseUrl() + "/invites/" + res.id;
 				if (iosDetect() && navigator?.share) {
 					// Use iOS share sheet
 					await navigator.share({
 						title: "Invite Link",
-						text: `${window.location.origin}/invites/${res.id}`,
+						text: inviteLink,
 					});
 				} else {
 					const clipText = new ClipboardItem({
-						"text/plain": new Blob(
-							[`${window.location.origin}/invites/${res.id}`],
-							{ type: "text/plain" }
-						),
+						"text/plain": new Blob([inviteLink], {
+							type: "text/plain",
+						}),
 					});
 					await navigator.clipboard.write([clipText]);
 				}
