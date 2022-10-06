@@ -24,8 +24,7 @@ const Invites: NextPage<Props> = ({ session, inviteId }) => {
 	});
 
 	if (!session) {
-		signIn(undefined, { callbackUrl: "/invites/" + inviteId });
-		return <div>Redirecting...</div>;
+		signIn();
 	}
 
 	if (isLoading) {
@@ -82,7 +81,7 @@ const Invites: NextPage<Props> = ({ session, inviteId }) => {
 						onClick={() =>
 							mutate({
 								inviteId,
-								userId: session.user?.id as string,
+								userId: session?.user?.id as string,
 							})
 						}
 					>
