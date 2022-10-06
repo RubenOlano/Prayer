@@ -1,22 +1,20 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { Session } from "next-auth";
-import { signIn, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
 import Navbar from "../../components/NavBar";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 interface Props {
-	session: Session | null;
+	user: Session["user"];
 	inviteId: string;
 }
 
-const Invites: NextPage<Props> = () => {
-	const { data: session } = useSession();
+const Invites: NextPage<Props> = ({ user, inviteId }) => {
+	console.log(user);
 
 	const router = useRouter();
-	const { inviteId } = router.query;
 	const { data, isLoading } = trpc.useQuery([
 		"invites.getGroupFromInvite",
 		{ inviteId: inviteId as string },
@@ -26,13 +24,6 @@ const Invites: NextPage<Props> = () => {
 			router.replace("/groups/" + data?.id);
 		},
 	});
-
-	useEffect(() => {
-		if (!session) {
-			signIn();
-		}
-	}, [session]);
-
 	if (isLoading) {
 		return (
 			<>
@@ -68,6 +59,7 @@ const Invites: NextPage<Props> = () => {
 			</>
 		);
 	}
+
 	return (
 		<>
 			<Head>
@@ -87,7 +79,7 @@ const Invites: NextPage<Props> = () => {
 						onClick={() =>
 							mutate({
 								inviteId: inviteId as string,
-								userId: session?.user?.id as string,
+								userId: user?.id as string,
 							})
 						}
 					>
@@ -100,3 +92,24 @@ const Invites: NextPage<Props> = () => {
 };
 
 export default Invites;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const session = await getSession(ctx);
+	const inviteId = ctx.params?.inviteId as string;
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: `/api/auth/signin?callbackUrl=/invites/${inviteId}`,
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {
+			user: session.user,
+			inviteId,
+		},
+	};
+};

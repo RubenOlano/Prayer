@@ -1,6 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
 import {
+	createUserOutput,
 	createUserSchema,
 	fetchUserSchema,
 	updateUserEmailSchema,
@@ -31,7 +32,13 @@ export const userRouter = createRouter()
 						password: user_pass,
 					},
 				});
-				return user;
+				const res: createUserOutput = {
+					fname: user.fname || "",
+					lname: user.lname || "",
+					email: user.email || "",
+					password: user.password,
+				};
+				return res;
 			} catch (e) {
 				if (e instanceof PrismaClientKnownRequestError) {
 					if (e.code === "P2002") {

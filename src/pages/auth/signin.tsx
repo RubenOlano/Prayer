@@ -1,9 +1,9 @@
 import { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { BuiltInProviderType } from "next-auth/providers";
 import {
 	ClientSafeProvider,
 	getProviders,
-	getSession,
 	LiteralUnion,
 } from "next-auth/react";
 import Head from "next/head";
@@ -11,6 +11,7 @@ import Image from "next/image";
 import React from "react";
 import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
+import { options } from "../api/auth/[...nextauth]";
 
 interface Props {
 	providers: Record<
@@ -58,7 +59,7 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 export default SignIn;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	const providers = await getProviders();
 	if (session) {
 		return {

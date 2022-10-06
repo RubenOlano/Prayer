@@ -1,4 +1,5 @@
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -6,6 +7,8 @@ import { createUserInput } from "../schema/user.schema";
 import { trpc } from "../utils/trpc";
 
 const EmailForm = () => {
+	const router = useRouter();
+	const callbackUrl = router.query.callbackUrl as string;
 	const [text, setText] = useState("Sign Up");
 
 	const {
@@ -20,13 +23,15 @@ const EmailForm = () => {
 
 	const onSubmit = async (vals: createUserInput) => {
 		setText("Loading...");
-		mutate(vals, {
-			onSuccess: () => {
-				signIn("credentials", {
+		await mutate(vals, {
+			onSuccess: async (res) => {
+				console.log(res);
+
+				await signIn("credentials", {
 					email: vals.email,
 					password: vals.password,
+					callbackUrl,
 				});
-				setText("Success!");
 			},
 		});
 	};
@@ -40,7 +45,12 @@ const EmailForm = () => {
 			)}
 			<h1 className="text-2xl font-bold">Sign Up with email</h1>
 			<div className="items-center flex justify-center p-5">
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						handleSubmit(onSubmit)(e);
+					}}
+				>
 					<label htmlFor="fname">First Name</label>
 					<input
 						type="text"
