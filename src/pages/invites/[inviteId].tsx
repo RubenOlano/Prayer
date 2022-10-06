@@ -1,21 +1,25 @@
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { Session } from "next-auth";
-import { getSession, signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
 import Navbar from "../../components/NavBar";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 interface Props {
 	session: Session | null;
 	inviteId: string;
 }
 
-const Invites: NextPage<Props> = ({ session, inviteId }) => {
+const Invites: NextPage<Props> = () => {
+	const { data: session } = useSession();
+
 	const router = useRouter();
+	const { inviteId } = router.query;
 	const { data, isLoading } = trpc.useQuery([
 		"invites.getGroupFromInvite",
-		{ inviteId },
+		{ inviteId: inviteId as string },
 	]);
 	const { mutate } = trpc.useMutation("invites.addUserToGroup", {
 		onSuccess: () => {
@@ -23,9 +27,11 @@ const Invites: NextPage<Props> = ({ session, inviteId }) => {
 		},
 	});
 
-	if (!session) {
-		signIn();
-	}
+	useEffect(() => {
+		if (!session) {
+			signIn();
+		}
+	}, [session]);
 
 	if (isLoading) {
 		return (
@@ -80,7 +86,7 @@ const Invites: NextPage<Props> = ({ session, inviteId }) => {
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 						onClick={() =>
 							mutate({
-								inviteId,
+								inviteId: inviteId as string,
 								userId: session?.user?.id as string,
 							})
 						}
@@ -94,13 +100,3 @@ const Invites: NextPage<Props> = ({ session, inviteId }) => {
 };
 
 export default Invites;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { inviteId } = ctx.query;
-	return {
-		props: {
-			session: await getSession(ctx),
-			inviteId,
-		},
-	};
-};
