@@ -45,12 +45,7 @@ const EmailForm = () => {
 			)}
 			<h1 className="text-2xl font-bold">Sign Up with email</h1>
 			<div className="items-center flex justify-center p-5">
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						handleSubmit(onSubmit)(e);
-					}}
-				>
+				<form onSubmit={handleSubmit(onSubmit)}>
 					<label htmlFor="fname">First Name</label>
 					<input
 						type="text"

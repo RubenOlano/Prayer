@@ -48,7 +48,7 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 						{register ? "Log in" : "Register"}
 					</button>
 				</div>
-				<div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5 z-50">
+				<div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5 z-2">
 					{register ? <EmailForm /> : <Login providers={providers} />}
 				</div>
 			</main>

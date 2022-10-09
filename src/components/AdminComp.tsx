@@ -8,6 +8,22 @@ interface Props {
 	member: GroupMember;
 }
 
+const x = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 350 100"
+		className="h-6 w-6"
+		fill="gray"
+		stroke="currentColor"
+	>
+		<path
+			d="M0 0 6 0 0 6-6 0 0 0"
+			fill="currentColor"
+			transform="translate(175) scale(10)"
+		/>
+	</svg>
+);
+
 const AdminComp: FC<Props> = ({ member }) => {
 	const { data: user } = trpc.useQuery([
 		"users.getUser",
@@ -30,19 +46,7 @@ const AdminComp: FC<Props> = ({ member }) => {
 				{user.fname} {user.lname}
 			</h1>
 			<button className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 350 100"
-					className="h-6 w-6"
-					fill="gray"
-					stroke="currentColor"
-				>
-					<path
-						d="M0 0 6 0 0 6-6 0 0 0"
-						fill="currentColor"
-						transform="translate(175) scale(10)"
-					/>
-				</svg>
+				{x}
 			</button>
 		</div>
 	);
