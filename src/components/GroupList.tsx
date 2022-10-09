@@ -48,6 +48,15 @@ const GroupList: FC<Props> = ({ userId }) => {
 				Groups
 			</h2>
 			<div className="overflow-scroll h-[55vh]">
+				<button
+					onClick={() => {
+						setText("Loading...");
+						router.push("/groups/create");
+					}}
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				>
+					{text}
+				</button>
 				{data?.map((group) => (
 					<GroupItem key={group.id} group={group} />
 				))}

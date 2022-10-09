@@ -32,14 +32,16 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 			</Head>
 
 			<main className="min-h-screen py-5 grid md:grid-cols-6 relative">
-				<Image
-					src="/background.png"
-					layout="fill"
-					objectFit="cover"
-					quality={100}
-					alt="background"
-					style={{ zIndex: -1 }}
-				/>
+				<div className="z-[-5]">
+					<Image
+						src="/background.png"
+						layout="fill"
+						objectFit="cover"
+						quality={100}
+						alt="background"
+						style={{ zIndex: -5 }}
+					/>
+				</div>
 				<div className="absolute left-[50%] translate-x-[-50%] bottom-0 p-2 md:left-[12vw] md:bottom-[50vh] md:h-12">
 					<button
 						onClick={() => setRegister(!register)}
