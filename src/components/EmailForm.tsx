@@ -24,9 +24,7 @@ const EmailForm = () => {
 	const onSubmit = async (vals: createUserInput) => {
 		setText("Loading...");
 		await mutate(vals, {
-			onSuccess: async (res) => {
-				console.log(res);
-
+			onSuccess: async () => {
 				await signIn("credentials", {
 					email: vals.email,
 					password: vals.password,

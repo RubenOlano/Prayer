@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	if (!session) {
 		return {
 			redirect: {
-				destination: `/api/auth/signin?callbackUrl=/invites/${inviteId}`,
+				destination: `/auth/signin?callbackUrl=/invites/${inviteId}`,
 				permanent: false,
 			},
 		};
