@@ -1,11 +1,12 @@
-export const iosDetect = (): boolean => {
-	const userAgent = navigator.userAgent;
+export const iosDetect = (navigator: Navigator): boolean => {
+	const { userAgent } = navigator;
 
 	return (
-		!!userAgent.match(/iPad/i) ||
-		!!userAgent.match(/iPhone/i) ||
-		!!userAgent.match(/iPod/i) ||
-		!!userAgent.match(/Safari/i)
+		(!!userAgent.match(/iPad/i) ||
+			!!userAgent.match(/iPhone/i) ||
+			!!userAgent.match(/iPod/i) ||
+			!!userAgent.match(/Safari/i)) &&
+		navigator.canShare()
 	);
 };
 

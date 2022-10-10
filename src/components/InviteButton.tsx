@@ -12,8 +12,7 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 		onSuccess: async (res) => {
 			if (res) {
 				setText("Loading...");
-
-				if (iosDetect() && navigator?.share) {
+				if (iosDetect(window.navigator)) {
 					// Get base url if on ios
 					if (window !== undefined) {
 						const baseUrl = window.location.origin;

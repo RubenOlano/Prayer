@@ -12,7 +12,6 @@ import { fromDate, generateSessionToken } from "../../../utils/uuid";
 import { encode, decode } from "next-auth/jwt";
 import Cookies from "cookies";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 export const options: NextAuthOptions = {
 	// Include user.id on session
 	// Include user.id on session
