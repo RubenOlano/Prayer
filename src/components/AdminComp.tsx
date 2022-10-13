@@ -37,14 +37,12 @@ const AdminComp: FC<Props> = ({ member }) => {
 		<div className="flex flex-row items-center justify-center m-2">
 			<Image
 				src={getImage(user.image)}
-				alt={`${user.fname} ${user.lname}`}
+				alt={user.name || "Member"}
 				width={30}
 				height={30}
 				className="rounded-full"
 			/>
-			<h1 className="text-cente ml-2">
-				{user.fname} {user.lname}
-			</h1>
+			<h1 className="text-cente ml-2">{user.name || "Member"}</h1>
 			<button className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
 				{x}
 			</button>

@@ -1,11 +1,10 @@
 import dynamic from "next/dynamic";
 import { FC } from "react";
-import UpdatePassword from "./UpdatePassword";
+import UpdateName from "./UpdateName";
 
 interface Props {
 	user: {
-		fname: string | null;
-		lname: string | null;
+		name: string | null;
 		email: string | null;
 		id: string;
 		image: string | undefined;
@@ -23,11 +22,10 @@ const ProfileEdit: FC<Props> = ({ user }) => {
 				<UpdateImage user={user} />
 				<div className="flex flex-col justify-center items-center m-3">
 					<h2 className="text-lg">
-						{user.fname} {user.lname}
+						{user.name ? user.name : "No Name Set"}
 					</h2>
-					<h3 className="text-sm">{user.email}</h3>
+					<UpdateName userId={user.id} />
 				</div>
-				<UpdatePassword userId={user.id} />
 			</div>
 		</div>
 	);

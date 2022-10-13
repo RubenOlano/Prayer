@@ -9,7 +9,6 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
-import EmailForm from "../../components/EmailForm";
 import Login from "../../components/Login";
 import { options } from "../api/auth/[...nextauth]";
 
@@ -21,8 +20,6 @@ interface Props {
 }
 
 const SignIn: NextPage<Props> = ({ providers }) => {
-	const [register, setRegister] = React.useState(true);
-
 	return (
 		<>
 			<Head>
@@ -42,16 +39,8 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 						style={{ zIndex: -5 }}
 					/>
 				</div>
-				<div className="absolute left-[50%] translate-x-[-50%] bottom-0 p-2 md:left-[12vw] md:bottom-[50vh] md:h-12">
-					<button
-						onClick={() => setRegister(!register)}
-						className="bg-blue-500 text-white rounded-md p-5 hover:bg-blue-600 transition duration-200"
-					>
-						{register ? "Log in" : "Register"}
-					</button>
-				</div>
 				<div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5 z-2">
-					{register ? <EmailForm /> : <Login providers={providers} />}
+					<Login providers={providers} />
 				</div>
 			</main>
 		</>

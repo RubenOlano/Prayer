@@ -31,7 +31,9 @@ const PrayerRequest: FC<Props> = ({ regPosts, anon }) => {
 							<h2 className="text-2xl font-bold text-center m-3">
 								{post.title}
 							</h2>
-							<p className="italic font-bold text-center ">{`${post.author.fname} ${post.author.lname}`}</p>
+							<p className="italic font-bold text-center ">
+								{post.author.name}
+							</p>
 						</div>
 					))}
 				{anon &&

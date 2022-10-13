@@ -8,8 +8,7 @@ import { getImage } from "../utils/defaultUserImage";
 
 interface Props {
 	user: {
-		fname: string | null;
-		lname: string | null;
+		name: string | null;
 		email: string | null;
 		id: string;
 		image: string | undefined;

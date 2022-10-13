@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Invites: NextPage<Props> = ({ user, inviteId }) => {
-	console.log(user);
+	user;
 
 	const router = useRouter();
 	const { data, isLoading } = trpc.useQuery([

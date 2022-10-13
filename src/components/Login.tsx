@@ -2,23 +2,21 @@ import { BuiltInProviderType } from "next-auth/providers";
 import { ClientSafeProvider } from "next-auth/react";
 import { FC } from "react";
 import { LiteralUnion } from "react-hook-form";
-import EmailLogin from "./EmailLogin";
-import GoogleSignIn from "./GoogleSignIn";
+import Auth0 from "./Auth0";
 
 interface Props {
-  providers: Record<
-    LiteralUnion<BuiltInProviderType, string>,
-    ClientSafeProvider
-  >;
+	providers: Record<
+		LiteralUnion<BuiltInProviderType, string>,
+		ClientSafeProvider
+	>;
 }
 
 const Login: FC<Props> = ({ providers }) => {
-  return (
-    <div className="justify-center align-middle backdrop-sepia-10 bg-white/70 pb-12">
-      <EmailLogin provider={providers.credentials} />
-      <GoogleSignIn provider={providers.google} />
-    </div>
-  );
+	return (
+		<div className="flex flex-col items-center justify-center">
+			<Auth0 provider={providers.auth0} />
+		</div>
+	);
 };
 
 export default Login;
