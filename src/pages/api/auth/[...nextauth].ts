@@ -25,11 +25,15 @@ export const options: NextAuthOptions = {
 	],
 	callbacks: {
 		async session({ session, user }) {
-			if (user) {
-				session.user = user;
-				session.userId = user.id;
-			}
-			return session;
+			const res = {
+				...session,
+				user: {
+					...session.user,
+					id: user.id,
+				},
+				uesrId: user.id,
+			};
+			return res;
 		},
 	},
 	secret: env.NEXTAUTH_SECRET,
