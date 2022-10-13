@@ -9,7 +9,6 @@ import NavBar from "../../../components/NavBar";
 import AdminUserList from "../../../components/AdminUserList";
 import AdminPosts from "../../../components/AdminPosts";
 import InviteButton from "../../../components/InviteButton";
-import { useQueryClient } from "react-query";
 
 interface Props {
 	user: User;
@@ -18,28 +17,25 @@ interface Props {
 
 const Admin: NextPage<Props> = ({ user, groupId }) => {
 	const router = useRouter();
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const { data, isLoading } = trpc.useQuery([
 		"groups.fetchUserIsAdmin",
 		{ userId: user.id, groupId },
 	]);
 
-	const { mutate } = trpc.useMutation("groups.deleteGroup");
+	const { mutate } = trpc.useMutation("groups.deleteGroup", {
+		onSuccess: async () => {
+			await utils.invalidateQueries("groups.getGroups");
+			router.push("/");
+		},
+	});
 
 	const deleteGroup = async () => {
 		const confirm = window.confirm(
 			"Are you sure you want to delete this group?"
 		);
 		if (confirm) {
-			await mutate(
-				{ groupId },
-				{
-					onSuccess: async () => {
-						await queryClient.refetchQueries("groups.getGroups");
-						router.push("/");
-					},
-				}
-			);
+			await mutate({ groupId });
 		}
 		return;
 	};

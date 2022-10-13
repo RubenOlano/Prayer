@@ -3,7 +3,6 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "react-query";
 import { createGroupInput } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
 
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const CreateGroupForm: FC<Props> = ({ user }) => {
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const [text, setText] = useState("Create Group");
 
 	const {
@@ -23,8 +22,8 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 
 	const router = useRouter();
 	const { mutate } = trpc.useMutation(["groups.registerGroup"], {
-		onSuccess: (data) => {
-			queryClient.refetchQueries("groups.getGroups");
+		onSuccess: async (data) => {
+			await utils.invalidateQueries("groups.getGroups");
 			router.push(`/groups/${data.groupId}`);
 		},
 	});

@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useQueryClient } from "react-query";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -7,11 +6,11 @@ interface Props {
 }
 
 const PostDeleteButton: FC<Props> = ({ postId }) => {
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const { mutate } = trpc.useMutation("posts.deletePost", {
-		onSuccess() {
-			queryClient.refetchQueries("posts.getGroupPosts");
-			queryClient.refetchQueries("posts.getAnonPosts");
+		async onSuccess() {
+			await utils.invalidateQueries("posts.getGroupPosts");
+			await utils.invalidateQueries("posts.getAnonPosts");
 		},
 	});
 

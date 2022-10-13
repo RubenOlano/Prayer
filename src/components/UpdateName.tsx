@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "react-query";
 import { updateUserNameInput } from "../schema/user.schema";
 import { trpc } from "../utils/trpc";
 
@@ -9,12 +8,11 @@ interface Props {
 }
 
 const UpdateName: FC<Props> = ({ userId }) => {
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const { register, handleSubmit } = useForm<updateUserNameInput>();
 	const { mutate } = trpc.useMutation("users.updateUserName", {
 		onSuccess: () => {
-			queryClient.invalidateQueries("users.getUser");
-			queryClient.refetchQueries("users.getUser");
+			utils.invalidateQueries("users.getUser");
 		},
 	});
 	const onSubmit = (data: updateUserNameInput) => {
@@ -25,7 +23,9 @@ const UpdateName: FC<Props> = ({ userId }) => {
 			onSubmit={handleSubmit(onSubmit)}
 			className="flex flex-col text-center px-5 "
 		>
-			<label htmlFor="name">Update Name</label>
+			<label htmlFor="name" className="text-gray-500">
+				Update Name
+			</label>
 			<input
 				type="text"
 				{...register("name")}

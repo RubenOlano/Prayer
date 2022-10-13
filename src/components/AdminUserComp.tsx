@@ -1,7 +1,6 @@
 import { GroupMember } from "@prisma/client";
 import Image from "next/image";
 import React, { FC } from "react";
-import { useQueryClient } from "react-query";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
@@ -10,16 +9,15 @@ interface Props {
 }
 
 const AdminUserComp: FC<Props> = ({ member }) => {
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const { data: user } = trpc.useQuery([
 		"users.getUser",
 		{ id: member.userId },
 	]);
 
 	const { mutate } = trpc.useMutation("groups.removeGroupMember", {
-		onSuccess: () => {
-			queryClient.invalidateQueries("groups.fetchGroupNonAdmins");
-			queryClient.refetchQueries("groups.fetchGroupNonAdmins");
+		onSuccess: async () => {
+			await utils.invalidateQueries("groups.fetchGroupNonAdmins");
 		},
 	});
 

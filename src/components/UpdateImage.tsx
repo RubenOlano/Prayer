@@ -1,4 +1,3 @@
-import { useQueryClient } from "react-query";
 import { FC, useCallback } from "react";
 import { env } from "../env/client.mjs";
 import { debounce } from "../utils/debounce";
@@ -19,12 +18,11 @@ const CLOUDINARY_UPLOAD_PRESET = env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_URL = env.NEXT_PUBLIC_CLOUDINARY_URL;
 
 const UpdateImage: FC<Props> = ({ user }) => {
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const { mutate } = trpc.useMutation("users.updateUserImage", {
 		onMutate: () => {
 			debounce(() => {
-				queryClient.cancelQueries("users.getUser");
-				queryClient.refetchQueries("users.getUser");
+				utils.invalidateQueries("users.getUser");
 			}, 100)();
 		},
 	});

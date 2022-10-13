@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQueryClient } from "react-query";
+import { trpc } from "../utils/trpc";
 
 const refreshIcon = (
 	<svg
@@ -20,10 +20,10 @@ const refreshIcon = (
 
 const RefreshPosts = () => {
 	const [text, setText] = useState("Refresh");
-	const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 	const onClick = () => {
 		setText("Loading...");
-		queryClient.refetchQueries("posts.getGroupPosts").then(() => {
+		utils.invalidateQueries("posts.getGroupPosts").then(() => {
 			setText("Refresh");
 		});
 	};

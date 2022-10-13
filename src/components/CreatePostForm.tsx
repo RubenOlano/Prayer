@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "react-query";
 import { createPostInput } from "../schema/post.schema";
 import { trpc } from "../utils/trpc";
 
@@ -11,7 +10,6 @@ interface Props {
 
 const CreatePostForm: FC<Props> = ({ userId }) => {
 	const [text, setText] = useState("Create Post");
-	const queryClient = useQueryClient();
 
 	const {
 		register,
@@ -20,15 +18,14 @@ const CreatePostForm: FC<Props> = ({ userId }) => {
 	} = useForm<createPostInput>();
 	const router = useRouter();
 	const { groupId } = router.query;
-
 	if (!groupId) {
 		router.back();
 	}
-
+	const utils = trpc.useContext();
 	const { mutate } = trpc.useMutation(["posts.createPost"], {
-		onSuccess: (res) => {
-			queryClient.refetchQueries("posts.getGroupPosts");
-			queryClient.refetchQueries("posts.getAnonPosts");
+		onSuccess: async (res) => {
+			await utils.invalidateQueries("posts.getAuthorPosts");
+			await utils.invalidateQueries("posts.getGroupPosts");
 			router.push(`/posts/${res.postId}`);
 		},
 	});
