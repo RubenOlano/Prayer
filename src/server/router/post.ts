@@ -279,22 +279,19 @@ export const postRouter = createProtectedRouter()
 						message: "Post not found",
 					});
 				}
-				// await ctx.prisma.group.update({
-				//   where: {
-				//     id: post.groupId,
-				//   },
-				//   data: {
-				//     posts: {
-				//       disconnect: {
-				//         id: postId,
-				//       },
-				//     },
-				//   },
-				// });
+
+				await ctx.prisma.postComment.deleteMany({
+					where: {
+						postId,
+					},
+				});
 
 				await ctx.prisma.post.delete({
 					where: {
 						id: postId,
+					},
+					include: {
+						PostComment: true,
 					},
 				});
 

@@ -51,12 +51,12 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 			</Head>
 			<NavBar />
 			<main>
-				<div className="grid grid-cols-2 gap-2">
-					<div className="col-start-1 col-end-2 p-3 ">
+				<div className="md:grid md:grid-cols-2 md:gap-2">
+					<div className="md:col-start-1 md:col-end-2 p-3 ">
 						<PostPage post={data} />
 					</div>
-					<div className="col-start-2 col-end-[-1] p-3">
-						<Comments />
+					<div className="md:col-start-2 md:col-end-[-1] p-3">
+						<Comments postId={id} userId={userId} />
 					</div>
 				</div>
 			</main>

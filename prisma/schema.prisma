@@ -53,6 +53,7 @@ model User {
   Posts         Post[]
   GroupMember   GroupMember[]
   GroupAdmins   GroupAdmins[]
+  PostComment   PostComment[]
 }
 
 model VerificationToken {
@@ -64,17 +65,18 @@ model VerificationToken {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  anonymous Boolean  @default(false)
-  title     String
-  content   String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  Duration  DateTime
-  groupId   String
-  Group     Group    @relation(fields: [groupId], references: [id])
-  Likes     Int      @default(0)
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  anonymous   Boolean       @default(false)
+  title       String
+  content     String
+  author      User          @relation(fields: [authorId], references: [id])
+  authorId    String
+  Duration    DateTime
+  groupId     String
+  Group       Group         @relation(fields: [groupId], references: [id])
+  Likes       Int           @default(0)
+  PostComment PostComment[]
 }
 
 model Group {
@@ -116,4 +118,14 @@ model GroupInvites {
   Group   Group  @relation(fields: [groupId], references: [id])
 
   @@unique([groupId])
+}
+
+model PostComment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  postId    String
+  Post      Post     @relation(fields: [postId], references: [id])
 }

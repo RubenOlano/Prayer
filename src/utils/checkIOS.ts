@@ -1,13 +1,7 @@
 export const iosDetect = (navigator: Navigator): boolean => {
 	const { userAgent } = navigator;
 
-	return (
-		(!!userAgent.match(/iPad/i) ||
-			!!userAgent.match(/iPhone/i) ||
-			!!userAgent.match(/iPod/i) ||
-			!!userAgent.match(/Safari/i)) &&
-		navigator.canShare()
-	);
+	return navigator?.share !== undefined && userAgent.includes("iPhone");
 };
 
 export const getBaseUrl = (): string => {
