@@ -10,10 +10,7 @@ interface Props {
 
 const AdminUserComp: FC<Props> = ({ member }) => {
 	const utils = trpc.useContext();
-	const { data: user } = trpc.useQuery([
-		"users.getUser",
-		{ id: member.userId },
-	]);
+	const { data: user } = trpc.useQuery(["users.getUser", { id: member.userId }]);
 
 	const { mutate } = trpc.useMutation("groups.removeGroupMember", {
 		onSuccess: async () => {
@@ -38,7 +35,7 @@ const AdminUserComp: FC<Props> = ({ member }) => {
 				height={30}
 				className="rounded-full"
 			/>
-			<h1 className="text-cente ml-2">{user.name || "Member"}</h1>
+			<h1 className="text-center ml-2">{user.name || "Member"}</h1>
 			<button
 				className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
 				onClick={onclick}
@@ -50,12 +47,7 @@ const AdminUserComp: FC<Props> = ({ member }) => {
 					viewBox="0 0 24 24"
 					stroke="currentColor"
 				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth={2}
-						d="M6 18L18 6M6 6l12 12"
-					/>
+					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
 				</svg>
 			</button>
 		</div>

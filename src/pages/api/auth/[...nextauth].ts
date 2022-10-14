@@ -31,7 +31,7 @@ export const options: NextAuthOptions = {
 					...session.user,
 					id: user.id,
 				},
-				uesrId: user.id,
+				userId: user.id,
 			};
 			return res;
 		},

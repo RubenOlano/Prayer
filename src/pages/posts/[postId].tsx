@@ -1,6 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
+import Comments from "../../components/Comments";
 import NavBar from "../../components/NavBar";
 import PostPage from "../../components/PostPage";
 import { trpc } from "../../utils/trpc";
@@ -11,10 +12,7 @@ interface Props {
 }
 
 const Post: NextPage<Props> = ({ id, userId }) => {
-	const { data, isLoading } = trpc.useQuery([
-		"posts.getPost",
-		{ postId: id, userId: userId },
-	]);
+	const { data, isLoading } = trpc.useQuery(["posts.getPost", { postId: id, userId: userId }]);
 
 	if (isLoading) {
 		return (
@@ -25,7 +23,7 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<NavBar />
-				<div>Loading...</div>
+				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 			</>
 		);
 	}
@@ -39,9 +37,7 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<NavBar />
-				<div className="flex flex-col justify-center items-center">
-					Post not found
-				</div>
+				<div className="flex flex-col justify-center items-center">Post not found</div>
 			</>
 		);
 	}
@@ -55,15 +51,20 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 			</Head>
 			<NavBar />
 			<main>
-				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
-					<PostPage post={data} />
+				<div className="grid grid-cols-2 gap-2">
+					<div className="col-start-1 col-end-2 p-3 ">
+						<PostPage post={data} />
+					</div>
+					<div className="col-start-2 col-end-[-1] p-3">
+						<Comments />
+					</div>
 				</div>
 			</main>
 		</>
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await getSession(ctx);
 	if (!session || !session.user) {
 		return {

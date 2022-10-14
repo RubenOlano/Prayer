@@ -1,10 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
-import {
-	addUserToGroup,
-	fetchGroupFromInviteSchema,
-	fetchInviteSchema,
-} from "../../schema/invite.schema";
+import { addUserToGroup, fetchGroupFromInviteSchema, fetchInviteSchema } from "../../schema/invite.schema";
 import { createProtectedRouter } from "./context";
 
 export const inviteRouter = createProtectedRouter()
@@ -24,7 +20,7 @@ export const inviteRouter = createProtectedRouter()
 				if (!isAdmin) {
 					throw new TRPCError({
 						code: "FORBIDDEN",
-						message: "Unauthoried request to make an invite",
+						message: "Unauthorized request to make an invite",
 					});
 				}
 				const group = await ctx.prisma.group.findUnique({

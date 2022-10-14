@@ -18,7 +18,7 @@ interface Props {
 const PostPage: FC<Props> = ({ post }) => {
 	const router = useRouter();
 	const { data } = trpc.useQuery(["users.getUser", { id: post.authorId }], {
-		enabled: !post.annonymous,
+		enabled: !post.anonymous,
 	});
 
 	return (

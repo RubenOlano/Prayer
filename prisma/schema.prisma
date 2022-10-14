@@ -64,17 +64,17 @@ model VerificationToken {
 }
 
 model Post {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  annonymous Boolean  @default(false)
-  title      String
-  content    String
-  author     User     @relation(fields: [authorId], references: [id])
-  authorId   String
-  Duration   DateTime
-  groupId    String
-  Group      Group    @relation(fields: [groupId], references: [id])
-  Likes      Int      @default(0)
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  anonymous Boolean  @default(false)
+  title     String
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  Duration  DateTime
+  groupId   String
+  Group     Group    @relation(fields: [groupId], references: [id])
+  Likes     Int      @default(0)
 }
 
 model Group {

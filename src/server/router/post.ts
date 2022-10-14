@@ -15,8 +15,7 @@ export const postRouter = createProtectedRouter()
 	.mutation("createPost", {
 		input: createPostSchema,
 		resolve: async ({ ctx, input }) => {
-			const { userId, groupId, content, annonymous, duration, title } =
-				input;
+			const { userId, groupId, content, anonymous, duration, title } = input;
 			let new_duration = duration;
 			try {
 				if (!new_duration) {
@@ -39,7 +38,7 @@ export const postRouter = createProtectedRouter()
 							},
 						},
 						content,
-						annonymous,
+						anonymous,
 						Duration: final_day,
 						title,
 					},
@@ -71,7 +70,7 @@ export const postRouter = createProtectedRouter()
 					},
 				});
 				return {
-					annonymous: post.annonymous,
+					anonymous: post.anonymous,
 					content: post.content,
 					groupId: post.groupId,
 					postId: post.id,
@@ -149,7 +148,7 @@ export const postRouter = createProtectedRouter()
 						Group: {
 							id: groupId,
 						},
-						annonymous: true,
+						anonymous: true,
 					},
 					select: {
 						content: true,
@@ -236,7 +235,7 @@ export const postRouter = createProtectedRouter()
 						message: "Post not found",
 					});
 				}
-				const isMember = post.Group?.GroupMembers.some((member) => {
+				const isMember = post.Group?.GroupMembers.some(member => {
 					return member.userId === userId;
 				});
 				if (!isMember) {

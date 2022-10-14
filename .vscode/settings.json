@@ -1,4 +1,7 @@
 {
     "WillLuke.nextjs.addTypesOnSave": false,
-    "WillLuke.nextjs.hasPrompted": true
+    "WillLuke.nextjs.hasPrompted": true,
+    "cSpell.words": [
+        "CLOUDINARY"
+    ]
 }

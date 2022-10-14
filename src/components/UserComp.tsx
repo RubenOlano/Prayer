@@ -23,7 +23,7 @@ const UserComp: FC<Props> = ({ user }) => {
 				height={30}
 				className="rounded-full"
 			/>
-			<h1 className="text-cente ml-2">{user.User.name || "Member"}</h1>
+			<h1 className="text-center ml-2">{user.User.name || "Member"}</h1>
 		</div>
 	);
 };
