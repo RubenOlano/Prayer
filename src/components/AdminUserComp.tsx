@@ -8,6 +8,12 @@ interface Props {
 	member: GroupMember;
 }
 
+const Upgrade = (
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" className="h-6 w-6" fill="gray" stroke="currentColor">
+		<path d="M0 0 6 0 0 6-6 0 0 0" fill="currentColor" transform="translate(175) scale(10)" />
+	</svg>
+);
+
 const AdminUserComp: FC<Props> = ({ member }) => {
 	const utils = trpc.useContext();
 	const { data: user } = trpc.useQuery(["users.getUser", { id: member.userId }]);
@@ -28,6 +34,9 @@ const AdminUserComp: FC<Props> = ({ member }) => {
 
 	return (
 		<div className="flex flex-row items-center justify-center m-2">
+			<button className="flex flex-row items-center justify-center bg-gray-200 rounded-full p-2">
+				{Upgrade}
+			</button>
 			<Image
 				src={getImage(user.image)}
 				alt={user.name || "Member"}

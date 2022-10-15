@@ -1,6 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
 import {
+	addGroupAdminSchema,
 	createGroupOutput,
 	createGroupOutputSchema,
 	createGroupSchema,
@@ -167,9 +168,7 @@ export const groupRouter = createProtectedRouter()
 					});
 				}
 
-				return group.GroupAdmins.some(
-					(admin) => admin.userId === userId
-				);
+				return group.GroupAdmins.some(admin => admin.userId === userId);
 			} catch (error) {
 				if (error instanceof PrismaClientKnownRequestError) {
 					if (error.code === "P2002") {
@@ -260,10 +259,8 @@ export const groupRouter = createProtectedRouter()
 					});
 				}
 
-				const nonAdmins = group.GroupMembers.filter((member) => {
-					return !group.GroupAdmins.some(
-						(admin) => admin.userId === member.userId
-					);
+				const nonAdmins = group.GroupMembers.filter(member => {
+					return !group.GroupAdmins.some(admin => admin.userId === member.userId);
 				});
 
 				return nonAdmins;
@@ -481,6 +478,63 @@ export const groupRouter = createProtectedRouter()
 						code: "INTERNAL_SERVER_ERROR",
 						message: "Something went wrong",
 						cause: error,
+					});
+				}
+			}
+		},
+	})
+	.mutation("addGroupAdmin", {
+		input: addGroupAdminSchema,
+		resolve: async ({ ctx, input }) => {
+			const { memberId } = input;
+			try {
+				const groupMember = await ctx.prisma.groupMember.findUnique({
+					where: {
+						id: memberId,
+					},
+				});
+
+				if (!groupMember) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Group member not found",
+					});
+				}
+
+				await ctx.prisma.groupAdmins.create({
+					data: {
+						Group: {
+							connect: {
+								id: groupMember.groupId,
+							},
+						},
+						User: {
+							connect: {
+								id: groupMember.userId,
+							},
+						},
+					},
+				});
+
+				return true;
+			} catch (err) {
+				if (err instanceof PrismaClientKnownRequestError) {
+					if (err.code === "P2002") {
+						throw new TRPCError({
+							code: "CONFLICT",
+							message: err.message,
+						});
+					} else {
+						throw new TRPCError({
+							code: "INTERNAL_SERVER_ERROR",
+							message: err.message,
+						});
+					}
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						message: "Something went wrong",
+						cause: err,
 					});
 				}
 			}

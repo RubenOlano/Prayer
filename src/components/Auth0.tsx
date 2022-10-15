@@ -16,8 +16,8 @@ const Auth0: FC<Props> = ({ provider }) => {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center">
-			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={onClick}>
+		<div className="flex flex-col items-center justify-center p-5">
+			<button className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded" onClick={onClick}>
 				Sign in with {provider.name}
 			</button>
 		</div>
