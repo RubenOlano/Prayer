@@ -17,19 +17,18 @@ const Share = () => {
 	const { data: anonPosts } = trpc.useQuery(["posts.getAnonPosts", { groupId }]);
 	const { mutate } = trpc.useMutation("posts.sharePosts", {
 		onSuccess: async res => {
-			router.push(`/share/${res}`);
 			if (iosDetect(window.navigator)) {
-				await window.navigator.share({
-					title: "Group Pray",
-					text: "Check out my prayers!",
-					url: `https://group-pray.vercel.app/share/${res}`,
-				});
+				window.navigator
+					.share({
+						title: "Group Pray",
+						text: "Check out my prayers!",
+						url: `https://group-pray.vercel.app/share/${res}`,
+					})
+					.then(() => router.push(`/share/${res}`));
 			} else {
-				await window.navigator.clipboard.writeText(`https://group-pray.vercel.app/share/${res}`);
-				setText("Copied to clipboard!");
-				setTimeout(() => {
-					setText("Share");
-				}, 2000);
+				window.navigator.clipboard
+					.writeText(`https://group-pray.vercel.app/share/${res}`)
+					.then(() => router.push(`/share/${res}`));
 			}
 		},
 	});
