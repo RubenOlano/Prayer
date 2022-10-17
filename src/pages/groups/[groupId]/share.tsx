@@ -10,7 +10,7 @@ import { iosDetect } from "../../../utils/checkIOS";
 
 const Share = () => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const [text, setText] = React.useState<string>("Share");
+	const [text] = React.useState<string>("Share");
 	const router = useRouter();
 	const groupId = router.query.groupId as string;
 	const { data } = trpc.useQuery(["posts.getGroupPosts", { groupId }]);
