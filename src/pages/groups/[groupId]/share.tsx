@@ -6,17 +6,31 @@ import { trpc } from "../../../utils/trpc";
 import NavBar from "../../../components/NavBar";
 import { useRouter } from "next/router";
 import { Post } from "@prisma/client";
+import { iosDetect } from "../../../utils/checkIOS";
 
 const Share = () => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-
+	const [text, setText] = React.useState<string>("Share");
 	const router = useRouter();
 	const groupId = router.query.groupId as string;
 	const { data } = trpc.useQuery(["posts.getGroupPosts", { groupId }]);
 	const { data: anonPosts } = trpc.useQuery(["posts.getAnonPosts", { groupId }]);
 	const { mutate } = trpc.useMutation("posts.sharePosts", {
-		onSuccess: res => {
+		onSuccess: async res => {
 			router.push(`/share/${res}`);
+			if (iosDetect(window.navigator)) {
+				await window.navigator.share({
+					title: "Group Pray",
+					text: "Check out my prayers!",
+					url: `https://group-pray.vercel.app/share/${res}`,
+				});
+			} else {
+				await window.navigator.clipboard.writeText(`https://group-pray.vercel.app/share/${res}`);
+				setText("Copied to clipboard!");
+				setTimeout(() => {
+					setText("Share");
+				}, 2000);
+			}
 		},
 	});
 
@@ -61,7 +75,7 @@ const Share = () => {
 								))}
 							</div>
 							<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
-								Share
+								{text}
 							</button>
 						</form>
 					</div>
