@@ -10,26 +10,44 @@ import { iosDetect } from "../../../utils/checkIOS";
 
 const Share = () => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const [text] = React.useState<string>("Share");
+	const [text, setText] = React.useState<string>("Share");
 	const router = useRouter();
 	const groupId = router.query.groupId as string;
 	const { data } = trpc.useQuery(["posts.getGroupPosts", { groupId }]);
 	const { data: anonPosts } = trpc.useQuery(["posts.getAnonPosts", { groupId }]);
 	const { mutate } = trpc.useMutation("posts.sharePosts", {
 		onSuccess: async res => {
+			setText("Loading...");
 			if (iosDetect(window.navigator)) {
-				window.navigator
-					.share({
+				// Get base url if on ios
+				if (window !== undefined) {
+					const baseUrl = window.location.origin;
+					await navigator.share({
 						title: "Group Pray",
-						text: "Check out my prayers!",
+						text: `Check out these posts on Group Pray!`,
+						url: `${baseUrl}/invites/${res}`,
+					});
+				} else {
+					// If window is undefined, then on ios safari and can't use window.location.origin
+					await navigator.share({
+						title: "Group Pray",
+						text: `Check out these posts on Group Pray!`,
 						url: `https://group-pray.vercel.app/share/${res}`,
-					})
-					.then(() => router.push(`/share/${res}`));
+					});
+				}
 			} else {
-				window.navigator.clipboard
-					.writeText(`https://group-pray.vercel.app/share/${res}`)
-					.then(() => router.push(`/share/${res}`));
+				const inviteLink = window.location.origin + "/share/" + res;
+				const clipText = new ClipboardItem({
+					"text/plain": new Blob([inviteLink], {
+						type: "text/plain",
+					}),
+				});
+				await navigator.clipboard.write([clipText]);
 			}
+			setText("Copied to clipboard!");
+			setTimeout(() => {
+				setText("Share");
+			}, 4000);
 		},
 	});
 
