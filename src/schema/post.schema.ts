@@ -41,3 +41,15 @@ export type fetchPostWithIdInput = z.TypeOf<typeof fetchPostWithIdSchema>;
 export const deletePostSchema = z.object({
 	postId: z.string(),
 });
+
+export const toggleLikedPostSchema = z.object({
+	postId: z.string(),
+});
+
+export const getUserLikedSchema = z.object({
+	postId: z.string(),
+});
+
+export const fetchNumLikesSchema = z.object({
+	postId: z.string(),
+});

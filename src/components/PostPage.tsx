@@ -4,21 +4,25 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
+import LikesComp from "./LikesComp";
 
 interface Props {
 	post: Post & {
-		Group:
-			| (Group & {
-					GroupMembers: GroupMember[];
-			  })
-			| null;
+		Group: (Group & { GroupMembers: GroupMember[] }) | null;
 	};
 }
 
 const PostPage: FC<Props> = ({ post }) => {
+	const utils = trpc.useContext();
 	const router = useRouter();
 	const { data } = trpc.useQuery(["users.getUser", { id: post.authorId }], {
 		enabled: !post.anonymous,
+	});
+	const { mutate } = trpc.useMutation("posts.toggleLikePost", {
+		onSuccess: () => {
+			utils.refetchQueries(["posts.getUserLiked", { postId: post.id }]);
+			utils.refetchQueries(["posts.getNumberOfLikes", { postId: post.id }]);
+		},
 	});
 
 	return (
@@ -37,15 +41,24 @@ const PostPage: FC<Props> = ({ post }) => {
 					</div>
 				)}
 				<p>{post.createdAt.toDateString()} </p>
+				<div
+					className="flex flex-row items-center justify-center hover:cursor-pointer"
+					onClick={() => mutate({ postId: post.id })}
+				>
+					<LikesComp postId={post.id} />
+				</div>
 				<button
 					onClick={() => {
 						router.push(`/groups/${post.Group?.id}`);
 					}}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 				>
-					{post.Group ? "View Group" : "Create Group"}
+					View Group
 				</button>
-				<button className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md" onClick={() => router.back()}>
+				<button
+					className="px-4 py-2 mt-4 text-white bg-blue-500 hover:bg-blue-700 rounded-md"
+					onClick={() => router.back()}
+				>
 					Back
 				</button>
 			</div>

@@ -7,7 +7,10 @@ import {
 	deletePostSchema,
 	fetchAuthorPostsSchema,
 	fetchGroupPostsSchema,
+	fetchNumLikesSchema,
 	fetchPostWithIdSchema,
+	getUserLikedSchema,
+	toggleLikedPostSchema,
 } from "../../schema/post.schema";
 import { createProtectedRouter } from "./context";
 
@@ -309,6 +312,119 @@ export const postRouter = createProtectedRouter()
 							message: error.message,
 						});
 					}
+				}
+			}
+		},
+	})
+	.mutation("toggleLikePost", {
+		input: toggleLikedPostSchema,
+		resolve: async ({ ctx, input }) => {
+			const { postId } = input;
+			const userId = ctx.session.user.id;
+			try {
+				const likedPost = await ctx.prisma.likedPost.findUnique({
+					where: { postId_userId: { postId, userId } },
+				});
+
+				if (likedPost) {
+					await ctx.prisma.likedPost.update({
+						where: { id: likedPost.id },
+						data: {
+							liked: !likedPost.liked,
+						},
+					});
+					return false;
+				}
+				await ctx.prisma.likedPost.create({
+					data: {
+						Post: { connect: { id: postId } },
+						User: { connect: { id: userId } },
+						liked: true,
+					},
+				});
+			} catch (error) {
+				if (error instanceof PrismaClientKnownRequestError) {
+					if (error.code === "P2002") {
+						throw new TRPCError({
+							code: "CONFLICT",
+							message: error.message,
+						});
+					} else {
+						throw new TRPCError({
+							code: "INTERNAL_SERVER_ERROR",
+							message: error.message,
+						});
+					}
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						cause: error,
+					});
+				}
+			}
+		},
+	})
+	.query("getUserLiked", {
+		input: getUserLikedSchema,
+		resolve: async ({ ctx, input }) => {
+			const { postId } = input;
+			const userId = ctx.session.user.id;
+			try {
+				const likedPost = await ctx.prisma.likedPost.findUnique({
+					where: { postId_userId: { postId, userId } },
+				});
+				return likedPost?.liked || false;
+			} catch (error) {
+				if (error instanceof PrismaClientKnownRequestError) {
+					if (error.code === "P2002") {
+						throw new TRPCError({
+							code: "CONFLICT",
+							message: error.message,
+						});
+					} else {
+						throw new TRPCError({
+							code: "INTERNAL_SERVER_ERROR",
+							message: error.message,
+						});
+					}
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						cause: error,
+					});
+				}
+			}
+		},
+	})
+	.query("getNumberOfLikes", {
+		input: fetchNumLikesSchema,
+		resolve: async ({ ctx, input }) => {
+			const { postId } = input;
+			try {
+				const count = await ctx.prisma.likedPost.count({
+					where: {
+						AND: [{ postId }, { liked: true }],
+					},
+				});
+				return count;
+			} catch (error) {
+				if (error instanceof PrismaClientKnownRequestError) {
+					if (error.code === "P2002") {
+						throw new TRPCError({
+							code: "CONFLICT",
+							message: error.message,
+						});
+					} else {
+						throw new TRPCError({
+							code: "INTERNAL_SERVER_ERROR",
+							message: error.message,
+						});
+					}
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						cause: error,
+					});
 				}
 			}
 		},

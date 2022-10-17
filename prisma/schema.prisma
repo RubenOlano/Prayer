@@ -8,7 +8,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.text annotations in model Account below
-  // Further reading: 
+  // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
@@ -54,6 +54,7 @@ model User {
   GroupMember   GroupMember[]
   GroupAdmins   GroupAdmins[]
   PostComment   PostComment[]
+  LikedPost     LikedPost[]
 }
 
 model VerificationToken {
@@ -75,8 +76,19 @@ model Post {
   Duration    DateTime
   groupId     String
   Group       Group         @relation(fields: [groupId], references: [id])
-  Likes       Int           @default(0)
   PostComment PostComment[]
+  LikedPost   LikedPost[]
+}
+
+model LikedPost {
+  id     String  @id @default(cuid())
+  postId String
+  userId String
+  Post   Post    @relation(fields: [postId], references: [id])
+  User   User    @relation(fields: [userId], references: [id])
+  liked  Boolean @default(true)
+
+  @@unique([postId, userId])
 }
 
 model Group {
