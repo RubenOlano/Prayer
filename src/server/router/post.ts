@@ -10,6 +10,7 @@ import {
 	fetchNumLikesSchema,
 	fetchPostWithIdSchema,
 	getUserLikedSchema,
+	sharePostsSchema,
 	toggleLikedPostSchema,
 } from "../../schema/post.schema";
 import { createProtectedRouter } from "./context";
@@ -119,9 +120,14 @@ export const postRouter = createProtectedRouter()
 				});
 				const posts = await ctx.prisma.post.findMany({
 					where: {
-						Group: {
-							id: groupId,
-						},
+						AND: [
+							{
+								groupId,
+							},
+							{
+								anonymous: false,
+							},
+						],
 					},
 					include: {
 						author: true,
@@ -423,6 +429,50 @@ export const postRouter = createProtectedRouter()
 					},
 				});
 				return count;
+			} catch (error) {
+				if (error instanceof PrismaClientKnownRequestError) {
+					if (error.code === "P2002") {
+						throw new TRPCError({
+							code: "CONFLICT",
+							message: error.message,
+						});
+					} else {
+						throw new TRPCError({
+							code: "INTERNAL_SERVER_ERROR",
+							message: error.message,
+						});
+					}
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						cause: error,
+					});
+				}
+			}
+		},
+	})
+	.mutation("sharePosts", {
+		input: sharePostsSchema,
+		resolve: async ({ ctx, input }) => {
+			const { postIds } = input;
+			try {
+				const postsToShare = await ctx.prisma.$transaction(
+					postIds.map(postId =>
+						ctx.prisma.postShare.create({
+							data: {
+								post: { connect: { id: postId } },
+							},
+						})
+					)
+				);
+
+				const sharePage = await ctx.prisma.shareGroupPosts.create({
+					data: {
+						PostShare: { connect: postsToShare.map(post => ({ id: post.id })) },
+					},
+				});
+
+				return sharePage.id;
 			} catch (error) {
 				if (error instanceof PrismaClientKnownRequestError) {
 					if (error.code === "P2002") {

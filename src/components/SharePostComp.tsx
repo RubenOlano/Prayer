@@ -4,7 +4,7 @@ import React, { FC } from "react";
 interface Props {
 	onSelect: (id: string) => void;
 	post: Post & {
-		author: User;
+		author?: User;
 	};
 }
 
@@ -14,7 +14,7 @@ const SharePostComp: FC<Props> = ({ onSelect, post }) => {
 			<input className="m-3" type="checkbox" onChange={() => onSelect(post.id)} />
 			<div className="p-2 rounded-md bg-blue-700 bg-opacity-50 backdrop-filter backdrop-blur-md w-full">
 				<p className="text-sm truncate">{post.content}</p>
-				<p className="text-xs text-gray-500">{`${post.anonymous ? "Anon" : post.author.name}`}</p>
+				<p className="text-xs text-gray-500">{post.author?.name || "Anonymous"}</p>
 			</div>
 		</div>
 	);

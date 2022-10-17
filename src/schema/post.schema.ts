@@ -53,3 +53,11 @@ export const getUserLikedSchema = z.object({
 export const fetchNumLikesSchema = z.object({
 	postId: z.string(),
 });
+
+export const sharePostsSchema = z.object({
+	postIds: z.array(z.string()),
+});
+
+export const fetchSharedPostsSchema = z.object({
+	shareId: z.string(),
+});

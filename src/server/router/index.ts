@@ -6,6 +6,7 @@ import { groupRouter } from "./group";
 import { postRouter } from "./post";
 import { inviteRouter } from "./invite";
 import { commentRouter } from "./comment";
+import { shareRouter } from "./share";
 
 export const appRouter = createRouter()
 	.transformer(superjson)
@@ -13,7 +14,8 @@ export const appRouter = createRouter()
 	.merge("groups.", groupRouter)
 	.merge("posts.", postRouter)
 	.merge("invites.", inviteRouter)
-	.merge("comments.", commentRouter);
+	.merge("comments.", commentRouter)
+	.merge("share.", shareRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
