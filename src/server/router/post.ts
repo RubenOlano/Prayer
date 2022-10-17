@@ -108,6 +108,15 @@ export const postRouter = createProtectedRouter()
 		resolve: async ({ ctx, input }) => {
 			const { groupId } = input;
 			try {
+				// Delete posts that have expired
+				await ctx.prisma.post.deleteMany({
+					where: {
+						groupId,
+						Duration: {
+							lte: new Date(),
+						},
+					},
+				});
 				const posts = await ctx.prisma.post.findMany({
 					where: {
 						Group: {
@@ -188,9 +197,16 @@ export const postRouter = createProtectedRouter()
 		resolve: async ({ ctx, input }) => {
 			const { userId } = input;
 			try {
+				await ctx.prisma.post.deleteMany({
+					where: {
+						authorId: userId,
+						Duration: { lte: new Date() },
+					},
+				});
 				const posts = await ctx.prisma.post.findMany({
 					where: {
 						authorId: userId,
+						Duration: { gt: new Date() },
 					},
 					include: {
 						Group: true,

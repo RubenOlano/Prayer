@@ -55,6 +55,7 @@ model User {
   GroupAdmins   GroupAdmins[]
   PostComment   PostComment[]
   LikedPost     LikedPost[]
+  PostShare     PostShare[]
 }
 
 model VerificationToken {
@@ -78,6 +79,7 @@ model Post {
   Group       Group         @relation(fields: [groupId], references: [id])
   PostComment PostComment[]
   LikedPost   LikedPost[]
+  PostShare   PostShare[]
 }
 
 model LikedPost {
@@ -140,4 +142,20 @@ model PostComment {
   authorId  String
   postId    String
   Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model PostShare {
+  id     String @id @default(cuid())
+  post   Post   @relation(fields: [postId], references: [id])
+  author User   @relation(fields: [userId], references: [id])
+
+  postId            String
+  userId            String
+  ShareGroupPosts   ShareGroupPosts? @relation(fields: [shareGroupPostsId], references: [id])
+  shareGroupPostsId String?
+}
+
+model ShareGroupPosts {
+  id        String      @id @default(cuid())
+  PostShare PostShare[]
 }

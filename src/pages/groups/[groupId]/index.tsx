@@ -1,3 +1,4 @@
+import { GroupTitle } from "./../../../components/GroupTitle";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
@@ -7,16 +8,10 @@ import NavBar from "../../../components/NavBar";
 import PrayerSection from "../../../components/PrayerSection";
 import { trpc } from "../../../utils/trpc";
 
-const SpecificGroup = ({
-	id,
-	userId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const router = useRouter();
 	const { data, isLoading } = trpc.useQuery(["groups.getGroup", { id }]);
-	const { data: isAdmin } = trpc.useQuery([
-		"groups.fetchUserIsAdmin",
-		{ userId, groupId: id },
-	]);
+	const { data: isAdmin } = trpc.useQuery(["groups.fetchUserIsAdmin", { userId, groupId: id }]);
 
 	const goToAdmin = () => {
 		router.push(`/groups/${id}/admin`);
@@ -45,9 +40,7 @@ const SpecificGroup = ({
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<NavBar />
-				<div className="flex flex-col items-center justify-center">
-					Group not found
-				</div>
+				<div className="flex flex-col items-center justify-center">Group not found</div>
 			</>
 		);
 	}
@@ -62,18 +55,9 @@ const SpecificGroup = ({
 			<NavBar />
 			<main>
 				<div className="grid grid-cols-4 grid-rows-5 md:grid-cols-8 md:grid-rows-5 md:p-5 p-2 h-[85vh] ">
-					<div className="col-start-1 col-end-3 md:col-end-3 row-start-1 row-end-1">
-						<h1 className="text-2xl stroke-gray-800 font-bold text-center">
-							{data?.name}
-						</h1>
-						<p className="text-center text-sm text-gray-500">
-							{data?.description}
-						</p>
-					</div>
+					<GroupTitle groupTitle={data.name} groupDescription={data.description || ""} />
 					<div className="col-start-1 row-start-5 hidden md:block p-2 md:row-start-2 md:row-end-5 md:col-end-3 justify-center">
-						{data?.GroupMembers && (
-							<MemberList members={data.GroupMembers} />
-						)}
+						{data?.GroupMembers && <MemberList members={data.GroupMembers} />}
 					</div>
 					<div className="col-start-1 col-end-5 row-end-3 md:col-start-4 md:col-end-8 row-start-2 p-2">
 						<PrayerSection />
@@ -94,7 +78,7 @@ const SpecificGroup = ({
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await getSession(ctx);
 	const { groupId } = ctx.query;
 
