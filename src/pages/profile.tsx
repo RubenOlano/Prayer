@@ -14,12 +14,19 @@ interface Props {
 
 const Profile: FC<Props> = ({ user }) => {
 	const router = useRouter();
-	const { data, isLoading } = trpc.useQuery([
-		"users.getUser",
-		{ id: user.id },
-	]);
+	const { data, isLoading } = trpc.useQuery(["users.getUser", { id: user.id }]);
 
-	if (isLoading) return <div>Loading...</div>;
+	if (isLoading)
+		return (
+			<>
+				<Head>
+					<title>Profile - Loading...</title>
+					<meta name="description" content="Loading..." />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<div className="p-5 md:grid md:grid-cols-3">Loading...</div>
+			</>
+		);
 
 	if (!data && !isLoading) {
 		router.replace("/auth/signin");
@@ -35,9 +42,7 @@ const Profile: FC<Props> = ({ user }) => {
 			</Head>
 			<NavBar />
 			<main className="p-5 md:grid md:grid-cols-3 ">
-				<ProfileEdit
-					user={{ ...data, image: data.image || undefined }}
-				/>
+				<ProfileEdit user={{ ...data, image: data.image || undefined }} />
 			</main>
 		</>
 	);
@@ -45,7 +50,7 @@ const Profile: FC<Props> = ({ user }) => {
 
 export default Profile;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await getSession(ctx);
 	if (!session || !session.user) {
 		return {
