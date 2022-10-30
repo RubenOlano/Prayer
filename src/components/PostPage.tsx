@@ -13,18 +13,10 @@ interface Props {
 }
 
 const PostPage: FC<Props> = ({ post }) => {
-	const utils = trpc.useContext();
 	const router = useRouter();
 	const { data } = trpc.useQuery(["users.getUser", { id: post.authorId }], {
 		enabled: !post.anonymous,
 	});
-	const { mutate } = trpc.useMutation("posts.toggleLikePost", {
-		onSuccess: () => {
-			utils.refetchQueries(["posts.getUserLiked", { postId: post.id }]);
-			utils.refetchQueries(["posts.getNumberOfLikes", { postId: post.id }]);
-		},
-	});
-
 	return (
 		<div className="min-h-[80vh] align-middle backdrop-blur-2xl">
 			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 rounded-md md:max-w-[65vw]">
@@ -41,10 +33,7 @@ const PostPage: FC<Props> = ({ post }) => {
 					</div>
 				)}
 				<p>{post.createdAt.toDateString()} </p>
-				<div
-					className="flex flex-row items-center justify-center hover:cursor-pointer"
-					onClick={() => mutate({ postId: post.id })}
-				>
+				<div className="flex flex-row items-center justify-center hover:cursor-pointer">
 					<LikesComp postId={post.id} />
 				</div>
 				<button

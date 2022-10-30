@@ -8,14 +8,20 @@ export type fetchUserInput = z.TypeOf<typeof fetchUserSchema>;
 
 export const updateUserNameSchema = z.object({
 	id: z.string(),
-	name: z.string(),
+	name: z
+		.string()
+		.describe("Name")
+		.refine(name => name.length > 0),
 });
 
 export type updateUserNameInput = z.TypeOf<typeof updateUserNameSchema>;
 
 export const updateUserPictureSchema = z.object({
 	id: z.string(),
-	image: z.string(),
+	image: z
+		.string()
+		.describe("Image")
+		.refine(image => image.length > 0),
 });
 
 export type updateUserPictureInput = z.TypeOf<typeof updateUserPictureSchema>;

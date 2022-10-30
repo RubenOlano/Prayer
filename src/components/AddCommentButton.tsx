@@ -11,9 +11,14 @@ interface Props {
 const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 	const utils = trpc.useContext();
 	const [clicked, setClicked] = useState(false);
-	const { register, handleSubmit } = useForm<CreateCommentSchema>();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<CreateCommentSchema>();
 	const { mutate } = trpc.useMutation("comments.createComment", {
-		onSuccess: async () => {
+		// Optimistic update
+		onMutate: async () => {
 			await utils.invalidateQueries("comments.fetchAllComments");
 			setClicked(false);
 		},
@@ -43,6 +48,11 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 					>
 						Submit
 					</button>
+					<div className="flex flex-col items-center justify-center">
+						{errors.content && (
+							<p className="text-red-500">{errors.content.message || "Something went wrong"}</p>
+						)}
+					</div>
 				</form>
 			</div>
 		);

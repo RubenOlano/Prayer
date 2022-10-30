@@ -3,10 +3,16 @@ import z from "zod";
 export const createPostSchema = z.object({
 	userId: z.string(),
 	groupId: z.string(),
-	content: z.string(),
+	content: z
+		.string()
+		.describe("Content")
+		.refine(content => content.length > 0),
 	anonymous: z.boolean().optional(),
 	duration: z.number().optional(),
-	title: z.string(),
+	title: z
+		.string()
+		.describe("Title")
+		.refine(title => title.length > 0),
 });
 
 export type createPostInput = z.TypeOf<typeof createPostSchema>;
@@ -15,7 +21,10 @@ export const createPostOutputSchema = z.object({
 	postId: z.string(),
 	userId: z.string(),
 	groupId: z.string(),
-	content: z.string(),
+	content: z
+		.string()
+		.describe("Content")
+		.refine(content => content.length > 0),
 	anonymous: z.boolean(),
 });
 

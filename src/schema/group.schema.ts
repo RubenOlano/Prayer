@@ -2,7 +2,10 @@ import z from "zod";
 
 export const createGroupSchema = z.object({
 	userId: z.string(),
-	name: z.string(),
+	name: z
+		.string()
+		.describe("Name")
+		.refine(name => name.length > 0),
 	description: z.string().optional(),
 });
 

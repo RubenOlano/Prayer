@@ -9,7 +9,11 @@ interface Props {
 
 const UpdateName: FC<Props> = ({ userId }) => {
 	const utils = trpc.useContext();
-	const { register, handleSubmit } = useForm<updateUserNameInput>();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<updateUserNameInput>();
 	const { mutate } = trpc.useMutation("users.updateUserName", {
 		onSuccess: () => {
 			utils.invalidateQueries("users.getUser");
@@ -19,10 +23,7 @@ const UpdateName: FC<Props> = ({ userId }) => {
 		mutate({ ...data, id: userId });
 	};
 	return (
-		<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="flex flex-col text-center px-5 "
-		>
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5 ">
 			<label htmlFor="name" className="text-gray-500">
 				Update Name
 			</label>
@@ -38,6 +39,7 @@ const UpdateName: FC<Props> = ({ userId }) => {
 			>
 				Update Name
 			</button>
+			<div className="text-red-500">{errors.name?.message}</div>
 		</form>
 	);
 };
