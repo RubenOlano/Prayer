@@ -16,11 +16,11 @@ const x = (
 
 const AdminComp: FC<Props> = ({ admin }) => {
 	const utils = trpc.useContext();
-	const { data: user } = trpc.useQuery(["users.getUser", { id: admin.userId }]);
+	const { data: user } = trpc.users.getUser.useQuery({ id: admin.userId });
 
-	const { mutate } = trpc.useMutation("groups.removeGroupAdmin", {
+	const { mutate } = trpc.groups.removeGroupAdmin.useMutation({
 		onSuccess: async () => {
-			await utils.invalidateQueries("groups.fetchGroupAdmins");
+			await utils.groups.fetchGroupAdmins.invalidate();
 		},
 	});
 	if (!user) {

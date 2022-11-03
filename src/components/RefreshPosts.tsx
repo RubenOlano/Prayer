@@ -18,7 +18,7 @@ const RefreshPosts = () => {
 	const utils = trpc.useContext();
 	const onClick = () => {
 		setText("Loading...");
-		utils.invalidateQueries("posts.getGroupPosts").then(() => {
+		utils.posts.getGroupPosts.invalidate().then(() => {
 			setText("Refresh");
 		});
 	};

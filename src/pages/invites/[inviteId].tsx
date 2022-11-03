@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
 import Navbar from "../../components/NavBar";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Props {
 	user: Session["user"];
@@ -12,11 +12,9 @@ interface Props {
 }
 
 const Invites: NextPage<Props> = ({ user, inviteId }) => {
-	user;
-
 	const router = useRouter();
-	const { data, isLoading } = trpc.useQuery(["invites.getGroupFromInvite", { inviteId: inviteId as string }]);
-	const { mutate } = trpc.useMutation("invites.addUserToGroup", {
+	const { data, isLoading } = trpc.invites.getGroupFromInvite.useQuery({ inviteId: inviteId as string });
+	const { mutate } = trpc.invites.addUserToGroup.useMutation({
 		onSuccess: () => {
 			router.replace("/groups/" + data?.id);
 		},

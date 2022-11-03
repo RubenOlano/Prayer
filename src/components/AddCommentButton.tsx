@@ -16,10 +16,10 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<CreateCommentSchema>();
-	const { mutate } = trpc.useMutation("comments.createComment", {
+	const { mutate } = trpc.comments.createComments.useMutation({
 		// Optimistic update
 		onMutate: async () => {
-			await utils.invalidateQueries("comments.fetchAllComments");
+			utils.comments.fetchAllComments.invalidate();
 			setClicked(false);
 		},
 	});

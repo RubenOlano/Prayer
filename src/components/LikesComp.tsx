@@ -8,13 +8,13 @@ interface Props {
 
 const LikesComp: FC<Props> = ({ postId }) => {
 	const utils = trpc.useContext();
-	const { data: liked, isLoading } = trpc.useQuery(["posts.getUserLiked", { postId: postId }]);
-	const { data: numLikes } = trpc.useQuery(["posts.getNumberOfLikes", { postId: postId }]);
-	const { mutate } = trpc.useMutation("posts.toggleLikePost", {
+	const { data: liked, isLoading } = trpc.posts.getUserLiked.useQuery({ postId });
+	const { data: numLikes } = trpc.posts.getNumberOfLikes.useQuery({ postId });
+	const { mutate } = trpc.posts.toggleLikePost.useMutation({
 		onMutate: async () => {
 			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-			await utils.cancelQuery(["posts.getUserLiked", { postId }]);
-			await utils.cancelQuery(["posts.getNumberOfLikes", { postId }]);
+			await utils.posts.getUserLiked.invalidate({ postId });
+			await utils.posts.getNumberOfLikes.invalidate({ postId });
 			// Snapshot the previous value
 			const previousValue = liked;
 			const previousNumLikes = numLikes;
@@ -25,14 +25,14 @@ const LikesComp: FC<Props> = ({ postId }) => {
 			// Check if the user has liked the post
 			if (liked) {
 				// If they have, decrement the number of likes
-				utils.setQueryData(["posts.getNumberOfLikes", { postId }], previousNumLikes - 1);
+				utils.posts.getNumberOfLikes.setData(() => previousNumLikes - 1, { postId });
 				// Set the user to not have liked the post
-				utils.setQueryData(["posts.getUserLiked", { postId }], false);
+				utils.posts.getUserLiked.setData(() => false, { postId });
 			} else {
 				// If they haven't, increment the number of likes
-				utils.setQueryData(["posts.getNumberOfLikes", { postId }], previousNumLikes + 1);
+				utils.posts.getNumberOfLikes.setData(previousNumLikes + 1, { postId });
 				// Set the user to have liked the post
-				utils.setQueryData(["posts.getUserLiked", { postId }], true);
+				utils.posts.getUserLiked.setData(() => true, { postId });
 			}
 			// Return a context object with the snapshotted value
 			return { previousValue };

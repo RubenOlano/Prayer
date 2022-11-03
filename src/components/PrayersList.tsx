@@ -4,14 +4,12 @@ import PrayerRequest from "./PrayerRequest";
 
 const PrayersList = () => {
 	const router = useRouter();
-	const res = router.query;
-	const groupId = res.groupId;
+	const groupId = router.query.groupId as string;
 
-	const { data, isLoading } = trpc.useQuery(["posts.getGroupPosts", { groupId: groupId as string }]);
-	const { data: anonPosts } = trpc.useQuery(["posts.getAnonPosts", { groupId: groupId as string }]);
+	const { data, isLoading } = trpc.posts.getGroupPosts.useQuery({ groupId });
 
 	if (isLoading) return <div>Loading...</div>;
-	if ((!data || data.length < 1) && (!anonPosts || anonPosts.length < 1)) {
+	if ((!data || data.privatePosts.length === 0) && (!data || data.pubPosts.length === 0)) {
 		return (
 			<>
 				<h2 className="text-lg md:text-2xl">No prayer requests yet</h2>
@@ -19,7 +17,7 @@ const PrayersList = () => {
 			</>
 		);
 	} else {
-		return <PrayerRequest anon={anonPosts} regPosts={data} />;
+		return <PrayerRequest anon={data.privatePosts} regPosts={data.pubPosts} />;
 	}
 };
 

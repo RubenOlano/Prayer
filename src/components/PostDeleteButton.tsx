@@ -7,11 +7,11 @@ interface Props {
 
 const PostDeleteButton: FC<Props> = ({ postId }) => {
 	const utils = trpc.useContext();
-	const { mutate } = trpc.useMutation("posts.deletePost", {
+	const { mutate } = trpc.posts.deletePost.useMutation({
 		async onSuccess() {
-			await utils.invalidateQueries("posts.getGroupPosts");
-			await utils.invalidateQueries("posts.getAnonPosts");
-			await utils.invalidateQueries("posts.getAuthorPosts");
+			await utils.posts.getGroupPosts.invalidate();
+			await utils.posts.getGroupPosts.invalidate();
+			await utils.posts.getAuthorPosts.invalidate();
 		},
 	});
 

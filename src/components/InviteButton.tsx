@@ -8,7 +8,7 @@ interface Props {
 }
 const InviteButton: FC<Props> = ({ groupId, userId }) => {
 	const [text, setText] = useState("Generate Invite Link");
-	const { mutate } = trpc.useMutation("invites.createInvite", {
+	const { mutate } = trpc.invites.createInvite.useMutation({
 		onSuccess: async ({ id }) => {
 			setText("Loading...");
 			if (iosDetect(window.navigator)) {

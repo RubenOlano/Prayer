@@ -14,9 +14,9 @@ const UpdateName: FC<Props> = ({ userId }) => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<updateUserNameInput>();
-	const { mutate } = trpc.useMutation("users.updateUserName", {
+	const { mutate } = trpc.users.updateUserName.useMutation({
 		onSuccess: () => {
-			utils.invalidateQueries("users.getUser");
+			utils.users.getUser.invalidate({ id: userId });
 		},
 	});
 	const onSubmit = (data: updateUserNameInput) => {

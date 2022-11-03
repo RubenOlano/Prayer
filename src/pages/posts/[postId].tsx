@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Post: NextPage<Props> = ({ id, userId }) => {
-	const { data, isLoading } = trpc.useQuery(["posts.getPost", { postId: id, userId: userId }]);
+	const { data, isLoading } = trpc.posts.getPost.useQuery({ postId: id, userId });
 
 	if (isLoading) {
 		return (

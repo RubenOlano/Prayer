@@ -16,11 +16,11 @@ const Upgrade = (
 
 const AdminUserComp: FC<Props> = ({ member }) => {
 	const utils = trpc.useContext();
-	const { data: user } = trpc.useQuery(["users.getUser", { id: member.userId }]);
+	const { data: user } = trpc.users.getUser.useQuery({ id: member.userId });
 
-	const { mutate } = trpc.useMutation("groups.removeGroupMember", {
+	const { mutate } = trpc.groups.removeGroupMember.useMutation({
 		onSuccess: async () => {
-			await utils.invalidateQueries("groups.fetchGroupNonAdmins");
+			await utils.groups.fetchGroupNonAdmins.invalidate();
 		},
 	});
 

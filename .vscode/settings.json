@@ -1,8 +1,8 @@
 {
-    "WillLuke.nextjs.addTypesOnSave": false,
-    "WillLuke.nextjs.hasPrompted": true,
-    "cSpell.words": [
-        "CLOUDINARY",
-        "Moji"
-    ]
+	"WillLuke.nextjs.addTypesOnSave": false,
+	"WillLuke.nextjs.hasPrompted": true,
+	"cSpell.words": ["CLOUDINARY", "Moji"],
+	"typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"search.useIgnoreFiles": false
 }

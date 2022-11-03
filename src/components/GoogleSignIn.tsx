@@ -9,10 +9,10 @@ interface Props {
 
 const GoogleSignIn: FC<Props> = ({ provider }) => {
 	const router = useRouter();
-	const { callbackUrl } = router.query;
+	const callbackUrl = router.query.callbackUrl as string;
 	const onClick = async () => {
 		await signIn(provider.id, {
-			callbackUrl: (callbackUrl as string) || "/",
+			callbackUrl,
 		});
 	};
 	return (

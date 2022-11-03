@@ -1,6 +1,6 @@
 import { User } from "next-auth";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createGroupInput } from "../schema/group.schema";
@@ -21,9 +21,9 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 	} = useForm<createGroupInput>();
 
 	const router = useRouter();
-	const { mutate } = trpc.useMutation(["groups.registerGroup"], {
-		onSuccess: async (data) => {
-			await utils.invalidateQueries("groups.getGroups");
+	const { mutate } = trpc.groups.registerGroup.useMutation({
+		onSuccess: async data => {
+			await utils.groups.getGroups.invalidate({ userId: user.id });
 			router.push(`/groups/${data.groupId}`);
 		},
 	});
@@ -38,10 +38,7 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="flex flex-col justify-center items-center w-full m-2"
-		>
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full m-2">
 			<input
 				type="text"
 				placeholder="Group Name"

@@ -7,7 +7,7 @@ interface Props {
 }
 
 const AdminUsers: FC<Props> = ({ groupId }) => {
-	const { data, isLoading } = trpc.useQuery(["groups.fetchGroupAdmins", { groupId }]);
+	const { data, isLoading } = trpc.groups.fetchGroupAdmins.useQuery({ groupId });
 
 	if (isLoading) {
 		return (

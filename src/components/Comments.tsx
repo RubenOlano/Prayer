@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Comments: FC<Props> = ({ postId, userId }) => {
-	const { data } = trpc.useQuery(["comments.fetchAllComments", { postId }]);
+	const { data } = trpc.comments.fetchAllComments.useQuery({ postId });
 
 	return (
 		<div className="min-h-[80vh] align-middle backdrop-blur-2xl">

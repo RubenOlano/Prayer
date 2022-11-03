@@ -2,13 +2,14 @@ import { User } from "@prisma/client";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { trpc } from "../../../utils/trpc";
 import Navbar from "../../../components/NavBar";
 import NavBar from "../../../components/NavBar";
 import AdminUserList from "../../../components/AdminUserList";
 import AdminPosts from "../../../components/AdminPosts";
 import InviteButton from "../../../components/InviteButton";
+import Link from "next/link";
 
 interface Props {
 	user: User;
@@ -18,22 +19,17 @@ interface Props {
 const Admin: NextPage<Props> = ({ user, groupId }) => {
 	const router = useRouter();
 	const utils = trpc.useContext();
-	const { data, isLoading } = trpc.useQuery([
-		"groups.fetchUserIsAdmin",
-		{ userId: user.id, groupId },
-	]);
+	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ userId: user.id, groupId });
 
-	const { mutate } = trpc.useMutation("groups.deleteGroup", {
+	const { mutate } = trpc.groups.deleteGroup.useMutation({
 		onSuccess: async () => {
-			await utils.invalidateQueries("groups.getGroups");
+			await utils.groups.getGroups.invalidate({ userId: user.id });
 			router.push("/");
 		},
 	});
 
 	const deleteGroup = async () => {
-		const confirm = window.confirm(
-			"Are you sure you want to delete this group?"
-		);
+		const confirm = window.confirm("Are you sure you want to delete this group?");
 		if (confirm) {
 			await mutate({ groupId });
 		}
@@ -50,9 +46,7 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 				</Head>
 				<Navbar />
 				<main>
-					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
-						Loading...
-					</div>
+					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 				</main>
 			</>
 		);
@@ -78,12 +72,12 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 						<AdminPosts groupId={groupId} />
 					</div>
 					<div className="md:col-start-4 md:col-end-5 p-4 md:row-start-1 md:row-end-2">
-						<button
+						<Link
+							href={`/groups/${groupId}`}
 							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-							onClick={() => router.push(`/groups/${groupId}`)}
 						>
 							Back to Group
-						</button>
+						</Link>
 						<button
 							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 md:mt-32 rounded"
 							onClick={deleteGroup}
@@ -100,7 +94,7 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await getSession(ctx);
 	if (!session || !session.user) {
 		return {

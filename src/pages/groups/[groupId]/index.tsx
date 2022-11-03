@@ -1,21 +1,16 @@
-import { GroupTitle } from "./../../../components/GroupTitle";
+import { GroupTitle } from "../../../components/GroupTitle";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import MemberList from "../../../components/MemberList";
 import NavBar from "../../../components/NavBar";
 import PrayerSection from "../../../components/PrayerSection";
 import { trpc } from "../../../utils/trpc";
+import Link from "next/link";
 
 const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const router = useRouter();
-	const { data, isLoading } = trpc.useQuery(["groups.getGroup", { id }]);
-	const { data: isAdmin } = trpc.useQuery(["groups.fetchUserIsAdmin", { userId, groupId: id }]);
-
-	const goToAdmin = () => {
-		router.push(`/groups/${id}/admin`);
-	};
+	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id });
+	const { data: isAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ userId, groupId: id });
 
 	if (isLoading) {
 		return (
@@ -64,12 +59,12 @@ const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getSer
 					</div>
 					{isAdmin && (
 						<div className="col-start-4 col-end-4 md:col-start-8 md:col-end-8 justify-self-end ">
-							<button
+							<Link
+								href={`/groups/${id}/admin`}
 								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-								onClick={goToAdmin}
 							>
 								Edit Group
-							</button>
+							</Link>
 						</div>
 					)}
 				</div>

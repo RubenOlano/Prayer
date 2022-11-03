@@ -10,22 +10,21 @@ interface Props {
 
 const CreatePostForm: FC<Props> = ({ userId }) => {
 	const [text, setText] = useState("Create Post");
-
+	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<createPostInput>();
-	const router = useRouter();
-	const { groupId } = router.query;
+	const groupId = router.query.groupId as string;
 	if (!groupId) {
-		router.back();
+		return null;
 	}
 	const utils = trpc.useContext();
-	const { mutate } = trpc.useMutation(["posts.createPost"], {
+	const { mutate } = trpc.posts.createPost.useMutation({
 		onSuccess: async res => {
-			await utils.invalidateQueries("posts.getAuthorPosts");
-			await utils.invalidateQueries("posts.getGroupPosts");
+			await utils.posts.getAuthorPosts.invalidate({ userId });
+			await utils.posts.getGroupPosts.invalidate({ groupId: groupId as string });
 			router.push(`/posts/${res.postId}`);
 		},
 	});

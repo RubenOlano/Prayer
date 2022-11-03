@@ -1,17 +1,16 @@
 import { ClientSafeProvider, signIn } from "next-auth/react";
-import { useRouter } from "next/router";
 import { FC } from "react";
 
 interface Props {
+	searchParams?: { callbackUrl: string };
 	provider: ClientSafeProvider;
 }
 
-const Auth0: FC<Props> = ({ provider }) => {
-	const router = useRouter();
-	const callbackUrl = (router.query.callbackUrl as string) || "/";
+const Auth0: FC<Props> = ({ searchParams, provider }) => {
+	const { callbackUrl } = { ...searchParams };
 	const onClick = async () => {
 		await signIn(provider.id, {
-			callbackUrl: callbackUrl,
+			callbackUrl: callbackUrl || "/",
 		});
 	};
 
