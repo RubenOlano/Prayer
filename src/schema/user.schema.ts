@@ -4,8 +4,6 @@ export const fetchUserSchema = z.object({
 	id: z.string(),
 });
 
-export type fetchUserInput = z.TypeOf<typeof fetchUserSchema>;
-
 export const updateUserNameSchema = z.object({
 	id: z.string(),
 	name: z
@@ -23,5 +21,3 @@ export const updateUserPictureSchema = z.object({
 		.describe("Image")
 		.refine(image => image.length > 0),
 });
-
-export type updateUserPictureInput = z.TypeOf<typeof updateUserPictureSchema>;

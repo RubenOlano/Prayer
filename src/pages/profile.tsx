@@ -1,18 +1,24 @@
 import { GetServerSideProps } from "next";
-import { User } from "next-auth";
-import { getSession } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { FC } from "react";
-import NavBar from "../components/NavBar";
 import ProfileEdit from "../components/ProfileEdit";
+import SideBar from "../components/SideBar";
 import { trpc } from "../utils/trpc";
+import { options } from "./api/auth/[...nextauth]";
 
-interface Props {
-	user: User;
-}
-
-const Profile: FC<Props> = ({ user }) => {
-	const { data, isLoading } = trpc.users.getUser.useQuery({ id: user.id });
+const Profile = () => {
+	const { data: session } = useSession();
+	if (!session) {
+		return (
+			<div className="flex flex-col justify-center items-center h-screen">
+				<h1 className="text-2xl font-bold">You are not signed in</h1>
+				<h1 className="text-xl font-bold">Please sign in to view your prayers</h1>
+			</div>
+		);
+	}
+	const { user } = session;
+	const { data, isLoading } = trpc.users.getUser.useQuery({ id: user?.id as string });
 
 	if (isLoading)
 		return (
@@ -46,7 +52,7 @@ const Profile: FC<Props> = ({ user }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
+			<SideBar />
 			<main className="p-5 md:grid md:grid-cols-3 ">
 				<ProfileEdit user={{ ...data, image: data.image || undefined }} />
 			</main>
@@ -57,7 +63,7 @@ const Profile: FC<Props> = ({ user }) => {
 export default Profile;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	if (!session || !session.user) {
 		return {
 			redirect: {
@@ -68,6 +74,6 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	}
 
 	return {
-		props: { user: session.user },
+		props: { session },
 	};
 };

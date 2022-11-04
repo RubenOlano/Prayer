@@ -1,16 +1,18 @@
 import { GroupTitle } from "../../../components/GroupTitle";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/react";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import MemberList from "../../../components/MemberList";
-import NavBar from "../../../components/NavBar";
-import PrayerSection from "../../../components/PrayerSection";
 import { trpc } from "../../../utils/trpc";
-import Link from "next/link";
+import { unstable_getServerSession } from "next-auth";
+import { options } from "../../api/auth/[...nextauth]";
+import SideBar from "../../../components/SideBar";
+import PrayerSection from "../../../components/PrayerSection";
 
-const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id });
-	const { data: isAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ userId, groupId: id });
+interface Props {
+	groupId: string;
+}
+
+const SpecificGroup: NextPage<Props> = ({ groupId }) => {
+	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id: groupId });
 
 	if (isLoading) {
 		return (
@@ -20,8 +22,8 @@ const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getSer
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
-				<div>Loading...</div>
+				<SideBar />
+				<div className="pl-40">Loading...</div>
 			</>
 		);
 	}
@@ -34,8 +36,8 @@ const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getSer
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
-				<div className="flex flex-col items-center justify-center">Group not found</div>
+				<SideBar />
+				<div className="flex flex-col items-center justify-center pl-40">Group not found</div>
 			</>
 		);
 	}
@@ -47,26 +49,13 @@ const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getSer
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
+			<SideBar />
 			<main>
-				<div className="grid grid-cols-4 grid-rows-5 md:grid-cols-8 md:grid-rows-5 md:p-5 p-2 h-[85vh] ">
-					<GroupTitle groupTitle={data.name} groupDescription={data.description || ""} />
-					<div className="col-start-1 row-start-5 hidden md:block p-2 md:row-start-2 md:row-end-5 md:col-end-3 justify-center">
-						{data?.GroupMembers && <MemberList members={data.GroupMembers} />}
-					</div>
-					<div className="col-start-1 col-end-5 row-end-3 md:col-start-4 md:col-end-8 row-start-2 p-2">
-						<PrayerSection />
-					</div>
-					{isAdmin && (
-						<div className="col-start-4 col-end-4 md:col-start-8 md:col-end-8 justify-self-end ">
-							<Link
-								href={`/groups/${id}/admin`}
-								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-							>
-								Edit Group
-							</Link>
-						</div>
-					)}
+				<div className="pl-40 p-5">
+					<GroupTitle {...data} groupId={groupId} />
+				</div>
+				<div className="pl-40 p-5">
+					<PrayerSection groupId={groupId} />
 				</div>
 			</main>
 		</>
@@ -74,8 +63,10 @@ const SpecificGroup = ({ id, userId }: InferGetServerSidePropsType<typeof getSer
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
-	const { groupId } = ctx.query;
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const params = ctx.params;
+	const groupId = params?.groupId as string;
+	console.log(groupId);
 
 	if (!groupId || !session || !session.user || !session.user.id) {
 		return {
@@ -88,8 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
 	return {
 		props: {
-			id: groupId,
-			userId: session.user.id,
+			groupId,
 		},
 	};
 };

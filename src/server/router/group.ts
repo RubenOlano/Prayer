@@ -3,13 +3,11 @@ import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from ".";
 import {
 	addGroupAdminSchema,
-	createGroupOutput,
 	createGroupSchema,
 	deleteGroupSchema,
 	fetchGroupAdminsSchema,
 	fetchGroupNonAdminsSchema,
 	fetchGroupSchema,
-	fetchGroupsSchema,
 	fetchUserIsAdminSchema,
 	removeGroupAdminSchema,
 	removeUserFromGroupSchema,
@@ -58,12 +56,7 @@ export const groupRouter = router({
 				},
 			});
 
-			const output: createGroupOutput = {
-				groupId: group.id,
-				name: group.name,
-				description: group?.description || undefined,
-			};
-			return output;
+			return group;
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				throw new TRPCError({
@@ -78,13 +71,13 @@ export const groupRouter = router({
 			}
 		}
 	}),
-	getGroups: protectedProcedure.input(fetchGroupsSchema).query(async ({ ctx, input }) => {
-		const { userId } = input;
+	getGroups: protectedProcedure.query(async ({ ctx }) => {
+		const { id } = ctx.session.user;
 		const groups = await ctx.prisma.group.findMany({
 			where: {
 				GroupMembers: {
 					some: {
-						userId,
+						userId: id,
 					},
 				},
 			},
@@ -137,7 +130,8 @@ export const groupRouter = router({
 		}
 	}),
 	fetchUserIsAdmin: protectedProcedure.input(fetchUserIsAdminSchema).query(async ({ ctx, input }) => {
-		const { userId, groupId } = input;
+		const { groupId } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const group = await ctx.prisma.group.findUnique({
 				where: {

@@ -2,7 +2,6 @@ import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Comments from "../../components/Comments";
-import NavBar from "../../components/NavBar";
 import PostPage from "../../components/PostPage";
 import { trpc } from "../../utils/trpc";
 
@@ -22,7 +21,6 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<meta name="description" content="Post" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 			</>
 		);
@@ -36,7 +34,6 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<meta name="description" content="Post" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
 				<div className="flex flex-col justify-center items-center">Post not found</div>
 			</>
 		);
@@ -49,7 +46,6 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
 			<main>
 				<div className="md:grid md:grid-cols-2 md:gap-2">
 					<div className="md:col-start-1 md:col-end-2 p-3 ">

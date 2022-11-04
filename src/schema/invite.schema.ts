@@ -5,8 +5,6 @@ export const fetchInviteSchema = z.object({
 	userId: z.string(),
 });
 
-export type fetchInviteSchemaInput = z.TypeOf<typeof fetchInviteSchema>;
-
 export const addUserToGroup = z.object({
 	userId: z.string(),
 	inviteId: z.string(),

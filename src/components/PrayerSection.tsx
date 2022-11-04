@@ -1,31 +1,52 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
-import AddPrayer from "./AddPrayer";
-import PrayersList from "./PrayersList";
+import React, { FC } from "react";
+import { trpc } from "../utils/trpc";
+import { Plus } from "./Icons";
+import PostCard from "./PostCard";
 import RefreshPosts from "./RefreshPosts";
 
-const PrayerSection = () => {
-	const router = useRouter();
-	const groupId = router.query.groupId as string;
+interface Props {
+	groupId: string;
+}
+
+const PrayerSection: FC<Props> = ({ groupId }) => {
+	const { data, isLoading, fetchNextPage, hasNextPage } = trpc.posts.getGroupPosts.useInfiniteQuery(
+		{ groupId },
+		{
+			getNextPageParam: lastPage => lastPage.nextCursor,
+		}
+	);
+
 	return (
 		<>
-			<div className="grid text-center backdrop-sepia-0 rounded-sm bg-white/75 md:grid-cols-3 align-middle justify-center mt-12 md:mt-0">
-				<div className="col-start-1 col-end-3 md:col-start-1 md:col-end-2 md:row-start-1 md:row-end-2 p-3">
+			{/* Two columns, one with posts 2/3 and other with refresh/add 1/3 */}
+			<div className="grid grid-cols-3 align-middle">
+				<div className="col-span-2">
+					{isLoading ? (
+						<div>Loading...</div>
+					) : (
+						<>
+							{data?.pages.map(page => page.posts.map(post => <PostCard key={post.id} post={post} />))}
+							{hasNextPage && (
+								<button
+									onClick={() => {
+										fetchNextPage();
+									}}
+								>
+									Load More
+								</button>
+							)}
+						</>
+					)}
+				</div>
+				<div className="justify-self-center justify-center col-span-1">
 					<Link
-						href={`/groups/${groupId}/share`}
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+						href={`/posts/create/${groupId}`}
+						className="flex text-sm flex-row items-center align-middle justify-center py-1 px-3 bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 md:px-4 rounded m-2"
 					>
-						Share
+						<Plus dimensions={80} />
 					</Link>
-				</div>
-				<h2 className="col-start-2 col-end-3 self-center text-2xl font-bold py-2">Prayer Requests</h2>
-				<div className="col-start-2 col-end-2 flex justify-center">
-					<AddPrayer />
 					<RefreshPosts />
-				</div>
-				<div className="col-start-1 col-end-4">
-					<PrayersList />
 				</div>
 			</div>
 		</>

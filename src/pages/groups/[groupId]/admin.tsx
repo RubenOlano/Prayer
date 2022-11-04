@@ -4,8 +4,6 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../../utils/trpc";
-import Navbar from "../../../components/NavBar";
-import NavBar from "../../../components/NavBar";
 import AdminUserList from "../../../components/AdminUserList";
 import AdminPosts from "../../../components/AdminPosts";
 import InviteButton from "../../../components/InviteButton";
@@ -19,11 +17,11 @@ interface Props {
 const Admin: NextPage<Props> = ({ user, groupId }) => {
 	const router = useRouter();
 	const utils = trpc.useContext();
-	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ userId: user.id, groupId });
+	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
 	const { mutate } = trpc.groups.deleteGroup.useMutation({
 		onSuccess: async () => {
-			await utils.groups.getGroups.invalidate({ userId: user.id });
+			await utils.groups.getGroups.invalidate();
 			router.push("/");
 		},
 	});
@@ -44,7 +42,6 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<Navbar />
 				<main>
 					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 				</main>
@@ -62,7 +59,6 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
 			<main>
 				<div className="md:grid grid-rows-2 md:grid-cols-4 p-3">
 					<div className="md:col-start-1 md:col-end-2 col-start-1 col-end-1">

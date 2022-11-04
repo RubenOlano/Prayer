@@ -3,7 +3,6 @@ import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
-import Navbar from "../../components/NavBar";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -32,7 +31,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<Navbar />
 				<main>
 					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 				</main>
@@ -48,7 +46,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<Navbar />
 				<main>
 					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
 						Invite not found
@@ -65,7 +62,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Navbar />
 			<main>
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
 					<h1 className="text-3xl font-bold">

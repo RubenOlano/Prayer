@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
-import { protectedProcedure, router } from ".";
+import { protectedProcedure, router } from "./";
 import {
 	createPostOutput,
 	createPostSchema,
@@ -8,6 +8,7 @@ import {
 	fetchAuthorPostsSchema,
 	fetchGroupPostsSchema,
 	fetchNumLikesSchema,
+	fetchPostFeedSchema,
 	fetchPostWithIdSchema,
 	getUserLikedSchema,
 	sharePostsSchema,
@@ -101,7 +102,8 @@ export const postRouter = router({
 	}),
 	// Returns all posts from a group (anon and non-anon)
 	getGroupPosts: protectedProcedure.input(fetchGroupPostsSchema).query(async ({ ctx, input }) => {
-		const { groupId } = input;
+		const limit = input.limit ?? 5;
+		const { groupId, cursor } = input;
 		try {
 			// Delete posts that have expired
 			await ctx.prisma.postShare.deleteMany({
@@ -127,37 +129,22 @@ export const postRouter = router({
 					Duration: { lte: new Date() },
 				},
 			});
-			const pubPosts = await ctx.prisma.post.findMany({
+			const posts = await ctx.prisma.post.findMany({
+				take: limit + 1,
 				where: {
-					AND: [
-						{
-							groupId,
-						},
-						{
-							anonymous: false,
-						},
-					],
+					groupId,
 				},
-				include: {
-					author: true,
+				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: {
+					createdAt: "desc",
 				},
 			});
-			const privatePosts = await ctx.prisma.post.findMany({
-				where: {
-					AND: [
-						{
-							groupId,
-						},
-						{
-							anonymous: true,
-						},
-					],
-				},
-				include: {
-					author: false,
-				},
-			});
-			return { pubPosts, privatePosts };
+			let nextCursor: typeof cursor | undefined = undefined;
+			if (posts.length > limit) {
+				const next = posts.pop();
+				nextCursor = next?.id;
+			}
+			return { posts, nextCursor };
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {
@@ -452,6 +439,58 @@ export const postRouter = router({
 			});
 
 			return sharePage.id;
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === "P2002") {
+					throw new TRPCError({
+						code: "CONFLICT",
+						message: error.message,
+					});
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						message: error.message,
+					});
+				}
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					cause: error,
+				});
+			}
+		}
+	}),
+	getPostFeed: protectedProcedure.input(fetchPostFeedSchema).query(async ({ ctx, input }) => {
+		const limit = input.limit ?? 5;
+		const { cursor } = input;
+		const userId = ctx.session.user.id;
+		try {
+			const posts = await ctx.prisma.post.findMany({
+				take: limit + 1,
+				where: {
+					Group: {
+						GroupMembers: {
+							some: {
+								userId: userId,
+							},
+						},
+					},
+				},
+				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: { createdAt: "desc" },
+				distinct: ["id"],
+			});
+
+			let newCursor: typeof cursor | undefined = undefined;
+			if (posts.length > limit) {
+				const nextItem = posts.pop();
+				newCursor = nextItem?.id;
+			}
+
+			return {
+				posts,
+				cursor: newCursor,
+			};
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {

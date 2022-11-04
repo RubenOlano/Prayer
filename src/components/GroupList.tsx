@@ -1,23 +1,11 @@
-import { signIn } from "next-auth/react";
 import Link from "next/link";
-import React, { FC } from "react";
+import React from "react";
 import { trpc } from "../utils/trpc";
 import GroupItem from "./GroupItem";
+import { Plus } from "./Icons";
 
-interface Props {
-	userId: string;
-}
-
-const GroupList: FC<Props> = ({ userId }) => {
-	if (!userId) {
-		signIn(undefined, { callbackUrl: "/groups" });
-		return (
-			<div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
-				Redirecting...
-			</div>
-		);
-	}
-	const { data, isLoading } = trpc.groups.getGroups.useQuery({ userId });
+const GroupList = () => {
+	const { data, isLoading } = trpc.groups.getGroups.useQuery();
 
 	if (isLoading) {
 		return (
@@ -42,14 +30,13 @@ const GroupList: FC<Props> = ({ userId }) => {
 	}
 
 	return (
-		<div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
-			<h2 className="text-2xl justify-center font-bold flex p-5">Groups</h2>
-			<div className="overflow-scroll h-[55vh]">
+		<div className="w-full p-5">
+			<div className="grid grid-cols-3">
 				<Link
 					href="/groups/create"
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
 				>
-					Create a group
+					<Plus dimensions="60" />
 				</Link>
 				{data?.map(group => (
 					<GroupItem key={group.id} group={group} />

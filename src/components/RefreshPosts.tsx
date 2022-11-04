@@ -1,26 +1,10 @@
-import { useState } from "react";
 import { trpc } from "../utils/trpc";
-
-const refreshIcon = (
-	<svg
-		className="w-4 h-4 md:mr-1"
-		fill="none"
-		stroke="currentColor"
-		viewBox="0 0 24 24"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-	</svg>
-);
+import { Refresh } from "./Icons";
 
 const RefreshPosts = () => {
-	const [text, setText] = useState("Refresh");
 	const utils = trpc.useContext();
 	const onClick = () => {
-		setText("Loading...");
-		utils.posts.getGroupPosts.invalidate().then(() => {
-			setText("Refresh");
-		});
+		utils.posts.getGroupPosts.invalidate();
 	};
 	return (
 		<button
@@ -28,8 +12,7 @@ const RefreshPosts = () => {
 			type="button"
 			onClick={onClick}
 		>
-			<div className="">{refreshIcon}</div>
-			<span>{text}</span>
+			<Refresh dimensions={80} />
 		</button>
 	);
 };

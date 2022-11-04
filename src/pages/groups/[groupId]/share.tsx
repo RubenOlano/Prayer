@@ -3,7 +3,6 @@ import { ShareHeader } from "../../../components/ShareHeader";
 import Head from "next/head";
 import React from "react";
 import { trpc } from "../../../utils/trpc";
-import NavBar from "../../../components/NavBar";
 import { iosDetect } from "../../../utils/checkIOS";
 import { useRouter } from "next/router";
 
@@ -76,7 +75,6 @@ const Share = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
 			<main>
 				<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
 					<ShareHeader />

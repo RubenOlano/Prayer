@@ -1,16 +1,12 @@
-import { User } from "next-auth";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createGroupInput } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
 
-interface Props {
-	user: User;
-}
-
-const CreateGroupForm: FC<Props> = ({ user }) => {
+const CreateGroupForm = () => {
+	const { data: session } = useSession();
 	const utils = trpc.useContext();
 	const [text, setText] = useState("Create Group");
 
@@ -19,12 +15,27 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<createGroupInput>();
-
 	const router = useRouter();
+
+	if (!session || !session.user) {
+		return (
+			<div className="flex flex-col justify-center items-center">
+				<button
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					onClick={() => signIn()}
+				>
+					Sign in to create a group
+				</button>
+			</div>
+		);
+	}
+
+	const user = session.user;
+
 	const { mutate } = trpc.groups.registerGroup.useMutation({
 		onSuccess: async data => {
-			await utils.groups.getGroups.invalidate({ userId: user.id });
-			router.push(`/groups/${data.groupId}`);
+			await utils.groups.getGroups.invalidate();
+			router.push(`/groups/${data.id}`);
 		},
 	});
 
