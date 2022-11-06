@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { trpc } from "../utils/trpc";
 import PostCard from "./PostCard";
 
@@ -16,13 +16,15 @@ const MainFeed = () => {
 
 	return (
 		<>
-			{data?.pages.map(page => (
-				<>
-					{page.posts.map(post => (
-						<PostCard key={post.id} post={post} />
-					))}
-				</>
-			))}
+			<div className="w-8/12 justify-center m-auto">
+				{data?.pages.map((page, i) => (
+					<Fragment key={i}>
+						{page.posts.map(post => (
+							<PostCard key={post.id} {...post} />
+						))}
+					</Fragment>
+				))}
+			</div>
 			<div className="flex justify-center items-center">
 				<button
 					onClick={() => fetchNextPage()}

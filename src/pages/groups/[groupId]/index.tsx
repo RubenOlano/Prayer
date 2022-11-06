@@ -4,7 +4,6 @@ import Head from "next/head";
 import { trpc } from "../../../utils/trpc";
 import { unstable_getServerSession } from "next-auth";
 import { options } from "../../api/auth/[...nextauth]";
-import SideBar from "../../../components/SideBar";
 import PrayerSection from "../../../components/PrayerSection";
 
 interface Props {
@@ -12,6 +11,10 @@ interface Props {
 }
 
 const SpecificGroup: NextPage<Props> = ({ groupId }) => {
+	const util = trpc.useContext();
+
+	util.groups.fetchUserIsAdmin.prefetch({ groupId });
+	util.posts.getGroupPosts.prefetchInfinite({ groupId });
 	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id: groupId });
 
 	if (isLoading) {
@@ -22,8 +25,11 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<SideBar />
-				<div className="pl-40">Loading...</div>
+				<main>
+					<div className="pl-40 p-5">
+						<h1 className="p-5">Loading...</h1>
+					</div>
+				</main>
 			</>
 		);
 	}
@@ -32,12 +38,15 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 		return (
 			<>
 				<Head>
-					<title>Group Pray - Group Not Found</title>
+					<title>Group Pray - Not Found</title>
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<SideBar />
-				<div className="flex flex-col items-center justify-center pl-40">Group not found</div>
+				<main>
+					<div className="pl-40 p-5">
+						<h1 className="text-3xl font-bold p-5">Group not found</h1>
+					</div>
+				</main>
 			</>
 		);
 	}
@@ -49,7 +58,6 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<SideBar />
 			<main>
 				<div className="pl-40 p-5">
 					<GroupTitle {...data} groupId={groupId} />
@@ -66,7 +74,6 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	const params = ctx.params;
 	const groupId = params?.groupId as string;
-	console.log(groupId);
 
 	if (!groupId || !session || !session.user || !session.user.id) {
 		return {
@@ -80,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	return {
 		props: {
 			groupId,
+			session,
 		},
 	};
 };

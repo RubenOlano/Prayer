@@ -7,10 +7,11 @@ import { getImage } from "../utils/defaultUserImage";
 
 interface Props {
 	user: {
-		name: string | null;
-		email: string | null;
 		id: string;
-		image: string | undefined;
+	} & {
+		name?: string | null | undefined;
+		email?: string | null | undefined;
+		image?: string | null | undefined;
 	};
 }
 

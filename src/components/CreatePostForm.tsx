@@ -1,38 +1,33 @@
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createPostInput } from "../schema/post.schema";
 import { trpc } from "../utils/trpc";
 
-interface Props {
-	userId: string;
-}
-
-const CreatePostForm: FC<Props> = ({ userId }) => {
-	const [text, setText] = useState("Create Post");
+const CreatePostForm = () => {
 	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<createPostInput>();
 	const groupId = router.query.groupId as string;
 	if (!groupId) {
 		return null;
 	}
 	const utils = trpc.useContext();
-	const { mutate } = trpc.posts.createPost.useMutation({
+	const { mutate, isLoading } = trpc.posts.createPost.useMutation({
 		onSuccess: async res => {
-			await utils.posts.getAuthorPosts.invalidate({ userId });
+			await utils.posts.getAuthorPosts.invalidate();
 			await utils.posts.getGroupPosts.invalidate({ groupId: groupId as string });
 			router.push(`/posts/${res.postId}`);
 		},
 	});
 
 	const onSubmit = (data: createPostInput) => {
-		setText("Loading...");
-
-		mutate({ ...data, groupId: groupId as string, userId });
+		console.log(data);
+		mutate({ ...data, groupId: groupId as string });
+		reset();
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full">
@@ -66,9 +61,8 @@ const CreatePostForm: FC<Props> = ({ userId }) => {
 					{...register("anonymous", { required: false })}
 				/>
 			</div>
-			<input type="hidden" value={userId} {...register("userId")} />
 			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded" type="submit">
-				{text}
+				{isLoading ? "Loading..." : "Submit"}
 			</button>
 		</form>
 	);

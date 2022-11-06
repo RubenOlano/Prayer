@@ -5,22 +5,23 @@ import { trpc } from "../utils/trpc";
 
 interface Props {
 	postId: string;
-	userId: string;
 }
 
-const AddCommentButton: FC<Props> = ({ postId, userId }) => {
+const AddCommentButton: FC<Props> = ({ postId }) => {
 	const utils = trpc.useContext();
 	const [clicked, setClicked] = useState(false);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<CreateCommentSchema>();
-	const { mutate } = trpc.comments.createComments.useMutation({
-		// Optimistic update
-		onMutate: async () => {
-			utils.comments.fetchAllComments.invalidate();
+	const { mutate, isLoading } = trpc.comments.createComments.useMutation({
+		onSuccess: async () => {
+			await utils.comments.fetchAllComments.invalidate({ postId });
+			await utils.comments.fetchAllComments.refetch({ postId });
 			setClicked(false);
+			reset();
 		},
 	});
 
@@ -28,7 +29,6 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 		mutate({
 			...data,
 			postId,
-			userId,
 		});
 	};
 
@@ -59,7 +59,9 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 	} else {
 		return (
 			<button
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" ${
+					isLoading ? "opacity-50" : ""
+				}`}
 				onClick={() => setClicked(true)}
 			>
 				Add Comment

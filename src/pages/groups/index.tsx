@@ -3,7 +3,6 @@ import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import React from "react";
 import GroupList from "../../components/GroupList";
-import SideBar from "../../components/SideBar";
 import { options } from "../api/auth/[...nextauth]";
 
 const Groups = () => {
@@ -14,7 +13,6 @@ const Groups = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<SideBar />
 			<main>
 				<div className="pl-40 align-center justify-center">
 					<GroupList />

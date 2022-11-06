@@ -1,14 +1,10 @@
-import { User } from "@prisma/client";
-import { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import CreatePostForm from "../../components/CreatePostForm";
+import { options } from "../api/auth/[...nextauth]";
 
-interface Props {
-	user: User;
-}
-
-const CreatePost: NextPage<Props> = ({ user }) => {
+const CreatePost = () => {
 	return (
 		<>
 			<Head>
@@ -17,11 +13,11 @@ const CreatePost: NextPage<Props> = ({ user }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="flex flex-col justify-center py-2">
+				<div className="pl-40 m-5">
 					<h1 className="text-4xl font-bold text-center m-12">Create Post</h1>
 					<div className="justify-center">
 						<div className="flex flex-col justify-center">
-							<CreatePostForm userId={user.id} />
+							<CreatePostForm />
 						</div>
 					</div>
 				</div>
@@ -33,7 +29,7 @@ const CreatePost: NextPage<Props> = ({ user }) => {
 export default CreatePost;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	if (!session || !session.user) {
 		return {
 			redirect: {
@@ -44,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	}
 	return {
 		props: {
-			user: session.user,
+			session,
 		},
 	};
 };

@@ -1,7 +1,6 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { Session, unstable_getServerSession } from "next-auth";
-import SideBar from "../components/SideBar";
 import { options } from "./api/auth/[...nextauth]";
 import MainFeed from "../components/MainFeed";
 
@@ -13,7 +12,6 @@ const Home = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<SideBar />
 			<main>
 				<div className="pl-40">
 					<MainFeed />

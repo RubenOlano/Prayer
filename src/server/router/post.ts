@@ -17,7 +17,8 @@ import {
 
 export const postRouter = router({
 	createPost: protectedProcedure.input(createPostSchema).mutation(async ({ ctx, input }) => {
-		const { userId, groupId, content, anonymous, duration, title } = input;
+		const { groupId, content, anonymous, duration, title } = input;
+		const userId = ctx.session.user.id;
 		let new_duration = duration;
 		try {
 			if (!new_duration) {
@@ -124,6 +125,15 @@ export const postRouter = router({
 					},
 				},
 			});
+			await ctx.prisma.postComment.deleteMany({
+				where: {
+					Post: {
+						Duration: {
+							lte: new Date(),
+						},
+					},
+				},
+			});
 			await ctx.prisma.post.deleteMany({
 				where: {
 					Duration: { lte: new Date() },
@@ -138,13 +148,31 @@ export const postRouter = router({
 				orderBy: {
 					createdAt: "desc",
 				},
+				include: {
+					author: true,
+					Group: true,
+				},
 			});
 			let nextCursor: typeof cursor | undefined = undefined;
 			if (posts.length > limit) {
 				const next = posts.pop();
 				nextCursor = next?.id;
 			}
-			return { posts, nextCursor };
+
+			const resPosts = posts.map(post => {
+				return {
+					content: post.content,
+					authorName: post.anonymous ? "Anonymous" : post.author.name,
+					groupName: post.Group.name,
+					title: post.title,
+					id: post.id,
+					createdAt: post.createdAt,
+					groupId: post.groupId,
+					authorImage: post.author.image ?? undefined,
+				};
+			});
+
+			return { posts: resPosts, nextCursor };
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {
@@ -220,7 +248,8 @@ export const postRouter = router({
 		}
 	}),
 	getPost: protectedProcedure.input(fetchPostWithIdSchema).query(async ({ ctx, input }) => {
-		const { postId, userId } = input;
+		const { postId } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const post = await ctx.prisma.post.findUnique({
 				where: {
@@ -232,6 +261,7 @@ export const postRouter = router({
 							GroupMembers: true,
 						},
 					},
+					author: true,
 				},
 			});
 
@@ -251,7 +281,16 @@ export const postRouter = router({
 				});
 			}
 
-			return post;
+			return {
+				id: post.id,
+				authorName: post.anonymous ? "Anonymous" : post.author.name,
+				groupName: post.Group.name,
+				title: post.title,
+				content: post.content,
+				createdAt: post.createdAt,
+				groupId: post.groupId,
+				authorImage: post.anonymous ? undefined : post.author.image ?? undefined,
+			};
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {
@@ -476,6 +515,10 @@ export const postRouter = router({
 						},
 					},
 				},
+				include: {
+					author: true,
+					Group: true,
+				},
 				cursor: cursor ? { id: cursor } : undefined,
 				orderBy: { createdAt: "desc" },
 				distinct: ["id"],
@@ -487,8 +530,21 @@ export const postRouter = router({
 				newCursor = nextItem?.id;
 			}
 
+			const resPosts = posts.map(post => {
+				return {
+					id: post.id,
+					authorName: post.anonymous ? "Anonymous" : post.author.name,
+					groupName: post.Group.name,
+					title: post.title,
+					content: post.content,
+					createdAt: post.createdAt,
+					groupId: post.groupId,
+					authorImage: post.anonymous ? undefined : post.author.image ?? undefined,
+				};
+			});
+
 			return {
-				posts,
+				posts: resPosts,
 				cursor: newCursor,
 			};
 		} catch (error) {

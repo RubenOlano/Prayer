@@ -38,7 +38,8 @@ export const commentRouter = router({
 		}
 	}),
 	createComments: protectedProcedure.input(createCommentSchema).mutation(async ({ ctx, input }) => {
-		const { postId, content, userId } = input;
+		const { postId, content } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const new_comment = await ctx.prisma.postComment.create({
 				data: {

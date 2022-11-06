@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import CreateGroupForm from "../../components/CreateGroupForm";
-import SideBar from "../../components/SideBar";
 import { options } from "../api/auth/[...nextauth]";
 
 const Create = () => {
@@ -13,7 +12,6 @@ const Create = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<SideBar />
 			<main className="pl-40 m-5">
 				<h1 className="text-4xl text-center font-bold p-3">Create Group</h1>
 				<p className="text-xl text-center ">Create a group to pray with your friends</p>

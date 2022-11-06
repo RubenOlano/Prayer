@@ -13,7 +13,6 @@ export const createCommentSchema = z.object({
 		.string()
 		.describe("Content")
 		.refine(content => content.length > 0),
-	userId: z.string(),
 });
 
 export type CreateCommentSchema = z.infer<typeof createCommentSchema>;

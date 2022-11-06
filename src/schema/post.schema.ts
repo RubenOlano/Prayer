@@ -1,7 +1,6 @@
 import z from "zod";
 
 export const createPostSchema = z.object({
-	userId: z.string(),
 	groupId: z.string(),
 	content: z
 		.string()
@@ -42,7 +41,6 @@ export const fetchAuthorPostsSchema = z.object({
 
 export const fetchPostWithIdSchema = z.object({
 	postId: z.string(),
-	userId: z.string(),
 });
 
 export const deletePostSchema = z.object({
