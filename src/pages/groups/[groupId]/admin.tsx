@@ -17,9 +17,9 @@ interface Props {
 const Admin: NextPage<Props> = ({ user, groupId }) => {
 	const router = useRouter();
 	const utils = trpc.useContext();
-	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
+	const { data, isLoading: loadingAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
-	const { mutate } = trpc.groups.deleteGroup.useMutation({
+	const { mutate, isLoading } = trpc.groups.deleteGroup.useMutation({
 		onSuccess: async () => {
 			await utils.groups.getGroups.invalidate();
 			router.push("/");
@@ -34,7 +34,7 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 		return;
 	};
 
-	if (isLoading) {
+	if (loadingAdmin) {
 		return (
 			<>
 				<Head>
@@ -75,7 +75,9 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 							Back to Group
 						</Link>
 						<button
-							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 md:mt-32 rounded"
+							className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 md:mt-32 rounded ${
+								isLoading ? "opacity-50 cursor-not-allowed" : ""
+							}`}
 							onClick={deleteGroup}
 						>
 							Delete Group

@@ -32,7 +32,7 @@ const CreateGroupForm = () => {
 
 	const user = session.user;
 
-	const { mutate } = trpc.groups.registerGroup.useMutation({
+	const { mutate, isLoading } = trpc.groups.registerGroup.useMutation({
 		onSuccess: async data => {
 			await utils.groups.getGroups.invalidate();
 			router.push(`/groups/${data.id}`);
@@ -65,7 +65,9 @@ const CreateGroupForm = () => {
 			/>
 			{errors.description && <span>This field is required</span>}
 			<button
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center"
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center ${
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
+				}`}
 				type="submit"
 			>
 				{text}

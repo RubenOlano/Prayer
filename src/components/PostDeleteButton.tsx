@@ -7,7 +7,7 @@ interface Props {
 
 const PostDeleteButton: FC<Props> = ({ postId }) => {
 	const utils = trpc.useContext();
-	const { mutate } = trpc.posts.deletePost.useMutation({
+	const { mutate, isLoading } = trpc.posts.deletePost.useMutation({
 		async onSuccess() {
 			await utils.posts.getGroupPosts.invalidate();
 			await utils.posts.getGroupPosts.invalidate();
@@ -19,7 +19,12 @@ const PostDeleteButton: FC<Props> = ({ postId }) => {
 		await mutate({ postId });
 	};
 	return (
-		<button onClick={deletePost} className=" bg-red-500 hover:bg-red-700 px-3 py-2 rounded-sm">
+		<button
+			onClick={deletePost}
+			className={` bg-red-500 hover:bg-red-700 px-3 py-2 rounded-sm ${
+				isLoading ? "opacity-50 cursor-not-allowed" : ""
+			}`}
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				className="h-6 w-6"

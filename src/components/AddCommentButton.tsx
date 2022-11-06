@@ -60,7 +60,7 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 		return (
 			<button
 				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" ${
-					isLoading ? "opacity-50" : ""
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
 				}`}
 				onClick={() => setClicked(true)}
 			>

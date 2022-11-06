@@ -61,8 +61,13 @@ const CreatePostForm = () => {
 					{...register("anonymous", { required: false })}
 				/>
 			</div>
-			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded" type="submit">
-				{isLoading ? "Loading..." : "Submit"}
+			<button
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded ${
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
+				}`}
+				type="submit"
+			>
+				Submit
 			</button>
 		</form>
 	);

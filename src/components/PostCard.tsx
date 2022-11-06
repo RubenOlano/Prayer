@@ -17,7 +17,7 @@ interface Props {
 const PostCard: FC<Props> = post => {
 	return (
 		<Link href={`/posts/${post.id}`} className="flex flex-col items-center m-2 p-3 hover:cursor-pointer">
-			<div className="flex flex-col bg-[#5F1DAC] text-white rounded-lg m-2 p-3 hover:cursor-pointer hover:bg-opacity-75 w-full truncate">
+			<div className="flex flex-col bg-[#5F1DAC] text-white rounded-lg m-2 p-3 hover:cursor-pointer hover:bg-opacity-75 max-w-[70%] truncate">
 				<div className="border-y-2 border-white flex items-center justify-between">
 					<div className="flex align-middle justify-center m-3">
 						<Image

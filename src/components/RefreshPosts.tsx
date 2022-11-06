@@ -13,7 +13,7 @@ const RefreshPosts = () => {
 	return (
 		<button
 			className={`flex text-sm flex-row items-center align-middle justify-center py-1 px-3 bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 md:px-4 rounded m-2 ${
-				isLoading ? "opacity-50" : ""
+				isLoading ? "opacity-50 cursor-not-allowed" : ""
 			}`}
 			type="button"
 			onClick={onClick}
