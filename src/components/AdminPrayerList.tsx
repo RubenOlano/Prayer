@@ -28,7 +28,7 @@ const AdminPrayerList = () => {
 			</div>
 		);
 	}
-	if (!data) {
+	if ((!data && !isLoading) || !data.pages) {
 		return (
 			<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
 				No prayers found
