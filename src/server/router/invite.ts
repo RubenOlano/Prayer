@@ -5,7 +5,8 @@ import { addUserToGroup, fetchGroupFromInviteSchema, fetchInviteSchema } from ".
 
 export const inviteRouter = router({
 	createInvite: protectedProcedure.input(fetchInviteSchema).mutation(async ({ input, ctx }) => {
-		const { groupId, userId } = input;
+		const { groupId } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const isAdmin = await ctx.prisma.groupAdmins.findMany({
 				where: {
@@ -68,7 +69,8 @@ export const inviteRouter = router({
 		}
 	}),
 	addUserToGroup: protectedProcedure.input(addUserToGroup).mutation(async ({ ctx, input }) => {
-		const { userId, inviteId } = input;
+		const { inviteId } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const invite = await ctx.prisma.groupInvites.findUnique({
 				where: {

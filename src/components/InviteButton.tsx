@@ -4,9 +4,8 @@ import { trpc } from "../utils/trpc";
 
 interface Props {
 	groupId: string;
-	userId: string;
 }
-const InviteButton: FC<Props> = ({ groupId, userId }) => {
+const InviteButton: FC<Props> = ({ groupId }) => {
 	const { mutate, isLoading, isSuccess } = trpc.invites.createInvite.useMutation({
 		onSuccess: async ({ id }) => {
 			if (iosDetect(window.navigator)) {
@@ -38,11 +37,11 @@ const InviteButton: FC<Props> = ({ groupId, userId }) => {
 		},
 	});
 	const onClick = () => {
-		mutate({ groupId, userId });
+		mutate({ groupId });
 	};
 	return (
 		<button
-			className={`ml-2 bg-teal-500 hover:bg-teal-700 text-white font-bold py-1 px-2 rounded ${
+			className={`md:ml-2 bg-teal-500 hover:bg-teal-700 text-white font-bold md:py-1 md:px-2 rounded ${
 				isLoading ? "opacity-50 cursor-not-allowed" : ""
 			}`}
 			onClick={onClick}

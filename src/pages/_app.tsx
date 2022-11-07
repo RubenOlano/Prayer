@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import type { AppType } from "next/dist/shared/lib/utils";
 import "../styles/globals.css";
 import SideBar from "../components/SideBar";
+import BottomBar from "../components/BottomBar";
 
 const MyApp: AppType<{
 	session: Session;
@@ -11,6 +12,7 @@ const MyApp: AppType<{
 	return (
 		<SessionProvider session={session}>
 			<SideBar session={session} />
+			<BottomBar session={session} />
 			<Component {...pageProps} />
 		</SessionProvider>
 	);

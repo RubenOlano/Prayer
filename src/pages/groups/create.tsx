@@ -12,7 +12,7 @@ const Create = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main className="pl-40 m-5">
+			<main className="md:pl-40 m-5 pb-40">
 				<h1 className="text-4xl text-center font-bold p-3">Create Group</h1>
 				<p className="text-xl text-center ">Create a group to pray with your friends</p>
 				<div className="flex flex-col items-center justify-center p-4">

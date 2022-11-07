@@ -1,12 +1,9 @@
-import { FC } from "react";
+import { useRouter } from "next/router";
 import { trpc } from "../utils/trpc";
 import AdminUserComp from "./AdminUserComp";
 
-interface Props {
-	groupId: string;
-}
-
-const AdminRegUsers: FC<Props> = ({ groupId }) => {
+const AdminRegUsers = () => {
+	const groupId = useRouter().query.groupId as string;
 	const { data, isLoading } = trpc.groups.fetchGroupNonAdmins.useQuery({ groupId });
 
 	if (isLoading) {

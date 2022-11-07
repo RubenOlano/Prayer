@@ -13,7 +13,7 @@ const Home = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="pl-40">
+				<div className="md:pl-40 pb-40">
 					<MainFeed />
 				</div>
 			</main>

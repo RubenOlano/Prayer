@@ -13,14 +13,16 @@ const UpdateName: FC<Props> = ({ userId }) => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<updateUserNameInput>();
-	const { mutate, isLoading } = trpc.users.updateUserName.useMutation({
+	const { mutate, isLoading, isSuccess } = trpc.users.updateUserName.useMutation({
 		onSuccess: async () => {
 			await utils.users.getUser.refetch({ id: userId });
 		},
 	});
 	const onSubmit = (data: updateUserNameInput) => {
 		mutate({ ...data, id: userId });
+		reset();
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5 ">
@@ -39,7 +41,7 @@ const UpdateName: FC<Props> = ({ userId }) => {
 				type="submit"
 				placeholder="New Name..."
 			>
-				Update Name
+				{isSuccess ? "Name Updated!" : "Update Name"}
 			</button>
 			<div className="text-red-500">{errors.name?.message}</div>
 		</form>

@@ -13,7 +13,7 @@ const CreatePost = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="pl-40 m-5">
+				<div className="md:pl-40 m-5 pb-40">
 					<h1 className="text-4xl font-bold text-center m-12">Create Post</h1>
 					<div className="justify-center">
 						<div className="flex flex-col justify-center">

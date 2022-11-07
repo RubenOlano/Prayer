@@ -1,15 +1,15 @@
 interface Props {
-	dimensions: number;
-	padding?: boolean;
+	dimensions?: number;
+	omitPadding?: boolean;
 }
 
-export const HouseOutline = () => (
+export const HouseOutline = ({ omitPadding }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		width="16"
 		height="16"
 		fill="currentColor"
-		className="mr-2"
+		className={`${!omitPadding ? "mr-2" : ""}`}
 		viewBox="0 0 16 16"
 	>
 		{" "}
@@ -23,13 +23,13 @@ export const HouseOutline = () => (
 		/>{" "}
 	</svg>
 );
-export const HouseFill = () => (
+export const HouseFill = ({ omitPadding }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		width="16"
 		height="16"
 		fill="currentColor"
-		className="mr-2"
+		className={`${omitPadding ? "" : "mr-2"}`}
 		viewBox="0 0 16 16"
 	>
 		{" "}
@@ -44,13 +44,13 @@ export const HouseFill = () => (
 	</svg>
 );
 
-export const PeopleOutline = () => (
+export const PeopleOutline = ({ omitPadding }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		width="16"
 		height="16"
 		fill="currentColor"
-		className="mr-2"
+		className={`${omitPadding ? "" : "mr-2"}`}
 		viewBox="0 0 16 16"
 	>
 		{" "}
@@ -58,13 +58,13 @@ export const PeopleOutline = () => (
 	</svg>
 );
 
-export const PeopleFill = () => (
+export const PeopleFill = ({ omitPadding }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		width="16"
 		height="16"
 		fill="currentColor"
-		className="mr-2"
+		className={`${omitPadding ? "" : "mr-2"}`}
 		viewBox="0 0 16 16"
 	>
 		{" "}
@@ -84,7 +84,7 @@ export const Plus = ({ dimensions }: Props) => (
 		height={dimensions}
 		fill="currentColor"
 		viewBox="0 0 16 16"
-		className="m-auto"
+		className="m-auto md:h-20 md:w-20"
 	>
 		{" "}
 		<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />{" "}
@@ -92,10 +92,32 @@ export const Plus = ({ dimensions }: Props) => (
 );
 
 export const Refresh = ({ dimensions }: Props) => (
-	<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width={dimensions} height={dimensions}>
+	<svg
+		viewBox="0 0 1024 1024"
+		xmlns="http://www.w3.org/2000/svg"
+		width={dimensions}
+		height={dimensions}
+		className="md:w-20 md:h-20"
+	>
 		<path
 			fill="currentColor"
 			d="M784.512 230.272v-50.56a32 32 0 1 1 64 0v149.056a32 32 0 0 1-32 32H667.52a32 32 0 1 1 0-64h92.992A320 320 0 1 0 524.8 833.152a320 320 0 0 0 320-320h64a384 384 0 0 1-384 384 384 384 0 0 1-384-384 384 384 0 0 1 643.712-282.88z"
 		/>
+	</svg>
+);
+
+export const X = ({ dimensions }: Props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={dimensions}
+		height={dimensions}
+		fill="currentColor"
+		viewBox="0 0 16 16"
+	>
+		{" "}
+		<path
+			d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+			fill="red"
+		></path>{" "}
 	</svg>
 );

@@ -34,8 +34,8 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 
 	if (clicked) {
 		return (
-			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 m-2 rounded-md md:max-w-[65vw]">
-				<h1 className="text-2xl font-bold">Add Comment</h1>
+			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 m-2 rounded-lg md:max-w-[65vw]">
+				<h1 className="md:text-2xl text-base font-bold">Add Comment</h1>
 				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center">
 					<textarea
 						placeholder="Comment"
@@ -59,7 +59,7 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 	} else {
 		return (
 			<button
-				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" ${
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 px-4 rounded-lg ${
 					isLoading ? "opacity-50 cursor-not-allowed" : ""
 				}`}
 				onClick={() => setClicked(true)}

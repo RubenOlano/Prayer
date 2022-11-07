@@ -51,8 +51,8 @@ const Post: NextPage<Props> = ({ id }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="pl-40 m-5">
-					<div className="flex justify-between m-5">
+				<div className="md:pl-40 m-5 pb-40">
+					<div className="md:flex md:justify-between md:m-5">
 						<PostPage {...data} />
 						<Comments postId={id} />
 					</div>

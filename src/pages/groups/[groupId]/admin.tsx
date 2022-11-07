@@ -1,6 +1,4 @@
-import { User } from "@prisma/client";
 import { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../../utils/trpc";
@@ -8,21 +6,24 @@ import AdminUserList from "../../../components/AdminUserList";
 import AdminPosts from "../../../components/AdminPosts";
 import InviteButton from "../../../components/InviteButton";
 import Link from "next/link";
+import { unstable_getServerSession } from "next-auth";
+import { options } from "../../api/auth/[...nextauth]";
 
 interface Props {
-	user: User;
 	groupId: string;
 }
 
-const Admin: NextPage<Props> = ({ user, groupId }) => {
+const Admin: NextPage<Props> = ({ groupId }) => {
 	const router = useRouter();
 	const utils = trpc.useContext();
 	const { data, isLoading: loadingAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
-
+	utils.groups.fetchGroupAdmins.prefetch({ groupId });
+	utils.groups.fetchGroupNonAdmins.prefetch({ groupId });
+	utils.posts.getGroupPosts.prefetch({ groupId });
 	const { mutate, isLoading } = trpc.groups.deleteGroup.useMutation({
 		onSuccess: async () => {
 			await utils.groups.getGroups.invalidate();
-			router.push("/");
+			router.replace("/");
 		},
 	});
 
@@ -43,13 +44,28 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<main>
-					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
+					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max md:pl-40">
+						Loading...
+					</div>
 				</main>
 			</>
 		);
 	}
 	if (!data) {
-		router.back();
+		return (
+			<>
+				<Head>
+					<title>Group Pray - Admin</title>
+					<meta name="description" content="Pray with company" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<main>
+					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pl-40">
+						You are not an admin of this group
+					</div>
+				</main>
+			</>
+		);
 	}
 
 	return (
@@ -60,31 +76,28 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:grid grid-rows-2 md:grid-cols-4 p-3">
-					<div className="md:col-start-1 md:col-end-2 col-start-1 col-end-1">
-						<AdminUserList groupId={groupId} userId={user.id} />
-					</div>
-					<div className="md:col-start-2 md:col-end-4">
-						<AdminPosts groupId={groupId} />
-					</div>
-					<div className="md:col-start-4 md:col-end-5 p-4 md:row-start-1 md:row-end-2">
-						<Link
-							href={`/groups/${groupId}`}
-							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-						>
-							Back to Group
-						</Link>
+				<div className="md:pl-40">
+					<div className="flex flex-row md:justify-between align-middle md:max-h-20 p-5">
+						<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 md:px-4 rounded text-sm md:text-base">
+							<Link href={`/groups/${groupId}`}>Back To Group</Link>
+						</button>
 						<button
-							className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 md:mt-32 rounded ${
+							className={`bg-red-500 hover:bg-red-700 text-white font-bold md:py-2 md:px-4 rounded ${
 								isLoading ? "opacity-50 cursor-not-allowed" : ""
 							}`}
 							onClick={deleteGroup}
 						>
 							Delete Group
 						</button>
+						<InviteButton groupId={groupId} />
 					</div>
-					<div className="md:col-start-4 md-col-end-5 p-4 md:row-start-2 md:row-end-2">
-						<InviteButton groupId={groupId} userId={user.id} />
+					<div className="flex md:flex-row flex-col p-5">
+						<div className="md:w-1/4 p-2">
+							<AdminUserList />
+						</div>
+						<div className="md:w-3/4 p-2">
+							<AdminPosts groupId={groupId} />
+						</div>
 					</div>
 				</div>
 			</main>
@@ -93,7 +106,7 @@ const Admin: NextPage<Props> = ({ user, groupId }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	if (!session || !session.user) {
 		return {
 			redirect: {
@@ -115,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
 	return {
 		props: {
-			user: session.user,
+			session,
 			groupId,
 		},
 	};

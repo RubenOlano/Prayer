@@ -17,17 +17,23 @@ interface Props {
 
 const PostPage: FC<Props> = post => {
 	return (
-		<div className="w-[50%]">
+		<div className="md:w-[50%]">
 			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 rounded-md md:max-w-[65vw]">
-				<h1 className="text-2xl font-bold">{post.title}</h1>
-				<p className="text-xl text-center">{post.content}</p>
+				<h1 className="text-base md:text-2xl font-bold">{post.title}</h1>
+				<p className="md:text-xl text-sm text-center">{post.content}</p>
 				<br />
 
 				<div className="flex flex-col items-center justify-center">
-					<h2 className="text-xl font-bold">Author</h2>
-					<p className="text-lg">{post.authorName}</p>
+					<h2 className="text-sm md:text-xl font-bold">Author</h2>
+					<p className="text-base md:text-lg">{post.authorName}</p>
 					<div className="rounded-full overflow-hidden">
-						<Image src={getImage(post.authorImage)} alt="User Image" width={100} height={100} />
+						<Image
+							src={getImage(post.authorImage)}
+							alt="User Image"
+							width={40}
+							height={40}
+							className="md:h-24 md:w-24"
+						/>
 					</div>
 				</div>
 				<p>{post.createdAt.toDateString()} </p>

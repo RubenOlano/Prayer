@@ -12,15 +12,15 @@ export const GroupTitle: FC<Props> = ({ name, description, groupId }) => {
 	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
 	return (
-		<div className="p-5 flex flex-row justify-between">
-			<div className="">
-				<h1 className="text-2xl stroke-gray-800 font-bold ">{name}</h1>
-				<p className=" text-sm text-gray-500">{description || ""}</p>
+		<div className="p-2 md:p-5 flex flex-row justify-between">
+			<div>
+				<h1 className="md:text-2xl text-sm stroke-gray-800 font-bold ">{name}</h1>
+				<p className="md:text-sm text-xs text-gray-500">{description || ""}</p>
 			</div>
 			{!isLoading && data && (
 				<Link
 					href={`/groups/${groupId}/admin`}
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded"
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 md:p-4 rounded"
 				>
 					Admin
 				</Link>

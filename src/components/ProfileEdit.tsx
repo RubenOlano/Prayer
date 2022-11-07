@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
+import { trpc } from "../utils/trpc";
 import UpdateName from "./UpdateName";
 
 const UpdateImage = dynamic(() => import("./UpdateImage"));
@@ -10,8 +11,11 @@ const ProfileEdit = () => {
 	if (!session || !session.user) {
 		return <div>Not signed in</div>;
 	}
+	const { data: user } = trpc.users.getUser.useQuery({ id: session.user.id });
 
-	const { user } = session;
+	if (!user) {
+		return <div>User not found</div>;
+	}
 
 	return (
 		<div className="md:col-start-2 md:col-end-2 text-center bg-white/70 rounded-sm md:py-5 px-2">

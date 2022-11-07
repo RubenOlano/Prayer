@@ -20,7 +20,7 @@ const RefreshPosts = () => {
 			disabled={isLoading}
 		>
 			<div className={isLoading ? "animate-spin" : ""}>
-				<Refresh dimensions={80} />
+				<Refresh dimensions={20} />
 			</div>
 		</button>
 	);

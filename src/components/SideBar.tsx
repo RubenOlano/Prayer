@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { getImage } from "../utils/defaultUserImage";
 import { Session } from "next-auth";
 import { FC } from "react";
+import { signOut } from "next-auth/react";
 
 const HouseFill = dynamic(() => import("./Icons").then(mod => mod.HouseFill));
 const HouseOutline = dynamic(() => import("./Icons").then(mod => mod.HouseOutline));
@@ -18,6 +19,10 @@ interface Props {
 
 const SideBar: FC<Props> = ({ session }) => {
 	const path = useRouter().pathname.split("/")[1];
+
+	if (!session) {
+		return <></>;
+	}
 
 	return (
 		<div className="bg-[#A3290E] h-screen w-40 hidden md:block fixed text-[#86FFCE] top-0 left-0">
@@ -58,6 +63,18 @@ const SideBar: FC<Props> = ({ session }) => {
 					</h1>
 				)}
 			</div>
+			{session && session.user && (
+				<div className="flex flex-row justify-center  h-1/6">
+					<h1 className="text-xl font-bold flex justify-center items-center">
+						<button
+							className="text-xl font-bold flex justify-center items-center"
+							onClick={() => signOut()}
+						>
+							Sign Out
+						</button>
+					</h1>
+				</div>
+			)}
 		</div>
 	);
 };

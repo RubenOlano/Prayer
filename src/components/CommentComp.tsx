@@ -11,7 +11,7 @@ interface Props {
 
 const Comment: FC<Props> = ({ comment }) => {
 	return (
-		<div className="flex flex-col backdrop-sepia-0 rounded-sm bg-white/75 m-2 p-3 w-full ">
+		<div className="flex flex-col rounded-sm bg-white/75 m-2 p-3 w-full ">
 			<h2 className="text-sm font-bold">{comment.content}</h2>
 			<div className="flex flex-row py-2">
 				<Image

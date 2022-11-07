@@ -26,7 +26,7 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<main>
-					<div className="pl-40 p-5">
+					<div className="md:pl-40 p-5">
 						<h1 className="p-5">Loading...</h1>
 					</div>
 				</main>
@@ -43,7 +43,7 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<main>
-					<div className="pl-40 p-5">
+					<div className="md:pl-40 p-5">
 						<h1 className="text-3xl font-bold p-5">Group not found</h1>
 					</div>
 				</main>
@@ -59,10 +59,10 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="pl-40 p-5">
+				<div className="md:pl-40 p-5">
 					<GroupTitle {...data} groupId={groupId} />
 				</div>
-				<div className="pl-40 p-5">
+				<div className="md:pl-40 p-5">
 					<PrayerSection groupId={groupId} />
 				</div>
 			</main>

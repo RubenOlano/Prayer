@@ -29,7 +29,7 @@ const GroupList = () => {
 
 	return (
 		<div className="w-full p-5">
-			<div className="grid grid-cols-3">
+			<div className="grid md:grid-cols-3 grid-flow-row">
 				<Link
 					href="/groups/create"
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
