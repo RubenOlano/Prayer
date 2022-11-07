@@ -5,22 +5,23 @@ import { trpc } from "../utils/trpc";
 
 interface Props {
 	postId: string;
-	userId: string;
 }
 
-const AddCommentButton: FC<Props> = ({ postId, userId }) => {
+const AddCommentButton: FC<Props> = ({ postId }) => {
 	const utils = trpc.useContext();
 	const [clicked, setClicked] = useState(false);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<CreateCommentSchema>();
-	const { mutate } = trpc.useMutation("comments.createComment", {
-		// Optimistic update
-		onMutate: async () => {
-			await utils.invalidateQueries("comments.fetchAllComments");
+	const { mutate, isLoading } = trpc.comments.createComments.useMutation({
+		onSuccess: async () => {
+			await utils.comments.fetchAllComments.invalidate({ postId });
+			await utils.comments.fetchAllComments.refetch({ postId });
 			setClicked(false);
+			reset();
 		},
 	});
 
@@ -28,14 +29,13 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 		mutate({
 			...data,
 			postId,
-			userId,
 		});
 	};
 
 	if (clicked) {
 		return (
-			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 m-2 rounded-md md:max-w-[65vw]">
-				<h1 className="text-2xl font-bold">Add Comment</h1>
+			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 m-2 rounded-lg md:max-w-[65vw]">
+				<h1 className="md:text-2xl text-base font-bold">Add Comment</h1>
 				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center">
 					<textarea
 						placeholder="Comment"
@@ -59,7 +59,9 @@ const AddCommentButton: FC<Props> = ({ postId, userId }) => {
 	} else {
 		return (
 			<button
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 px-4 rounded-lg ${
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
+				}`}
 				onClick={() => setClicked(true)}
 			>
 				Add Comment

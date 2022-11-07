@@ -5,9 +5,9 @@ import { trpc } from "../../utils/trpc";
 
 const Share = () => {
 	const router = useRouter();
-	const { shareId } = router.query;
+	const shareId = router.query.shareId as string;
 
-	const { data, isLoading } = trpc.useQuery(["share.getSharePage", { shareId: shareId as string }]);
+	const { data, isLoading } = trpc.shares.getSharedPage.useQuery({ shareId });
 
 	if (isLoading) {
 		return (

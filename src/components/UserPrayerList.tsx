@@ -7,7 +7,7 @@ interface Props {
 }
 
 const UserPrayerList: FC<Props> = ({ userId }) => {
-	const { isLoading, data } = trpc.useQuery(["posts.getAuthorPosts", { userId }]);
+	const { isLoading, data } = trpc.posts.getAuthorPosts.useQuery({ userId });
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}

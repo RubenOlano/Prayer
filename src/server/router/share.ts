@@ -1,10 +1,9 @@
 import { TRPCError } from "@trpc/server";
+import { protectedProcedure, router } from ".";
 import { fetchSharedPostsSchema } from "../../schema/post.schema";
-import { createRouter } from "./context";
 
-export const shareRouter = createRouter().query("getSharePage", {
-	input: fetchSharedPostsSchema,
-	resolve: async ({ ctx, input }) => {
+export const shareRouter = router({
+	getSharedPage: protectedProcedure.input(fetchSharedPostsSchema).query(async ({ ctx, input }) => {
 		const { shareId } = input;
 		try {
 			const sharePage = await ctx.prisma.shareGroupPosts.findUnique({
@@ -58,5 +57,5 @@ export const shareRouter = createRouter().query("getSharePage", {
 				});
 			}
 		}
-	},
+	}),
 });

@@ -2,6 +2,7 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { Session } from "next-auth";
+import superjson from "superjson";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { prisma } from "../db/client";
 
@@ -37,7 +38,10 @@ export const createContext = async (opts: trpcNext.CreateNextContextOptions) => 
 
 type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
-export const createRouter = () => trpc.router<Context>();
+export const createRouter = () =>
+	trpc.initTRPC.context<Context>().create({
+		transformer: superjson,
+	});
 
 /**
  * Creates a tRPC router that asserts all queries and mutations are from an authorized user. Will throw an unauthorized error if a user is not signed in.

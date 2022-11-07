@@ -1,18 +1,21 @@
 import { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import Comments from "../../components/Comments";
-import NavBar from "../../components/NavBar";
 import PostPage from "../../components/PostPage";
 import { trpc } from "../../utils/trpc";
+import { options } from "../api/auth/[...nextauth]";
 
 interface Props {
 	id: string;
-	userId: string;
 }
 
-const Post: NextPage<Props> = ({ id, userId }) => {
-	const { data, isLoading } = trpc.useQuery(["posts.getPost", { postId: id, userId: userId }]);
+const Post: NextPage<Props> = ({ id }) => {
+	const util = trpc.useContext();
+	const { data, isLoading } = trpc.posts.getPost.useQuery({ postId: id });
+	util.comments.fetchAllComments.prefetch({ postId: id });
+	util.posts.getUserLiked.prefetch({ postId: id });
+	util.posts.getNumberOfLikes.prefetch({ postId: id });
 
 	if (isLoading) {
 		return (
@@ -22,13 +25,12 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<meta name="description" content="Post" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 			</>
 		);
 	}
 
-	if (!data || !data.Group || !data.Group.GroupMembers) {
+	if (!data) {
 		return (
 			<>
 				<Head>
@@ -36,7 +38,6 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 					<meta name="description" content="Post" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<NavBar />
 				<div className="flex flex-col justify-center items-center">Post not found</div>
 			</>
 		);
@@ -45,18 +46,15 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 	return (
 		<>
 			<Head>
-				<title>Group Pray - {data?.title}</title>
+				<title>Group Pray - {data.title}</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
 			<main>
-				<div className="md:grid md:grid-cols-2 md:gap-2">
-					<div className="md:col-start-1 md:col-end-2 p-3 ">
-						<PostPage post={data} />
-					</div>
-					<div className="md:col-start-2 md:col-end-[-1] p-3">
-						<Comments postId={id} userId={userId} />
+				<div className="md:pl-40 m-5 pb-40">
+					<div className="md:flex md:justify-between md:m-5">
+						<PostPage {...data} />
+						<Comments postId={id} />
 					</div>
 				</div>
 			</main>
@@ -65,7 +63,7 @@ const Post: NextPage<Props> = ({ id, userId }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	if (!session || !session.user) {
 		return {
 			redirect: {
@@ -86,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	return {
 		props: {
 			id: params.postId,
-			userId: session.user.id,
+			session,
 		},
 	};
 };

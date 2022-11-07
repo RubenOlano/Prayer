@@ -1,30 +1,14 @@
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, { FC } from "react";
+import Link from "next/link";
+import React from "react";
 import { trpc } from "../utils/trpc";
 import GroupItem from "./GroupItem";
+import { Plus } from "./Icons";
 
-interface Props {
-	userId: string;
-}
-
-const GroupList: FC<Props> = ({ userId }) => {
-	const [text, setText] = React.useState("Create Group");
-	const router = useRouter();
-	if (!userId) {
-		signIn(undefined, { callbackUrl: "/groups" });
-		return (
-			<div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
-				Redirecting...
-			</div>
-		);
-	}
-	const { data, isLoading } = trpc.useQuery(["groups.getGroups", { userId }]);
+const GroupList = () => {
+	const { data, isLoading } = trpc.groups.getGroups.useQuery();
 
 	if (isLoading) {
-		return (
-			<div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">Loading...</div>
-		);
+		return <div className="flex flex-col text-center px-12 pt-12 pb-5 ">Loading...</div>;
 	}
 
 	if (data?.length == 0 && !isLoading) {
@@ -32,33 +16,26 @@ const GroupList: FC<Props> = ({ userId }) => {
 			<div className="text-center backdrop-sepia-0 bg-white/60 mx-3">
 				<h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">Groups</h2>
 				<div className="overflow-y-scroll h-[55vh]">
-					<button
-						onClick={() => {
-							setText("Loading...");
-							router.push("/groups/create");
-						}}
+					<Link
+						href="/groups/create"
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 					>
-						{text}
-					</button>
+						Create a group
+					</Link>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col text-center backdrop-sepia-0 bg-white/60 px-12 pt-12 pb-5 ">
-			<h2 className="text-2xl justify-center font-bold flex p-5">Groups</h2>
-			<div className="overflow-scroll h-[55vh]">
-				<button
-					onClick={() => {
-						setText("Loading...");
-						router.push("/groups/create");
-					}}
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+		<div className="w-full p-5">
+			<div className="grid md:grid-cols-3 grid-flow-row">
+				<Link
+					href="/groups/create"
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
 				>
-					{text}
-				</button>
+					<Plus dimensions={60} />
+				</Link>
 				{data?.map(group => (
 					<GroupItem key={group.id} group={group} />
 				))}

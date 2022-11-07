@@ -1,39 +1,57 @@
-import { FC } from "react";
+import { useRouter } from "next/router";
+import React from "react";
 import { trpc } from "../utils/trpc";
-import AdminRequests from "./AdminRequests";
+import { X } from "./Icons";
+import PostCard from "./PostCard";
 
-interface Props {
-  groupId: string;
-}
-const AdminPrayerList: FC<Props> = ({ groupId }) => {
-  const { data, isLoading } = trpc.useQuery([
-    "posts.getGroupPosts",
-    { groupId: groupId as string },
-  ]);
-  const { data: anonPosts } = trpc.useQuery([
-    "posts.getAnonPosts",
-    { groupId: groupId as string },
-  ]);
+const AdminPrayerList = () => {
+	const utils = trpc.useContext();
+	const groupId = useRouter().query.groupId as string;
+	const { data, isLoading } = trpc.posts.getGroupPosts.useInfiniteQuery({ groupId });
+	const { mutate } = trpc.posts.deletePost.useMutation({
+		onSuccess: async () => {
+			await utils.posts.getGroupPosts.refetch({ groupId });
+		},
+		onMutate: async data => {
+			utils.posts.getGroupPosts.setData(prev => {
+				if (!prev) return prev;
+				const newPosts = prev.posts.filter(post => post.id !== data.postId);
+				return { posts: newPosts, nextCursor: prev.nextCursor };
+			});
+		},
+	});
 
-  if (isLoading) return <div>Loading...</div>;
-  if ((!data || data.length < 1) && (!anonPosts || anonPosts.length < 1)) {
-    return (
-      <div className="flex flex-col items-center justify-center m-5">
-        <h2 className="text-center text-2xl font-bold flex">
-          No prayer requests yet
-        </h2>
-        <p className="text-center text-xl flex">
-          Be the first to add a request!
-        </p>
-      </div>
-    );
-  } else {
-    return (
-      <>
-        <AdminRequests anon={anonPosts} regPosts={data} />
-      </>
-    );
-  }
+	if (isLoading) {
+		return (
+			<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
+				Loading...
+			</div>
+		);
+	}
+	if (!data) {
+		return (
+			<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
+				No prayers found
+			</div>
+		);
+	}
+
+	return (
+		<div className="flex flex-col">
+			{data.pages.map(page =>
+				page.posts?.map(prayer => (
+					<div key={prayer.id} className="flex flex-row">
+						<button className="hover:bg-gray-200 rounded-md" onClick={() => mutate({ postId: prayer.id })}>
+							<X dimensions={10} />
+						</button>
+						<div className="w-full">
+							<PostCard key={prayer.id} {...prayer} />
+						</div>
+					</div>
+				))
+			)}
+		</div>
+	);
 };
 
 export default AdminPrayerList;

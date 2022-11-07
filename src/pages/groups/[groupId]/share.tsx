@@ -1,23 +1,19 @@
-import SharePostComp from "./../../../components/SharePostComp";
+import SharePostComp from "../../../components/SharePostComp";
 import { ShareHeader } from "../../../components/ShareHeader";
 import Head from "next/head";
 import React from "react";
 import { trpc } from "../../../utils/trpc";
-import NavBar from "../../../components/NavBar";
-import { useRouter } from "next/router";
-import { Post } from "@prisma/client";
 import { iosDetect } from "../../../utils/checkIOS";
+import { useRouter } from "next/router";
 
 const Share = () => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const [text, setText] = React.useState<string>("Share");
 	const router = useRouter();
 	const groupId = router.query.groupId as string;
-	const { data } = trpc.useQuery(["posts.getGroupPosts", { groupId }]);
-	const { data: anonPosts } = trpc.useQuery(["posts.getAnonPosts", { groupId }]);
-	const { mutate } = trpc.useMutation("posts.sharePosts", {
+	const { data } = trpc.posts.getGroupPosts.useQuery({ groupId });
+
+	const { mutate, isLoading, isSuccess } = trpc.posts.sharePosts.useMutation({
 		onSuccess: async res => {
-			setText("Loading...");
 			if (iosDetect(window.navigator)) {
 				// Get base url if on ios
 				if (window !== undefined) {
@@ -44,10 +40,6 @@ const Share = () => {
 				});
 				await navigator.clipboard.write([clipText]);
 			}
-			setText("Copied to clipboard!");
-			setTimeout(() => {
-				setText("Share");
-			}, 4000);
 		},
 	});
 
@@ -77,22 +69,18 @@ const Share = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<NavBar />
 			<main>
 				<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
 					<ShareHeader />
 					<div className="col-start-2 p-2 justify-center backdrop-sepia-0 bg-white/70 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-md">
 						<form onSubmit={onSubmit}>
 							<div className="p-2 overflow-y-scroll h-full">
-								{data?.map(post => (
-									<SharePostComp post={post} key={post.id} onSelect={onSelect} />
-								))}
-								{anonPosts?.map(post => (
-									<SharePostComp post={post as Post} key={post.id} onSelect={onSelect} />
+								{data?.posts.map(post => (
+									<SharePostComp {...post} key={post.id} onSelect={onSelect} />
 								))}
 							</div>
 							<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
-								{text}
+								{isLoading ? "Loading..." : isSuccess ? "Copied!" : "Share"}
 							</button>
 						</form>
 					</div>

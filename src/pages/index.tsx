@@ -1,16 +1,10 @@
-import UserPrayerList from "./../components/UserPrayerList";
-import type { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import GroupList from "../components/GroupList";
-import NavBar from "../components/NavBar";
-import { User } from "next-auth";
+import { Session, unstable_getServerSession } from "next-auth";
+import { options } from "./api/auth/[...nextauth]";
+import MainFeed from "../components/MainFeed";
 
-interface Props {
-	user: User;
-}
-
-const Home: NextPage<Props> = ({ user }) => {
+const Home = () => {
 	return (
 		<>
 			<Head>
@@ -18,29 +12,18 @@ const Home: NextPage<Props> = ({ user }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-
-			<NavBar />
-			<main className="py-3 grid md:grid-cols-6">
-				<h1 className="text-2xl md:text-4xl font-bold row-start-1 row-end-2 col-start-3 text-center col-end-5 py-3">
-					Welcome {user?.name || ""}
-				</h1>
-				<div className="col-span-6 grid grid-cols-1 md:grid-cols-6 justify-center">
-					<div className="md:col-start-2 md:col-end-4">
-						<GroupList userId={user.id} />
-					</div>
-					<div className="md:col-start-4 md:col-end-6">
-						<UserPrayerList userId={user.id} />
-					</div>
+			<main>
+				<div className="md:pl-40 pb-40">
+					<MainFeed />
 				</div>
 			</main>
 		</>
 	);
 };
 
-export default Home;
+export const getServerSideProps: GetServerSideProps<{ session: Session }> = async context => {
+	const session = await unstable_getServerSession(context.req, context.res, options);
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await getSession(context);
 	if (!session) {
 		return {
 			redirect: {
@@ -49,18 +32,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			},
 		};
 	}
-	const user = session.user;
-
-	if (!user) {
-		return {
-			redirect: {
-				destination: "/auth/signin",
-				permanent: false,
-			},
-		};
-	}
-
 	return {
-		props: { user },
+		props: { session },
 	};
 };
+
+export default Home;

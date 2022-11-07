@@ -1,27 +1,23 @@
 import { GetServerSideProps, NextPage } from "next";
-import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
-import Navbar from "../../components/NavBar";
 import { useRouter } from "next/router";
+import { options } from "../api/auth/[...nextauth]";
 
 interface Props {
-	user: Session["user"];
 	inviteId: string;
 }
 
-const Invites: NextPage<Props> = ({ user, inviteId }) => {
-	user;
-
+const Invites: NextPage<Props> = ({ inviteId }) => {
 	const router = useRouter();
-	const { data, isLoading } = trpc.useQuery(["invites.getGroupFromInvite", { inviteId: inviteId as string }]);
-	const { mutate } = trpc.useMutation("invites.addUserToGroup", {
+	const { data, isLoading } = trpc.invites.getGroupFromInvite.useQuery({ inviteId: inviteId as string });
+	const { mutate } = trpc.invites.addUserToGroup.useMutation({
 		onSuccess: () => {
 			router.replace("/groups/" + data?.id);
 		},
 		onError: async e => {
-			if (e.data?.code == "CONFLICT") {
+			if (e.data?.code === "CONFLICT") {
 				router.replace("/groups/" + data?.id);
 			}
 		},
@@ -34,7 +30,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<Navbar />
 				<main>
 					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
 				</main>
@@ -50,7 +45,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<Navbar />
 				<main>
 					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
 						Invite not found
@@ -67,9 +61,8 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Navbar />
 			<main>
-				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
+				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40">
 					<h1 className="text-3xl font-bold">
 						You have been invited to join <strong className="text-blue-500">{data.name}</strong>
 					</h1>
@@ -78,7 +71,6 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 						onClick={() =>
 							mutate({
 								inviteId: inviteId as string,
-								userId: user?.id as string,
 							})
 						}
 					>
@@ -93,7 +85,7 @@ const Invites: NextPage<Props> = ({ user, inviteId }) => {
 export default Invites;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await getSession(ctx);
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	const inviteId = ctx.params?.inviteId as string;
 
 	if (!session) {
@@ -107,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
 	return {
 		props: {
-			user: session.user,
+			session,
 			inviteId,
 		},
 	};

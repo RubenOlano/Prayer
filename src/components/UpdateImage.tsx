@@ -7,10 +7,11 @@ import { getImage } from "../utils/defaultUserImage";
 
 interface Props {
 	user: {
-		name: string | null;
-		email: string | null;
 		id: string;
-		image: string | undefined;
+	} & {
+		name?: string | null | undefined;
+		email?: string | null | undefined;
+		image?: string | null | undefined;
 	};
 }
 
@@ -19,10 +20,10 @@ const CLOUDINARY_URL = env.NEXT_PUBLIC_CLOUDINARY_URL;
 
 const UpdateImage: FC<Props> = ({ user }) => {
 	const utils = trpc.useContext();
-	const { mutate } = trpc.useMutation("users.updateUserImage", {
+	const { mutate } = trpc.users.updateUserImage.useMutation({
 		onMutate: () => {
 			debounce(() => {
-				utils.invalidateQueries("users.getUser");
+				utils.users.getUser.invalidate({ id: user.id });
 			}, 100)();
 		},
 	});
@@ -31,9 +32,7 @@ const UpdateImage: FC<Props> = ({ user }) => {
 		async (e: React.SyntheticEvent<EventTarget>) => {
 			const target = e.target as HTMLInputElement;
 			if (!target.files) return;
-			const newFile = Object.values(target.files).map(
-				(file: File) => file
-			);
+			const newFile = Object.values(target.files).map((file: File) => file);
 			const formData = new FormData();
 			if (newFile.length < 1 || !newFile[0]) return;
 			formData.append("file", newFile[0]);
@@ -43,13 +42,13 @@ const UpdateImage: FC<Props> = ({ user }) => {
 				method: "POST",
 				body: formData,
 			})
-				.then((res) => {
+				.then(res => {
 					return res.json();
 				})
-				.then((data) => {
+				.then(data => {
 					mutate({ image: data.secure_url, id: user.id });
 				})
-				.catch((err) => {
+				.catch(err => {
 					console.log(err);
 				});
 		},
@@ -59,18 +58,11 @@ const UpdateImage: FC<Props> = ({ user }) => {
 
 	return (
 		<div className="mb-2 flex items-center align-middle justify-center">
-			<div>
+			<div className="flex flex-col items-center justify-center ">
 				<span className="block mb-2">Choose profile photo</span>
-				<Image
-					src={getImage(user.image)}
-					alt="user image"
-					width={100}
-					height={100}
-				/>
+				<Image src={getImage(user.image)} alt="user image" width={100} height={100} />
 				<input
-					className="
-                        w-full
-                    text-sm mb-2 text-slate-500 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+					className="w-full file:m-auto file:flex my-2 text-slate-500 text-center file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
 					type="file"
 					name="image"
 					onChange={onFileDrop}

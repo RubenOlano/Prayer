@@ -1,16 +1,12 @@
-import { User } from "next-auth";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createGroupInput } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
 
-interface Props {
-	user: User;
-}
-
-const CreateGroupForm: FC<Props> = ({ user }) => {
+const CreateGroupForm = () => {
+	const { data: session } = useSession();
 	const utils = trpc.useContext();
 	const [text, setText] = useState("Create Group");
 
@@ -19,12 +15,27 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<createGroupInput>();
-
 	const router = useRouter();
-	const { mutate } = trpc.useMutation(["groups.registerGroup"], {
-		onSuccess: async (data) => {
-			await utils.invalidateQueries("groups.getGroups");
-			router.push(`/groups/${data.groupId}`);
+
+	if (!session || !session.user) {
+		return (
+			<div className="flex flex-col justify-center items-center">
+				<button
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					onClick={() => signIn()}
+				>
+					Sign in to create a group
+				</button>
+			</div>
+		);
+	}
+
+	const user = session.user;
+
+	const { mutate, isLoading } = trpc.groups.registerGroup.useMutation({
+		onSuccess: async data => {
+			await utils.groups.getGroups.invalidate();
+			router.push(`/groups/${data.id}`);
 		},
 	});
 
@@ -38,10 +49,7 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="flex flex-col justify-center items-center w-full m-2"
-		>
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full m-2">
 			<input
 				type="text"
 				placeholder="Group Name"
@@ -57,7 +65,9 @@ const CreateGroupForm: FC<Props> = ({ user }) => {
 			/>
 			{errors.description && <span>This field is required</span>}
 			<button
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center"
+				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center ${
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
+				}`}
 				type="submit"
 			>
 				{text}

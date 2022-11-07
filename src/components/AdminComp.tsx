@@ -16,11 +16,11 @@ const x = (
 
 const AdminComp: FC<Props> = ({ admin }) => {
 	const utils = trpc.useContext();
-	const { data: user } = trpc.useQuery(["users.getUser", { id: admin.userId }]);
+	const { data: user } = trpc.users.getUser.useQuery({ id: admin.userId });
 
-	const { mutate } = trpc.useMutation("groups.removeGroupAdmin", {
+	const { mutate, isLoading } = trpc.groups.removeGroupAdmin.useMutation({
 		onSuccess: async () => {
-			await utils.invalidateQueries("groups.fetchGroupAdmins");
+			await utils.groups.fetchGroupAdmins.invalidate();
 		},
 	});
 	if (!user) {
@@ -38,7 +38,9 @@ const AdminComp: FC<Props> = ({ admin }) => {
 			/>
 			<h1 className="text-center ml-2">{user.name || "Member"}</h1>
 			<button
-				className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+				className={`ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ${
+					isLoading ? "opacity-50 cursor-not-allowed" : ""
+				}`}
 				onClick={() => {
 					mutate({ adminId: admin.id });
 				}}
