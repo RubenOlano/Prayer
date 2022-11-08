@@ -7,6 +7,7 @@ import { getImage } from "../utils/defaultUserImage";
 import { Session } from "next-auth";
 import { FC } from "react";
 import { signOut } from "next-auth/react";
+import { trpc } from "../utils/trpc";
 
 const HouseFill = dynamic(() => import("./Icons").then(mod => mod.HouseFill));
 const HouseOutline = dynamic(() => import("./Icons").then(mod => mod.HouseOutline));
@@ -19,10 +20,26 @@ interface Props {
 
 const SideBar: FC<Props> = ({ session }) => {
 	const path = useRouter().pathname.split("/")[1];
+	const utils = trpc.useContext();
 
 	if (!session) {
 		return <></>;
 	}
+
+	const clickGroups = async () => {
+		if (path === "groups") return;
+		await utils.groups.getGroups.prefetch();
+	};
+
+	const clickHome = async () => {
+		if (path === "") return;
+		await utils.posts.getPostFeed.prefetchInfinite({ cursor: null, limit: 5 });
+	};
+
+	const clickProfile = async () => {
+		if (path === "profile" || !session || !session.user) return;
+		await utils.users.getUser.prefetch({ id: session.user.id });
+	};
 
 	return (
 		<div className="bg-[#A3290E] h-screen w-40 hidden md:block fixed text-[#86FFCE] top-0 left-0">
@@ -33,13 +50,17 @@ const SideBar: FC<Props> = ({ session }) => {
 			<div className="flex flex-row justify-center  h-1/6">
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "" ? <HouseFill /> : <HouseOutline />}
-					<Link href="/">Home</Link>
+					<Link href="/" onClick={clickHome}>
+						Home
+					</Link>
 				</h1>
 			</div>
 			<div className="flex flex-row justify-center  h-1/6">
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "groups" ? <PeopleFill /> : <PeopleOutline />}
-					<Link href="/groups">Groups</Link>
+					<Link href="/groups" onClick={clickGroups}>
+						Groups
+					</Link>
 				</h1>
 			</div>
 			<div className="flex flex-row justify-center  h-1/6">
@@ -55,7 +76,9 @@ const SideBar: FC<Props> = ({ session }) => {
 							alt="User Profile Picture"
 							priority
 						/>
-						<Link href="/profile">Profile</Link>
+						<Link href="/profile" onClick={clickProfile}>
+							Profile
+						</Link>
 					</h1>
 				) : (
 					<h1 className="text-xl font-bold flex justify-center items-center">

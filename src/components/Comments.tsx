@@ -12,7 +12,7 @@ const Comments: FC<Props> = ({ postId }) => {
 
 	return (
 		<div className="md:min-w-[40%] z-[-1]">
-			<div className="flex flex-col items-center justify-center py-2 bg-white/60 p-3 m-2 rounded-md md:max-w-[65vw]">
+			<div className="flex flex-col items-center justify-center py-2 p-3 m-2 rounded-md md:max-w-[65vw]">
 				<h1 className="md:text-2xl text-base font-bold">Comments</h1>
 				<AddCommentButton postId={postId} />
 				{data?.map(comment => (

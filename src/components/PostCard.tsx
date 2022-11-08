@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
 import { getImage } from "../utils/defaultUserImage";
+import { trpc } from "../utils/trpc";
 
 interface Props {
 	id: string;
@@ -15,8 +16,16 @@ interface Props {
 }
 
 const PostCard: FC<Props> = post => {
+	const utils = trpc.useContext();
+
 	return (
-		<Link href={`/posts/${post.id}`} className="flex flex-col items-center m-2 md:p-3 hover:cursor-pointer">
+		<Link
+			href={`/posts/${post.id}`}
+			className="flex flex-col items-center m-2 md:p-3 hover:cursor-pointer"
+			onClick={async () => {
+				await utils.posts.getPost.prefetch({ postId: post.id });
+			}}
+		>
 			<div className="flex flex-col bg-[#5F1DAC] text-white rounded-lg m-2 p-3 hover:cursor-pointer hover:bg-opacity-75 max-w-[95%] md:max-w-[70%]">
 				<div className="border-y-2 border-white md:flex items-center justify-between">
 					<div className="md:flex align-middle justify-center m-3">

@@ -17,9 +17,6 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 	const router = useRouter();
 	const utils = trpc.useContext();
 	const { data, isLoading: loadingAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
-	utils.groups.fetchGroupAdmins.prefetch({ groupId });
-	utils.groups.fetchGroupNonAdmins.prefetch({ groupId });
-	utils.posts.getGroupPosts.prefetch({ groupId });
 	const { mutate, isLoading } = trpc.groups.deleteGroup.useMutation({
 		onSuccess: async () => {
 			await utils.groups.getGroups.invalidate();
@@ -68,6 +65,10 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 		);
 	}
 
+	const clickBack = async () => {
+		await utils.groups.getGroup.prefetch({ id: groupId });
+	};
+
 	return (
 		<>
 			<Head>
@@ -79,7 +80,9 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 				<div className="md:pl-40">
 					<div className="flex flex-row md:justify-between align-middle md:max-h-20 p-5">
 						<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 md:px-4 rounded text-sm md:text-base">
-							<Link href={`/groups/${groupId}`}>Back To Group</Link>
+							<Link href={`/groups/${groupId}`} onClick={clickBack}>
+								Back To Group
+							</Link>
 						</button>
 						<button
 							className={`bg-red-500 hover:bg-red-700 text-white font-bold md:py-2 md:px-4 rounded ${

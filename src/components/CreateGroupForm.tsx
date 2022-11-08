@@ -35,6 +35,8 @@ const CreateGroupForm = () => {
 	const { mutate, isLoading } = trpc.groups.registerGroup.useMutation({
 		onSuccess: async data => {
 			await utils.groups.getGroups.invalidate();
+			await utils.groups.getGroups.prefetch();
+			await utils.groups.getGroup.prefetch({ id: data.id });
 			router.push(`/groups/${data.id}`);
 		},
 	});

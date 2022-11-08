@@ -34,7 +34,7 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 
 	if (clicked) {
 		return (
-			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 m-2 rounded-lg md:max-w-[65vw]">
+			<div className="flex flex-col items-center justify-center py-2 p-3 m-2 rounded-lg md:max-w-[65vw]">
 				<h1 className="md:text-2xl text-base font-bold">Add Comment</h1>
 				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center">
 					<textarea

@@ -7,6 +7,7 @@ const t = createRouter();
 export const middleware = t.middleware;
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const mergeRouters = t.mergeRouters;
 
 const protectedRouter = t.middleware(({ ctx, next }) => {
 	if (!ctx.session || !ctx.session.user) {

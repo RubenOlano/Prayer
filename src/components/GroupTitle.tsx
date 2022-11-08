@@ -11,6 +11,15 @@ interface Props {
 export const GroupTitle: FC<Props> = ({ name, description, groupId }) => {
 	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
+	const utils = trpc.useContext();
+
+	const goToAdmin = async () => {
+		await utils.groups.getGroup.prefetch({ id: groupId });
+		await utils.groups.fetchGroupAdmins.prefetch({ groupId });
+		await utils.groups.fetchGroupNonAdmins.prefetch({ groupId });
+		await utils.groups.fetchUserIsAdmin.prefetch({ groupId });
+	};
+
 	return (
 		<div className="p-2 md:p-5 flex flex-row justify-between">
 			<div>
@@ -21,6 +30,7 @@ export const GroupTitle: FC<Props> = ({ name, description, groupId }) => {
 				<Link
 					href={`/groups/${groupId}/admin`}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 md:p-4 rounded"
+					onClick={goToAdmin}
 				>
 					Admin
 				</Link>

@@ -13,7 +13,7 @@ const GroupList = () => {
 
 	if (data?.length == 0 && !isLoading) {
 		return (
-			<div className="text-center backdrop-sepia-0 bg-white/60 mx-3">
+			<div className="text-center backdrop-sepia-0 mx-3">
 				<h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">Groups</h2>
 				<div className="overflow-y-scroll h-[55vh]">
 					<Link

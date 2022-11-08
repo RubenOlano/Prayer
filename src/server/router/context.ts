@@ -21,11 +21,13 @@ export const createContextInner = async (opts: CreateContextOptions) => {
 	};
 };
 
+export type Context = trpc.inferAsyncReturnType<typeof createContextInner>;
+
 /**
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
  **/
-export const createContext = async (opts: trpcNext.CreateNextContextOptions) => {
+export const createContext = async (opts: trpcNext.CreateNextContextOptions): Promise<Context> => {
 	const { req, res } = opts;
 
 	// Get the session from the server using the unstable_getServerSession wrapper function
@@ -36,11 +38,12 @@ export const createContext = async (opts: trpcNext.CreateNextContextOptions) => 
 	});
 };
 
-type Context = trpc.inferAsyncReturnType<typeof createContext>;
-
 export const createRouter = () =>
 	trpc.initTRPC.context<Context>().create({
 		transformer: superjson,
+		errorFormatter: ({ shape }) => {
+			return shape;
+		},
 	});
 
 /**

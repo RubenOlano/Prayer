@@ -20,6 +20,7 @@ const CreatePostForm = () => {
 		onSuccess: async res => {
 			await utils.posts.getAuthorPosts.invalidate();
 			await utils.posts.getGroupPosts.invalidate({ groupId: groupId as string });
+			await utils.posts.getGroupPosts.prefetch({ groupId: groupId as string });
 			router.push(`/posts/${res.postId}`);
 		},
 	});

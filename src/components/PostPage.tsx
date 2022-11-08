@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 import { getImage } from "../utils/defaultUserImage";
+import { trpc } from "../utils/trpc";
 import LikesComp from "./LikesComp";
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const PostPage: FC<Props> = post => {
+	const util = trpc.useContext();
 	return (
 		<div className="md:w-[50%]">
 			<div className="flex flex-col items-center justify-center py-2 backdrop-sepia-0 bg-white/60 p-3 rounded-md md:max-w-[65vw]">
@@ -43,6 +45,9 @@ const PostPage: FC<Props> = post => {
 				<Link
 					href={`/groups/${post.groupId}`}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					onClick={async () => {
+						await util.groups.getGroup.prefetch({ id: post.groupId });
+					}}
 				>
 					View Group
 				</Link>
