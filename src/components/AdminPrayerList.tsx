@@ -15,7 +15,7 @@ const AdminPrayerList = () => {
 		onMutate: async data => {
 			utils.posts.getGroupPosts.setData(
 				prev => {
-					if (!prev) return prev;
+					if (!prev) return { posts: [], nextCursor: undefined };
 					const newPosts = prev.posts.filter(post => post.id !== data.postId);
 					return { posts: newPosts, nextCursor: prev.nextCursor };
 				},
