@@ -41,7 +41,7 @@ const BottomBar: FC<Props> = ({ session }) => {
 	};
 
 	return (
-		<div className="bg-[#A3290E] w-full md:hidden fixed text-[#86FFCE] bottom-0 overflow-hidden flex h-20">
+		<div className="bg-[#A3290E] w-full md:hidden fixed text-[#86FFCE] bottom-0 overflow-hidden flex h-20 justify-between">
 			<div className="p-5 justify-center self-center">
 				<Link href="/" onClick={clickHome}>
 					{path === "" ? <HouseFill omitPadding /> : <HouseOutline omitPadding />}
