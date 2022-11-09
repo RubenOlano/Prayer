@@ -22,11 +22,11 @@ const LikesComp: FC<Props> = ({ postId }) => {
 				return;
 			}
 			if (liked) {
-				utils.posts.getNumberOfLikes.setData(() => previousNumLikes - 1, { postId });
-				utils.posts.getUserLiked.setData(() => false, { postId });
+				utils.posts.getNumberOfLikes.setData({ postId }, () => previousNumLikes - 1);
+				utils.posts.getUserLiked.setData({ postId }, () => false);
 			} else {
-				utils.posts.getNumberOfLikes.setData(previousNumLikes + 1, { postId });
-				utils.posts.getUserLiked.setData(() => true, { postId });
+				utils.posts.getNumberOfLikes.setData({ postId }, () => previousNumLikes + 1);
+				utils.posts.getUserLiked.setData({ postId }, () => true);
 			}
 			return { previousValue };
 		},

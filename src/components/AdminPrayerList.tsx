@@ -13,14 +13,13 @@ const AdminPrayerList = () => {
 			await utils.posts.getGroupPosts.refetch({ groupId });
 		},
 		onMutate: async data => {
-			utils.posts.getGroupPosts.setData(
-				prev => {
-					if (!prev) return { posts: [], nextCursor: undefined };
-					const newPosts = prev.posts.filter(post => post.id !== data.postId);
-					return { posts: newPosts, nextCursor: prev.nextCursor };
-				},
-				{ groupId }
-			);
+			utils.posts.getGroupPosts.setData({ groupId }, prev => {
+				if (!prev) return { posts: [], nextCursor: undefined };
+				return {
+					posts: prev.posts.filter(post => post.id !== data.postId),
+					nextCursor: prev.nextCursor,
+				};
+			});
 		},
 	});
 
