@@ -4,24 +4,6 @@ import { trpc } from "../utils/trpc";
 import { X } from "./Icons";
 import PostCard from "./PostCard";
 
-interface PrevType {
-	prev:
-		| {
-				posts: {
-					content: string;
-					authorName: string | null;
-					groupName: string;
-					title: string;
-					id: string;
-					createdAt: Date;
-					groupId: string;
-					authorImage: string | undefined;
-				}[];
-				nextCursor: string | undefined;
-		  }
-		| undefined;
-}
-
 const AdminPrayerList = () => {
 	const utils = trpc.useContext();
 	const groupId = useRouter().query.groupId as string;
@@ -32,7 +14,7 @@ const AdminPrayerList = () => {
 		},
 		onMutate: async data => {
 			utils.posts.getGroupPosts.setData(
-				(prev: PrevType["prev"]) => {
+				prev => {
 					if (!prev) return prev;
 					const newPosts = prev.posts.filter(post => post.id !== data.postId);
 					return { posts: newPosts, nextCursor: prev.nextCursor };

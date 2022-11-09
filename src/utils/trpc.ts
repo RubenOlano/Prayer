@@ -17,7 +17,7 @@ export interface SSRContext extends NextPageContext {
 	status?: number;
 }
 
-export const trpc = createTRPCNext<AppRouter, SSRContext>({
+export const trpc = createTRPCNext<AppRouter>({
 	config({ ctx }) {
 		/**
 		 * If you want to use SSR, you need to use the server's full URL
