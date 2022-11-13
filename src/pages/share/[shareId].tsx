@@ -1,12 +1,13 @@
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import SharedPostsComp from "../../components/SharedPostsComp";
 import { trpc } from "../../utils/trpc";
 
-const Share = () => {
-	const router = useRouter();
-	const shareId = router.query.shareId as string;
+interface Props {
+	shareId: string;
+}
 
+const Share: NextPage<Props> = ({ shareId }) => {
 	const { data, isLoading } = trpc.shares.getSharedPage.useQuery({ shareId });
 
 	if (isLoading) {
@@ -58,3 +59,17 @@ const Share = () => {
 };
 
 export default Share;
+
+export const getServerSideProps: GetServerSideProps = async ctx => {
+	const shareId = ctx.query.shareId as string;
+
+	if (!shareId) {
+		return {
+			notFound: true,
+		};
+	}
+
+	return {
+		props: { shareId },
+	};
+};

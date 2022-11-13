@@ -13,9 +13,15 @@ interface Props {
 const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 	const util = trpc.useContext();
 
-	util.groups.fetchUserIsAdmin.prefetch({ groupId });
-	util.posts.getGroupPosts.prefetchInfinite({ groupId });
-	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id: groupId });
+	const { data, isLoading } = trpc.groups.getGroup.useQuery(
+		{ id: groupId },
+		{
+			onSuccess: async () => {
+				await util.groups.fetchUserIsAdmin.prefetch({ groupId });
+				await util.posts.getGroupPosts.prefetchInfinite({ groupId });
+			},
+		}
+	);
 
 	if (isLoading) {
 		return (

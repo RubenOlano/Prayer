@@ -4,12 +4,14 @@ import Head from "next/head";
 import React from "react";
 import { trpc } from "../../../utils/trpc";
 import { iosDetect } from "../../../utils/checkIOS";
-import { useRouter } from "next/router";
+import { GetServerSideProps, NextPage } from "next";
 
-const Share = () => {
+interface Props {
+	groupId: string;
+}
+
+const Share: NextPage<Props> = ({ groupId }) => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const router = useRouter();
-	const groupId = router.query.groupId as string;
 	const { data } = trpc.posts.getGroupPosts.useQuery({ groupId });
 
 	const { mutate, isLoading, isSuccess } = trpc.posts.sharePosts.useMutation({
@@ -91,3 +93,13 @@ const Share = () => {
 };
 
 export default Share;
+
+export const getServerSideProps: GetServerSideProps = async ctx => {
+	const groupId = ctx.query.groupId as string;
+
+	return {
+		props: {
+			groupId,
+		},
+	};
+};

@@ -12,10 +12,16 @@ interface Props {
 
 const Post: NextPage<Props> = ({ id }) => {
 	const util = trpc.useContext();
-	const { data, isLoading } = trpc.posts.getPost.useQuery({ postId: id });
-	util.comments.fetchAllComments.prefetch({ postId: id });
-	util.posts.getUserLiked.prefetch({ postId: id });
-	util.posts.getNumberOfLikes.prefetch({ postId: id });
+	const { data, isLoading } = trpc.posts.getPost.useQuery(
+		{ postId: id },
+		{
+			onSuccess: async () => {
+				await util.comments.fetchAllComments.prefetch({ postId: id });
+				await util.posts.getUserLiked.prefetch({ postId: id });
+				await util.posts.getNumberOfLikes.prefetch({ postId: id });
+			},
+		}
+	);
 
 	if (isLoading) {
 		return (

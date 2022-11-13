@@ -24,10 +24,10 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 		},
 	});
 
-	const deleteGroup = async () => {
+	const deleteGroup = () => {
 		const confirm = window.confirm("Are you sure you want to delete this group?");
 		if (confirm) {
-			await mutate({ groupId });
+			mutate({ groupId });
 		}
 		return;
 	};

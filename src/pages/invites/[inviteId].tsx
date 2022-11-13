@@ -11,17 +11,8 @@ interface Props {
 
 const Invites: NextPage<Props> = ({ inviteId }) => {
 	const router = useRouter();
-	const { data, isLoading } = trpc.invites.getGroupFromInvite.useQuery({ inviteId: inviteId as string });
-	const { mutate } = trpc.invites.addUserToGroup.useMutation({
-		onSuccess: () => {
-			router.replace("/groups/" + data?.id);
-		},
-		onError: async e => {
-			if (e.data?.code === "CONFLICT") {
-				router.replace("/groups/" + data?.id);
-			}
-		},
-	});
+	const { data, isLoading } = trpc.invites.getGroupFromInvite.useQuery({ inviteId });
+
 	if (isLoading) {
 		return (
 			<>
@@ -36,6 +27,30 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 			</>
 		);
 	}
+
+	if (!data) {
+		return (
+			<>
+				<Head>
+					<title>Group Pray - Invite</title>
+					<meta name="description" content="Pray with company" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<div className="flex flex-col justify-center items-center">Invite not found</div>
+			</>
+		);
+	}
+
+	const { mutate } = trpc.invites.addUserToGroup.useMutation({
+		onSuccess: () => {
+			router.replace("/groups/" + data.id);
+		},
+		onError: e => {
+			if (e.data?.code === "CONFLICT") {
+				router.replace("/groups/" + data.id);
+			}
+		},
+	});
 
 	if (!data) {
 		return (
