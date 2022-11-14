@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC } from "react";
+import React from "react";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
@@ -15,7 +15,7 @@ interface Props {
 	authorImage?: string;
 }
 
-const PostCard: FC<Props> = post => {
+function PostCard(post: Props) {
 	const utils = trpc.useContext();
 
 	return (
@@ -43,6 +43,22 @@ const PostCard: FC<Props> = post => {
 			</div>
 		</Link>
 	);
-};
+}
 
 export default PostCard;
+
+PostCard.Skeleton = function PostCardSkeleton() {
+	return (
+		<div className="card card-normal shadow-xl bg-neutral text-neutral-content m-5 animate-pulse">
+			<div className="card-body justify-center self-center text-2xl">
+				<div className="avatar avatar-sm rounded-full justify-center self-center" />
+				<h1 />
+				<h1 />
+			</div>
+			<div className="border-accent border-y-2 card-body">
+				<h1 className="card-title text-center justify-center" />
+				<h3 className="m-2" />
+			</div>
+		</div>
+	);
+};

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { FC } from "react";
+import React from "react";
 import { trpc } from "../utils/trpc";
 import { Plus } from "./Icons";
 import RefreshPosts from "./RefreshPosts";
@@ -10,7 +10,7 @@ interface Props {
 	groupId: string;
 }
 
-export const GroupTitle: FC<Props> = ({ name, description, groupId }) => {
+export function GroupTitle({ name, description, groupId }: Props) {
 	const { data, isLoading } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
 	const utils = trpc.useContext();
@@ -39,6 +39,25 @@ export const GroupTitle: FC<Props> = ({ name, description, groupId }) => {
 						Admin
 					</Link>
 				)}
+			</div>
+		</div>
+	);
+}
+
+GroupTitle.Skeleton = function GroupTitleSkeleton() {
+	return (
+		<div className="navbar p-5 bg-base-200 animate-pulse">
+			<div className="navbar-start ">
+				<div className="flex flex-col">
+					<h1 className="md:text-2xl text-sm font-bold " />
+					<p className="md:text-sm text-xs" />
+				</div>
+			</div>
+			<div className="navbar-end">
+				<div className="btn">
+					<Plus dimensions={20} />
+				</div>
+				<RefreshPosts />
 			</div>
 		</div>
 	);

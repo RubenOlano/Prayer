@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { useCallback } from "react";
 import { env } from "../env/client.mjs";
 import { debounce } from "../utils/debounce";
 import { trpc } from "../utils/trpc";
@@ -18,7 +18,7 @@ interface Props {
 const CLOUDINARY_UPLOAD_PRESET = env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_URL = env.NEXT_PUBLIC_CLOUDINARY_URL;
 
-const UpdateImage: FC<Props> = ({ user }) => {
+function UpdateImage({ user }: Props) {
 	const utils = trpc.useContext();
 	const { mutate, isLoading, isSuccess } = trpc.users.updateUserImage.useMutation({
 		onMutate: () => {
@@ -73,6 +73,23 @@ const UpdateImage: FC<Props> = ({ user }) => {
 			</div>
 		</div>
 	);
-};
+}
 
+UpdateImage.Skeleton = function UpdateImageSkeleton() {
+	return (
+		<div className="mb-2 flex items-center align-middle justify-center animate-pulse">
+			<div className="flex flex-col items-center justify-center ">
+				<span className="block mb-2">Choose profile photo</span>
+				<div className="bg-gray-300 w-24 h-25 block" />
+				<input
+					className={`file-input `}
+					type="file"
+					name="image"
+					multiple={false}
+					accept="image/jpg, image/png, image/jpeg"
+				/>
+			</div>
+		</div>
+	);
+};
 export default UpdateImage;

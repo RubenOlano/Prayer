@@ -14,6 +14,16 @@ const MainFeed = () => {
 		}
 	);
 
+	if (isLoading) {
+		return (
+			<div className="container justify-center text-center">
+				{Array.from({ length: 5 }).map((_, i) => (
+					<PostCard.Skeleton key={i} />
+				))}
+			</div>
+		);
+	}
+
 	return (
 		<div className="container justify-center text-center">
 			{data?.pages.map((page, i) => (

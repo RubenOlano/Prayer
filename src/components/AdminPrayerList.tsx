@@ -25,8 +25,17 @@ const AdminPrayerList = () => {
 
 	if (isLoading) {
 		return (
-			<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
-				Loading...
+			<div className="flex flex-col">
+				{Array.from({ length: 10 }).map((_, i) => (
+					<div key={i} className="flex flex-row animate-pulse">
+						<button className="hover:bg-gray-200 rounded-md">
+							<X dimensions={10} />
+						</button>
+						<div className="w-full">
+							<PostCard.Skeleton />
+						</div>
+					</div>
+				))}
 			</div>
 		);
 	}

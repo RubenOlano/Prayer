@@ -13,7 +13,7 @@ interface Props {
 const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 	const util = trpc.useContext();
 
-	const { data, isLoading } = trpc.groups.getGroup.useQuery(
+	const { data } = trpc.groups.getGroup.useQuery(
 		{ id: groupId },
 		{
 			onSuccess: async () => {
@@ -23,50 +23,16 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 		}
 	);
 
-	if (isLoading) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Loading Group</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main>
-					<div className="md:pl-40 p-5">
-						<h1 className="p-5">Loading...</h1>
-					</div>
-				</main>
-			</>
-		);
-	}
-
-	if (!data) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Not Found</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main>
-					<div className="md:pl-40 p-5">
-						<h1 className="text-3xl font-bold p-5">Group not found</h1>
-					</div>
-				</main>
-			</>
-		);
-	}
-
 	return (
 		<>
 			<Head>
-				<title>Group Pray - {data.name}</title>
+				<title>Group Pray - {data?.name ?? "Loading"}</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
 				<div className="md:pl-40 p-5">
-					<GroupTitle {...data} groupId={groupId} />
+					{data?.name ? <GroupTitle {...data} groupId={groupId} /> : <GroupTitle.Skeleton />}
 				</div>
 				<div className="md:pl-40 p-5">
 					<PrayerSection groupId={groupId} />

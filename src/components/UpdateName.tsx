@@ -1,4 +1,3 @@
-import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserNameInput } from "../schema/user.schema";
 import { trpc } from "../utils/trpc";
@@ -7,7 +6,7 @@ interface Props {
 	userId: string;
 }
 
-const UpdateName: FC<Props> = ({ userId }) => {
+function UpdateName({ userId }: Props) {
 	const utils = trpc.useContext();
 	const {
 		register,
@@ -43,6 +42,20 @@ const UpdateName: FC<Props> = ({ userId }) => {
 			<div className="text-red-500">{errors.name?.message}</div>
 		</form>
 	);
-};
+}
 
 export default UpdateName;
+
+UpdateName.Skeleton = function UpdateNameSkeleton() {
+	return (
+		<form className="flex flex-col text-center px-5">
+			<label htmlFor="name" className="text-gray-500">
+				Update Name
+			</label>
+			<input type="text" className="input input-primary" />
+			<button className={`bg-primary hover:bg-primary-focus text-white font-bold py-2 px-4 rounded `}>
+				Update Name
+			</button>
+		</form>
+	);
+};

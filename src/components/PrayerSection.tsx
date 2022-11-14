@@ -16,8 +16,12 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 
 	if (isLoading) {
 		return (
-			<div className="p-5">
-				<h1 className="p-5">Loading...</h1>
+			<div className="align-middle text-center pb-40">
+				<div className="md:grid md:grid-cols-3">
+					{Array.from({ length: 10 }).map((_, i) => (
+						<PostCard.Skeleton key={i} />
+					))}
+				</div>
 			</div>
 		);
 	}
