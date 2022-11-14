@@ -18,7 +18,7 @@ const ProfileEdit = () => {
 	}
 
 	return (
-		<div className="md:col-start-2 md:col-end-2 text-center bg-white/70 rounded-sm md:py-5 px-2">
+		<div className="text-center rounded-sm md:py-5 px-2">
 			<h1 className="text-lg md:text-2xl font-bold m-2">Profile Edit</h1>
 			<div className="flex flex-col justify-center items-center">
 				<UpdateImage user={user} />

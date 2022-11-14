@@ -21,35 +21,25 @@ const PostCard: FC<Props> = post => {
 	return (
 		<Link
 			href={`/posts/${post.id}`}
-			className="flex flex-col items-center m-2 md:p-3 hover:cursor-pointer"
+			className="hover:cursor-pointer card card-normal shadow-xl bg-neutral text-neutral-content m-5"
 			onClick={async () => {
 				await utils.posts.getPost.prefetch({ postId: post.id });
 			}}
 		>
-			<div className="flex flex-col bg-[#5F1DAC] text-white rounded-lg m-2 p-3 hover:cursor-pointer hover:bg-opacity-75 max-w-[95%] md:max-w-[70%]">
-				<div className="border-y-2 border-white md:flex items-center justify-between">
-					<div className="md:flex align-middle justify-center m-3">
-						<Image
-							src={getImage(post.authorImage)}
-							alt="name"
-							height={25}
-							width={25}
-							className="rounded-full md:h-10 md:w-10 h-5 w-5"
-						/>
-						<h1 className="md:text-2xl text-sm font-bold text-left md:ml-3 md:self-center">
-							{post.authorName ?? "Member"}
-						</h1>
-					</div>
-					<div>
-						<h3 className="md:text-2xl text-sm font-bold md:text-right md:mr-3 md:self-center">
-							{post.groupName}
-						</h3>
-					</div>
-				</div>
-				<div className="border-b-2 border-white">
-					<h1 className="text-sm md:text-2xl font-bold text-left m-3">{post.title}</h1>
-					<h3 className="text-sm md:text-xl font-bold text-center m-3">{post.content}</h3>
-				</div>
+			<div className="card-body justify-center self-center text-2xl">
+				<Image
+					src={getImage(post.authorImage)}
+					alt="name"
+					height={25}
+					width={25}
+					className="avatar avatar-sm rounded-full justify-center self-center"
+				/>
+				<h1>{post.authorName ?? "Member"}</h1>
+				<h1>{post.groupName}</h1>
+			</div>
+			<div className="border-accent border-y-2 card-body">
+				<h1 className="card-title text-center justify-center">{post.title}</h1>
+				<h3 className="m-2">{post.content}</h3>
 			</div>
 		</Link>
 	);

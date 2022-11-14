@@ -12,13 +12,15 @@ const GroupItem: FC<Props> = ({ group }) => {
 	return (
 		<Link
 			href={`/groups/${group.id}`}
-			className="flex flex-col items-center rounded-sm bg-white/75 m-2 p-3 hover:cursor-pointer hover:bg-blue-500 hover:bg-opacity-25"
+			className="card card-bordered bg-info hover:bg-secondary-focus"
 			onClick={async () => {
 				await utils.groups.getGroup.prefetch({ id: group.id });
 			}}
 		>
-			<h2 className="text-2xl font-bold text-center m-3">{group.name}</h2>
-			<p className="italic font-bold text-center ">{group.description}</p>
+			<div className="card-body">
+				<h2 className="card-title">{group.name}</h2>
+				<p className="card-content">{group.description}</p>
+			</div>
 		</Link>
 	);
 };

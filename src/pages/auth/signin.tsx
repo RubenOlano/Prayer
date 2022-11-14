@@ -3,7 +3,6 @@ import { unstable_getServerSession } from "next-auth";
 import { BuiltInProviderType } from "next-auth/providers";
 import { ClientSafeProvider, getProviders, LiteralUnion } from "next-auth/react";
 import Head from "next/head";
-import Image from "next/image";
 import React from "react";
 import Login from "../../components/Login";
 import { options } from "../api/auth/[...nextauth]";
@@ -21,19 +20,13 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className="min-h-screen py-5 grid md:grid-cols-6 relative">
-				<div className="z-[-5]">
-					<Image
-						src="/background.png"
-						layout="fill"
-						objectFit="cover"
-						quality={100}
-						alt="background"
-						style={{ zIndex: -5 }}
-					/>
-				</div>
-				<div className="justify-center align-middle row-start-2 col-start-2 col-end-4 md:col-start-3 md:col-end-5 z-2">
-					<Login providers={providers} />
+			<main className="flex flex-col min-h-screen py-5 relative">
+				<div className="m-auto">
+					<h1 className="md:text-5xl text-2xl font-bold text-center">Welcome to Group Pray</h1>
+					<h3 className="md:text-2xl text-xl font-bold text-center">Sign in to get started</h3>
+					<div className="md:w-1/3 w-2/3 mx-auto mt-5">
+						<Login providers={providers} />
+					</div>
 				</div>
 			</main>
 		</>

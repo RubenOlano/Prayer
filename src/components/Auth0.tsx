@@ -15,11 +15,9 @@ const Auth0: FC<Props> = ({ searchParams, provider }) => {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center p-5">
-			<button className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded" onClick={onClick}>
-				Sign in with {provider.name}
-			</button>
-		</div>
+		<button className="btn btn-primary btn-lg" onClick={onClick}>
+			{provider.name === "Auth0" && "Email Login"}
+		</button>
 	);
 };
 

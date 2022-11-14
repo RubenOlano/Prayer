@@ -1,9 +1,6 @@
-import Link from "next/link";
 import React, { FC, Fragment } from "react";
 import { trpc } from "../utils/trpc";
-import { Plus } from "./Icons";
 import PostCard from "./PostCard";
-import RefreshPosts from "./RefreshPosts";
 
 interface Props {
 	groupId: string;
@@ -33,17 +30,8 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 		);
 	}
 	return (
-		<div className="grid md:grid-cols-4 grid-flow-row  align-middle">
-			<div className="justify-self-center justify-center md:col-span-1 flex flex-row md:flex-col md:block">
-				<Link
-					href={`/posts/create?groupId=${groupId}`}
-					className="flex text-sm flex-row items-center align-middle justify-center py-1 px-3 bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 md:px-4 rounded m-2"
-				>
-					<Plus dimensions={20} />
-				</Link>
-				<RefreshPosts />
-			</div>
-			<div className="md:col-span-3">
+		<div className="align-middle text-center pb-40">
+			<div className="md:grid md:grid-cols-3">
 				{data.pages.map((page, i) => (
 					<Fragment key={i}>
 						{page.posts.map(post => (

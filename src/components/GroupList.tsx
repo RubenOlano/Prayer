@@ -13,7 +13,7 @@ const GroupList = () => {
 
 	if (data?.length == 0 && !isLoading) {
 		return (
-			<div className="text-center backdrop-sepia-0 mx-3">
+			<div className="text-center mx-3">
 				<h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">Groups</h2>
 				<div className="overflow-y-scroll h-[55vh]">
 					<Link
@@ -29,10 +29,10 @@ const GroupList = () => {
 
 	return (
 		<div className="w-full p-5">
-			<div className="grid md:grid-cols-3 grid-flow-row">
+			<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
 				<Link
 					href="/groups/create"
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
+					className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
 				>
 					<Plus dimensions={60} />
 				</Link>

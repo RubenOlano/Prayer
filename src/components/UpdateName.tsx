@@ -25,21 +25,18 @@ const UpdateName: FC<Props> = ({ userId }) => {
 		reset();
 	};
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5 ">
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5">
 			<label htmlFor="name" className="text-gray-500">
 				Update Name
 			</label>
-			<input
-				type="text"
-				{...register("name")}
-				className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-			/>
+			<input type="text" {...register("name")} className="input input-primary" />
 			<button
-				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4 ${
-					isLoading ? "opacity-50 cursor-not-allowed" : ""
-				}`}
+				className={`bg-primary hover:bg-primary-focus text-white font-bold py-2 px-4 rounded ${
+					isLoading && "cursor-not-allowed"
+				} ${isSuccess && "bg-success"}`}
 				type="submit"
 				placeholder="New Name..."
+				disabled={isLoading}
 			>
 				{isSuccess ? "Name Updated!" : "Update Name"}
 			</button>

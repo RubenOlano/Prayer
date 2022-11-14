@@ -41,39 +41,31 @@ const BottomBar: FC<Props> = ({ session }) => {
 	};
 
 	return (
-		<div className="bg-[#A3290E] w-full md:hidden fixed text-[#86FFCE] bottom-0 overflow-hidden flex h-20 justify-between">
-			<div className="p-5 justify-center self-center">
-				<Link href="/" onClick={clickHome}>
-					{path === "" ? <HouseFill omitPadding /> : <HouseOutline omitPadding />}
+		<div className="md:hidden bg-base-100 btm-nav z-10">
+			<Link href="/" onClick={clickHome} className={`${path === "" && "active"}`}>
+				{path === "" ? <HouseFill omitPadding /> : <HouseOutline omitPadding />}
+			</Link>
+			<Link href="/groups" onClick={clickGroups} className={`${path === "groups" && "active"}`}>
+				{path === "groups" ? <PeopleFill omitPadding /> : <PeopleOutline omitPadding />}
+			</Link>
+			{session && session.user ? (
+				<Link href="/profile" onClick={clickProfile} className={`${path === "profile" && "active"}`}>
+					<Image
+						src={getImage(session.user.image)}
+						className={`rounded-full h-5 w-5 object-cover ${
+							path === "profile" && "border-2 border-accent"
+						}`}
+						height={5}
+						width={5}
+						alt="PFP"
+						priority
+					/>
 				</Link>
-			</div>
-			<div className="p-5 justify-center self-center">
-				<Link href="/groups" onClick={clickGroups}>
-					{path === "groups" ? <PeopleFill omitPadding /> : <PeopleOutline omitPadding />}
-				</Link>
-			</div>
-			<div className="p-5 justify-center self-center">
-				{session && session.user ? (
-					<h1 className="text-xl font-bold flex justify-center items-center">
-						<Link href="/profile" onClick={clickProfile}>
-							<Image
-								src={getImage(session.user.image)}
-								className={`rounded-full h-5 w-5 object-cover ${
-									path === "profile" ? "border-2 border-[#86FFCE]" : ""
-								}`}
-								height={5}
-								width={5}
-								alt="PFP"
-								priority
-							/>
-						</Link>
-					</h1>
-				) : (
-					<h1 className="text-xl font-bold flex justify-center items-center">
-						<Link href="/auth/signin">Sign In</Link>
-					</h1>
-				)}
-			</div>
+			) : (
+				<h1 className="text-xl font-bold flex justify-center items-center">
+					<Link href="/auth/signin">Sign In</Link>
+				</h1>
+			)}
 			{session && session.user && (
 				<div className="p-5 justify-center self-center">
 					<h1 className="text-sm font-bold flex justify-center items-center">

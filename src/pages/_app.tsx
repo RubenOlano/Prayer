@@ -5,16 +5,30 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import "../styles/globals.css";
 import SideBar from "../components/SideBar";
 import BottomBar from "../components/BottomBar";
+import { Kanit } from "@next/font/google";
+
+const kanit = Kanit({
+	weight: ["300", "400", "500", "600", "700"],
+});
 
 const MyApp: AppType<{
 	session: Session;
 }> = ({ Component, pageProps: { session, ...pageProps } }) => {
 	return (
-		<SessionProvider session={session}>
-			<SideBar session={session} />
-			<BottomBar session={session} />
-			<Component {...pageProps} />
-		</SessionProvider>
+		<>
+			<style jsx global>
+				{`
+					html {
+						font-family: ${kanit.style.fontFamily};
+					}
+				`}
+			</style>
+			<SessionProvider session={session}>
+				<SideBar session={session} />
+				<BottomBar session={session} />
+				<Component {...pageProps} />
+			</SessionProvider>
+		</>
 	);
 };
 

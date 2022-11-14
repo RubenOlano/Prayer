@@ -20,7 +20,7 @@ const CLOUDINARY_URL = env.NEXT_PUBLIC_CLOUDINARY_URL;
 
 const UpdateImage: FC<Props> = ({ user }) => {
 	const utils = trpc.useContext();
-	const { mutate } = trpc.users.updateUserImage.useMutation({
+	const { mutate, isLoading, isSuccess } = trpc.users.updateUserImage.useMutation({
 		onMutate: () => {
 			debounce(() => {
 				utils.users.getUser.invalidate({ id: user.id });
@@ -62,12 +62,13 @@ const UpdateImage: FC<Props> = ({ user }) => {
 				<span className="block mb-2">Choose profile photo</span>
 				<Image src={getImage(user.image)} alt="user image" width={100} height={100} />
 				<input
-					className="w-full file:m-auto file:flex my-2 text-slate-500 text-center file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+					className={`file-input ${isSuccess && "bg-success"} ${isLoading && "bg-secondary"} `}
 					type="file"
 					name="image"
 					onChange={onFileDrop}
 					multiple={false}
 					accept="image/jpg, image/png, image/jpeg"
+					disabled={isLoading}
 				/>
 			</div>
 		</div>

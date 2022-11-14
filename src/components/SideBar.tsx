@@ -42,52 +42,46 @@ const SideBar: FC<Props> = ({ session }) => {
 	};
 
 	return (
-		<div className="bg-[#A3290E] h-screen w-40 hidden md:block fixed text-[#86FFCE] top-0 left-0">
+		<div className="h-screen w-40 hidden md:block fixed top-0 left-0 navbar bg-base-100">
 			<div className="flex flex-col justify-center items-center h-1/6">
 				<Image src={Icon} className="rounded-full h-10 w-10" alt="Group Pray Logo" priority />
 				<h1 className="text-2xl font-bold">Group Pray</h1>
 			</div>
-			<div className="flex flex-row justify-center  h-1/6">
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/" onClick={clickHome}>
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "" ? <HouseFill /> : <HouseOutline />}
-					<Link href="/" onClick={clickHome}>
-						Home
-					</Link>
+					Home
 				</h1>
-			</div>
-			<div className="flex flex-row justify-center  h-1/6">
+			</Link>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/groups" onClick={clickGroups}>
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "groups" ? <PeopleFill /> : <PeopleOutline />}
-					<Link href="/groups" onClick={clickGroups}>
-						Groups
-					</Link>
+					Groups
 				</h1>
-			</div>
-			<div className="flex flex-row justify-center  h-1/6">
+			</Link>
+			<Link className="flex flex-row justify-center  h-1/6 btn-ghost" href="/profile" onClick={clickProfile}>
 				{session && session.user ? (
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<Image
 							src={getImage(session.user.image)}
 							className={`rounded-full h-10 w-10 object-cover mr-2 ${
-								path === "profile" ? "border-2 border-[#86FFCE]" : ""
+								path === "profile" ? "border-2 border-secondary" : ""
 							}`}
 							height={10}
 							width={10}
 							alt="User Profile Picture"
 							priority
 						/>
-						<Link href="/profile" onClick={clickProfile}>
-							Profile
-						</Link>
+						Profile
 					</h1>
 				) : (
-					<h1 className="text-xl font-bold flex justify-center items-center">
-						<Link href="/auth/signin">Sign In</Link>
-					</h1>
+					<Link href="/auth/signin">
+						<h1 className="text-xl font-bold flex justify-center items-center">Sign In</h1>
+					</Link>
 				)}
-			</div>
+			</Link>
 			{session && session.user && (
-				<div className="flex flex-row justify-center  h-1/6">
+				<div className="flex flex-row justify-center  h-1/6 btn-ghost">
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<button
 							className="text-xl font-bold flex justify-center items-center"

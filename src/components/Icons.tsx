@@ -84,21 +84,13 @@ export const Plus = ({ dimensions }: Props) => (
 		height={dimensions}
 		fill="currentColor"
 		viewBox="0 0 16 16"
-		className="m-auto md:h-20 md:w-20"
 	>
-		{" "}
 		<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />{" "}
 	</svg>
 );
 
 export const Refresh = ({ dimensions }: Props) => (
-	<svg
-		viewBox="0 0 1024 1024"
-		xmlns="http://www.w3.org/2000/svg"
-		width={dimensions}
-		height={dimensions}
-		className="md:w-20 md:h-20"
-	>
+	<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width={dimensions} height={dimensions}>
 		<path
 			fill="currentColor"
 			d="M784.512 230.272v-50.56a32 32 0 1 1 64 0v149.056a32 32 0 0 1-32 32H667.52a32 32 0 1 1 0-64h92.992A320 320 0 1 0 524.8 833.152a320 320 0 0 0 320-320h64a384 384 0 0 1-384 384 384 384 0 0 1-384-384 384 384 0 0 1 643.712-282.88z"

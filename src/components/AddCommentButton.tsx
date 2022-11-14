@@ -42,10 +42,7 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 						className="border-2 border-black rounded-md p-2 m-2"
 						{...register("content")}
 					/>
-					<button
-						type="submit"
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					>
+					<button type="submit" className={`btn btn-primary ${isLoading && "animate-pulse "} `}>
 						Submit
 					</button>
 					<div className="flex flex-col items-center justify-center">
@@ -58,12 +55,7 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 		);
 	} else {
 		return (
-			<button
-				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold md:py-2 px-4 rounded-lg ${
-					isLoading ? "opacity-50 cursor-not-allowed" : ""
-				}`}
-				onClick={() => setClicked(true)}
-			>
+			<button className={`btn btn-primary ${isLoading && "animate-pulse"}`} onClick={() => setClicked(true)}>
 				Add Comment
 			</button>
 		);

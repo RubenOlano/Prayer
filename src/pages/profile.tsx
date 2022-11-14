@@ -12,7 +12,7 @@ const Profile = () => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main className="p-5 md:grid md:grid-cols-3 pb-20">
+			<main className="md:pl-40">
 				<ProfileEdit />
 			</main>
 		</>

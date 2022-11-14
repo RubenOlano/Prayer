@@ -31,45 +31,38 @@ const CreatePostForm = () => {
 		reset();
 	};
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full">
-			<div className="flex flex-col w-[85%]">
-				<label htmlFor="title">Title</label>
-				<input
-					type="text"
-					id="title"
-					placeholder="Title"
-					className="border-2 border-gray-300 p-2 rounded-md"
-					{...register("title", { required: true })}
-				/>
-				{errors.title && <p className="text-red-500 text-xs italic">Title is required</p>}
-			</div>
-			<div className="flex flex-col w-[85%]">
-				<label htmlFor="content">Content</label>
-				<textarea
-					id="content"
-					placeholder="Enter your prayer request here"
-					className="border-2 border-gray-300 p-2 rounded-md"
-					{...register("content", { required: true })}
-				/>
-				{errors.content && <p>Content is required</p>}
-			</div>
-			<div className="flex flex-col w-[85%] justify-center items-center">
+		<form onSubmit={handleSubmit(onSubmit)} className="form-control flex flex-col">
+			<label className="label" htmlFor="title">
+				Title
+			</label>
+			<input
+				type="text"
+				id="title"
+				placeholder="Title"
+				className="input input-bordered w-full"
+				{...register("title", { required: true })}
+			/>
+			{errors.title && <p className="text-red-500 text-xs italic">Title is required</p>}
+			<label htmlFor="content">Content</label>
+			<textarea
+				id="content"
+				placeholder="Enter your prayer request here"
+				className="textarea textarea-bordered"
+				{...register("content", { required: true })}
+			/>
+			{errors.content && <p>Content is required</p>}
+			<div>
 				<label htmlFor="Anonymous">Make anonymous?</label>
 				<input
 					type="checkbox"
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					className="checkbox checkbox-primary flex justify-center"
 					placeholder="Make Anonymous?"
 					{...register("anonymous", { required: false })}
 				/>
+				<button className={`btn btn-primary mt-2 ${isLoading ? "loading" : ""}`} type="submit">
+					Submit
+				</button>
 			</div>
-			<button
-				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded ${
-					isLoading ? "opacity-50 cursor-not-allowed" : ""
-				}`}
-				type="submit"
-			>
-				Submit
-			</button>
 		</form>
 	);
 };

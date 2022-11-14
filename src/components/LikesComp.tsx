@@ -36,10 +36,7 @@ const LikesComp: FC<Props> = ({ postId }) => {
 		return <div className="flex flex-row items-center justify-center">Loading...</div>;
 	}
 	return (
-		<div
-			className="flex flex-row items-center justify-center cursor-pointer p-3 bg-orange-400 rounded-md hover:bg-orange-500 m-3 "
-			onClick={() => mutate({ postId })}
-		>
+		<div className="btn btn-secondary" onClick={() => mutate({ postId })}>
 			<Image src={liked ? Liked : NotLiked} width="20" height="20" alt="Icon" />
 			<p className="ml-2">{numLikes || 0}</p>
 		</div>
