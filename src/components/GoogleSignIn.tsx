@@ -16,7 +16,7 @@ const GoogleSignIn: FC<Props> = ({ provider }) => {
 		});
 	};
 	return (
-		<button className="btn btn-primary btn-lg mt-6" onClick={onClick}>
+		<button className="btn btn-primary btn-lg mt-5" onClick={onClick}>
 			Sign in with
 			<Image
 				src="/Google__G__Logo.svg"
