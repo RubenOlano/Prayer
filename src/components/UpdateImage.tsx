@@ -62,7 +62,9 @@ function UpdateImage({ user }: Props) {
 				<span className="block mb-2">Choose profile photo</span>
 				<Image src={getImage(user.image)} alt="user image" width={100} height={100} />
 				<input
-					className={`file-input ${isSuccess && "bg-success"} ${isLoading && "bg-secondary"} `}
+					className={`file-input file-input-xs md:file-input-md ${isSuccess && "bg-success"} ${
+						isLoading && "bg-secondary"
+					} `}
 					type="file"
 					name="image"
 					onChange={onFileDrop}

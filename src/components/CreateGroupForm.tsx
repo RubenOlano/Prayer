@@ -56,6 +56,7 @@ const CreateGroupForm = () => {
 				type="text"
 				placeholder="Group Name"
 				className="border-2 border-gray-300 p-2 rounded-md flex"
+				disabled={isLoading}
 				{...register("name", { required: true })}
 			/>
 			{errors.name && <span>This field is required</span>}
@@ -63,6 +64,7 @@ const CreateGroupForm = () => {
 				type="area"
 				placeholder="Group Description"
 				className="border-2 border-gray-300 p-2 rounded-md flex"
+				disabled={isLoading}
 				{...register("description")}
 			/>
 			{errors.description && <span>This field is required</span>}
@@ -71,6 +73,7 @@ const CreateGroupForm = () => {
 					isLoading ? "opacity-50 cursor-not-allowed" : ""
 				}`}
 				type="submit"
+				disabled={isLoading}
 			>
 				{text}
 			</button>

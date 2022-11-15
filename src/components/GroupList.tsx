@@ -8,10 +8,24 @@ const GroupList = () => {
 	const { data, isLoading } = trpc.groups.getGroups.useQuery();
 
 	if (isLoading) {
-		return <div className="flex flex-col text-center px-12 pt-12 pb-5 ">Loading...</div>;
+		return (
+			<div className="w-full p-5">
+				<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
+					<Link
+						href="/groups/create"
+						className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
+					>
+						<Plus dimensions={60} />
+					</Link>
+					{Array.from({ length: 6 }).map((_, i) => (
+						<GroupItem.Skeleton key={i} />
+					))}
+				</div>
+			</div>
+		);
 	}
 
-	if (data?.length == 0 && !isLoading) {
+	if (!data || data.length === 0) {
 		return (
 			<div className="text-center mx-3">
 				<h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">Groups</h2>
@@ -36,7 +50,7 @@ const GroupList = () => {
 				>
 					<Plus dimensions={60} />
 				</Link>
-				{data?.map(group => (
+				{data.map(group => (
 					<GroupItem key={group.id} group={group} />
 				))}
 			</div>

@@ -1,6 +1,9 @@
+import Link from "next/link";
 import React, { FC, Fragment } from "react";
 import { trpc } from "../utils/trpc";
+import { Share } from "./Icons";
 import PostCard from "./PostCard";
+import RefreshPosts from "./RefreshPosts";
 
 interface Props {
 	groupId: string;
@@ -35,6 +38,12 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 	}
 	return (
 		<div className="align-middle text-center pb-40">
+			<div className="btn-group">
+				<RefreshPosts />
+				<Link href={`/groups/${groupId}/share`} className="btn">
+					<Share dimensions={15} />
+				</Link>
+			</div>
 			<div className="md:grid md:grid-cols-3">
 				{data.pages.map((page, i) => (
 					<Fragment key={i}>

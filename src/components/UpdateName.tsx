@@ -28,7 +28,7 @@ function UpdateName({ userId }: Props) {
 			<label htmlFor="name" className="text-gray-500">
 				Update Name
 			</label>
-			<input type="text" {...register("name")} className="input input-primary" />
+			<input type="text" {...register("name")} className="input input-primary" disabled={isLoading} />
 			<button
 				className={`bg-primary hover:bg-primary-focus text-white font-bold py-2 px-4 rounded ${
 					isLoading && "cursor-not-allowed"

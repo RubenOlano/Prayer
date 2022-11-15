@@ -27,11 +27,18 @@ const Post: NextPage<Props> = ({ id }) => {
 		return (
 			<>
 				<Head>
-					<title>Post</title>
-					<meta name="description" content="Post" />
+					<title>Group Pray - Loading</title>
+					<meta name="description" content="Pray with company" />
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
+				<main>
+					<div className="md:pl-40 m-5 pb-40">
+						<div className="md:flex md:justify-between md:m-5">
+							<PostPage.Skeleton />
+							<Comments.Skeleton />
+						</div>
+					</div>
+				</main>
 			</>
 		);
 	}

@@ -1,13 +1,12 @@
 import { Group } from "@prisma/client";
 import Link from "next/link";
-import { FC } from "react";
 import { trpc } from "../utils/trpc";
 
 interface Props {
 	group: Group;
 }
 
-const GroupItem: FC<Props> = ({ group }) => {
+function GroupItem({ group }: Props) {
 	const utils = trpc.useContext();
 	return (
 		<Link
@@ -23,6 +22,17 @@ const GroupItem: FC<Props> = ({ group }) => {
 			</div>
 		</Link>
 	);
-};
+}
 
 export default GroupItem;
+
+GroupItem.Skeleton = function GroupItemSkeleton() {
+	return (
+		<div className="card card-bordered bg-info hover:bg-secondary-focus animate-pulse">
+			<div className="card-body">
+				<h2 className="card-title" />
+				<p className="card-content" />
+			</div>
+		</div>
+	);
+};

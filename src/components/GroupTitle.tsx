@@ -2,7 +2,6 @@ import Link from "next/link";
 import React from "react";
 import { trpc } from "../utils/trpc";
 import { Plus } from "./Icons";
-import RefreshPosts from "./RefreshPosts";
 
 interface Props {
 	name: string;
@@ -33,7 +32,6 @@ export function GroupTitle({ name, description, groupId }: Props) {
 				<Link href={`/posts/create?groupId=${groupId}`} className="btn">
 					<Plus dimensions={20} />
 				</Link>
-				<RefreshPosts />
 				{!isLoading && data && (
 					<Link href={`/groups/${groupId}/admin`} className="btn btn-primary" onClick={goToAdmin}>
 						Admin
@@ -57,7 +55,6 @@ GroupTitle.Skeleton = function GroupTitleSkeleton() {
 				<div className="btn">
 					<Plus dimensions={20} />
 				</div>
-				<RefreshPosts />
 			</div>
 		</div>
 	);

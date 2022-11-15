@@ -5,6 +5,8 @@ import React from "react";
 import { trpc } from "../../../utils/trpc";
 import { iosDetect } from "../../../utils/checkIOS";
 import { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { options } from "../../api/auth/[...nextauth]";
 
 interface Props {
 	groupId: string;
@@ -12,7 +14,7 @@ interface Props {
 
 const Share: NextPage<Props> = ({ groupId }) => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const { data } = trpc.posts.getGroupPosts.useQuery({ groupId });
+	const { data, isLoading: postsLoading } = trpc.posts.getGroupPosts.useQuery({ groupId });
 
 	const { mutate, isLoading, isSuccess } = trpc.posts.sharePosts.useMutation({
 		onSuccess: async res => {
@@ -45,6 +47,33 @@ const Share: NextPage<Props> = ({ groupId }) => {
 		},
 	});
 
+	if (postsLoading) {
+		return (
+			<>
+				<Head>
+					<title>Group Pray - Share</title>
+					<meta name="description" content="Pray with company" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<main>
+					<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
+						<ShareHeader />
+						<div className="col-start-2 p-2 justify-center backdrop-sepia-0 bg-white/70 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-md">
+							<form className="form-control">
+								{Array.from({ length: 5 }).map((_, i) => (
+									<SharePostComp.Skeleton key={i} />
+								))}
+								<button className="btn btn-primary font-bold py-2 px-4 rounded w-full ">
+									{isLoading ? "Loading..." : isSuccess ? "Copied!" : "Share"}
+								</button>
+							</form>
+						</div>
+					</div>
+				</main>
+			</>
+		);
+	}
+
 	const onSelect = (id: string) => {
 		if (selectedPosts.has(id)) {
 			setSelectedPosts(prev => {
@@ -74,14 +103,14 @@ const Share: NextPage<Props> = ({ groupId }) => {
 			<main>
 				<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
 					<ShareHeader />
-					<div className="col-start-2 p-2 justify-center backdrop-sepia-0 bg-white/70 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-md">
+					<div className="col-start-2 p-2 justify-center ">
 						<form onSubmit={onSubmit}>
 							<div className="p-2 overflow-y-scroll h-full">
 								{data?.posts.map(post => (
 									<SharePostComp {...post} key={post.id} onSelect={onSelect} />
 								))}
 							</div>
-							<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+							<button className="bnt btn-primary font-bold py-2 px-4 rounded w-full">
 								{isLoading ? "Loading..." : isSuccess ? "Copied!" : "Share"}
 							</button>
 						</form>
@@ -96,10 +125,21 @@ export default Share;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
 	const groupId = ctx.query.groupId as string;
+	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+			},
+		};
+	}
 
 	return {
 		props: {
 			groupId,
+			session,
 		},
 	};
 };
