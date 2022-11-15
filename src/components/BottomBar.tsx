@@ -68,7 +68,7 @@ const BottomBar: FC<Props> = ({ session }) => {
 			)}
 			{session && session.user && (
 				<div className="p-5 justify-center self-center">
-					<h1 className="text-sm font-bold flex justify-center items-center">
+					<h1 className="text-xs font-bold flex justify-center items-center">
 						<button onClick={() => signOut()}>Sign Out</button>
 					</h1>
 				</div>

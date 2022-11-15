@@ -42,7 +42,13 @@ const LikesComp: FC<Props> = ({ postId }) => {
 	}
 	return (
 		<div className="btn btn-secondary" onClick={() => mutate({ postId })}>
-			<Image src={liked ? Liked : NotLiked} width="20" height="20" alt="Icon" />
+			<label className="swap swap-rotate">
+				<input type="checkbox" checked={liked} />
+
+				<Image src={Liked} width="20" height="20" alt="Icon" className="swap-on" />
+
+				<Image src={NotLiked} width="20" height="20" alt="Icon" className="swap-off" />
+			</label>
 			<p className="ml-2">{numLikes || 0}</p>
 		</div>
 	);

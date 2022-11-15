@@ -29,9 +29,6 @@ export function GroupTitle({ name, description, groupId }: Props) {
 				</div>
 			</div>
 			<div className="navbar-end">
-				<Link href={`/posts/create?groupId=${groupId}`} className="btn">
-					<Plus dimensions={20} />
-				</Link>
 				{!isLoading && data && (
 					<Link href={`/groups/${groupId}/admin`} className="btn btn-primary" onClick={goToAdmin}>
 						Admin

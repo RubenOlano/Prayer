@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { FC, Fragment } from "react";
 import { trpc } from "../utils/trpc";
-import { Share } from "./Icons";
+import { Plus, Share } from "./Icons";
 import PostCard from "./PostCard";
 import RefreshPosts from "./RefreshPosts";
 
@@ -20,6 +20,15 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 	if (isLoading) {
 		return (
 			<div className="align-middle text-center pb-40">
+				<div className="btn-group animate-pulse">
+					<Link href={`/posts/create?groupId=${groupId}`} className="btn btn-disabled">
+						<Plus dimensions={20} />
+					</Link>
+					<RefreshPosts.Skeleton />
+					<Link href={`/groups/${groupId}/share`} className="btn btn-disabled">
+						<Share dimensions={15} />
+					</Link>
+				</div>
 				<div className="md:grid md:grid-cols-3">
 					{Array.from({ length: 10 }).map((_, i) => (
 						<PostCard.Skeleton key={i} />
@@ -39,6 +48,9 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 	return (
 		<div className="align-middle text-center pb-40">
 			<div className="btn-group">
+				<Link href={`/posts/create?groupId=${groupId}`} className="btn">
+					<Plus dimensions={20} />
+				</Link>
 				<RefreshPosts />
 				<Link href={`/groups/${groupId}/share`} className="btn">
 					<Share dimensions={15} />

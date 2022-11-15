@@ -2,7 +2,7 @@ import React from "react";
 import { trpc } from "../utils/trpc";
 import { Refresh } from "./Icons";
 
-const RefreshPosts = () => {
+function RefreshPosts() {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const utils = trpc.useContext();
 	const onClick = async () => {
@@ -11,17 +11,18 @@ const RefreshPosts = () => {
 		setIsLoading(false);
 	};
 	return (
-		<button
-			className={`btn ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-			type="button"
-			onClick={onClick}
-			disabled={isLoading}
-		>
-			<div className={isLoading ? "animate-spin" : ""}>
-				<Refresh dimensions={20} />
-			</div>
+		<button className={`btn ${isLoading && "loading"}`} type="button" onClick={onClick} disabled={isLoading}>
+			{!isLoading && <Refresh dimensions={20} />}
+		</button>
+	);
+}
+
+export default RefreshPosts;
+
+RefreshPosts.Skeleton = function RefreshPostsSkeleton() {
+	return (
+		<button className="btn btn-disabled" type="button">
+			<Refresh dimensions={20} />
 		</button>
 	);
 };
-
-export default RefreshPosts;

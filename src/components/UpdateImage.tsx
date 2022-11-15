@@ -79,12 +79,12 @@ function UpdateImage({ user }: Props) {
 
 UpdateImage.Skeleton = function UpdateImageSkeleton() {
 	return (
-		<div className="mb-2 flex items-center align-middle justify-center animate-pulse">
+		<div className="mb-2 flex items-center align-middle justify-center">
 			<div className="flex flex-col items-center justify-center ">
 				<span className="block mb-2">Choose profile photo</span>
-				<div className="bg-gray-300 w-24 h-25 block" />
+				<Image src={getImage()} alt="user image" width={100} height={100} />
 				<input
-					className={`file-input `}
+					className={`file-input file-input-xs md:file-input-md`}
 					type="file"
 					name="image"
 					multiple={false}
