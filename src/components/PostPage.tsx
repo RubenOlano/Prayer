@@ -18,7 +18,7 @@ interface Props {
 function PostPage(post: Props) {
 	const util = trpc.useContext();
 	return (
-		<div className="md:w-[50%] card card-normal justify-center text-center bg-base-200">
+		<div className="md:w-[50%] card card-normal justify-center text-center bg-base-300">
 			<div className="card-title justify-center flex-col">
 				<h1 className="md:text-2xl font-bold text-center">{post.title}</h1>
 				<p className="md:text-xl text-sm text-center">{post.content}</p>
@@ -61,17 +61,9 @@ PostPage.Skeleton = function PostPageSkeleton() {
 				<h1 className="md:text-2xl font-bold text-center" />
 				<p className="md:text-xl text-sm text-center" />
 			</div>
-			<br />
 			<div className="card-body justify-center">
 				<h2 className="text-sm md:text-xl font-bold">Author</h2>
 				<p className="text-base md:text-lg" />
-				<Image
-					src={getImage()}
-					alt="User Image"
-					width={40}
-					height={40}
-					className="md:h-24 md:w-24 avatar rounded-full self-center"
-				/>
 			</div>
 			<p />
 			<button className="btn btn-primary">View Group</button>

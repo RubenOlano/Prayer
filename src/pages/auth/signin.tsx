@@ -38,6 +38,8 @@ export default SignIn;
 export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
 	const providers = await getProviders();
+	console.log(providers);
+
 	if (session) {
 		return {
 			redirect: {

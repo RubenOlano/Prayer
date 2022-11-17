@@ -1,14 +1,9 @@
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import React from "react";
 import GroupList from "../../components/GroupList";
-import { createContext } from "../../server/router/context";
-import { appRouter } from "../../server/router/_app";
 import { options } from "../api/auth/[...nextauth]";
-import superjson from "superjson";
 
 const Groups = () => {
 	return (
@@ -40,18 +35,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
 		};
 	}
 
-	const ssg = await createProxySSGHelpers({
-		ctx: await createContext(context as unknown as CreateNextContextOptions),
-		router: appRouter,
-		transformer: superjson,
-	});
-
-	ssg.groups.getGroups.prefetch();
-
 	return {
 		props: {
 			session,
-			trpcState: ssg.dehydrate(),
 		},
 	};
 };
