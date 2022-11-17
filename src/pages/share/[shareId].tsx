@@ -1,7 +1,12 @@
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import SharedPostsComp from "../../components/SharedPostsComp";
+import { appRouter } from "../../server/router/_app";
 import { trpc } from "../../utils/trpc";
+import superjson from "superjson";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { createContext } from "../../server/router/context";
 
 interface Props {
 	shareId: string;
@@ -61,6 +66,11 @@ const Share: NextPage<Props> = ({ shareId }) => {
 export default Share;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
+	const ssg = await createProxySSGHelpers({
+		ctx: await createContext(ctx as unknown as CreateNextContextOptions),
+		router: appRouter,
+		transformer: superjson,
+	});
 	const shareId = ctx.query.shareId as string;
 
 	if (!shareId) {
@@ -69,7 +79,9 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 		};
 	}
 
+	await ssg.shares.getSharedPage.prefetch({ shareId });
+
 	return {
-		props: { shareId },
+		props: { shareId, trpcState: ssg.dehydrate() },
 	};
 };

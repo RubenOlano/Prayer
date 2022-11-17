@@ -5,6 +5,11 @@ import { trpc } from "../../../utils/trpc";
 import { unstable_getServerSession } from "next-auth";
 import { options } from "../../api/auth/[...nextauth]";
 import PrayerSection from "../../../components/PrayerSection";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createContext } from "../../../server/router/context";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { appRouter } from "../../../server/router/_app";
+import superjson from "superjson";
 
 interface Props {
 	groupId: string;
@@ -56,10 +61,21 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 		};
 	}
 
+	const ssg = createProxySSGHelpers({
+		ctx: await createContext(ctx as unknown as CreateNextContextOptions),
+		router: appRouter,
+		transformer: superjson,
+	});
+
+	await ssg.groups.getGroup.prefetch({ id: groupId });
+	await ssg.posts.getGroupPosts.prefetchInfinite({ groupId });
+	await ssg.groups.fetchUserIsAdmin.prefetch({ groupId });
+
 	return {
 		props: {
 			groupId,
 			session,
+			trpcState: ssg.dehydrate(),
 		},
 	};
 };

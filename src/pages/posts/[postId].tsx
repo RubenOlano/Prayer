@@ -1,10 +1,15 @@
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import Comments from "../../components/Comments";
 import PostPage from "../../components/PostPage";
+import { createContext } from "../../server/router/context";
+import { appRouter } from "../../server/router/_app";
 import { trpc } from "../../utils/trpc";
 import { options } from "../api/auth/[...nextauth]";
+import superjson from "superjson";
 
 interface Props {
 	id: string;
@@ -85,6 +90,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 			},
 		};
 	}
+
+	const ssg = await createProxySSGHelpers({
+		ctx: await createContext(ctx as unknown as CreateNextContextOptions),
+		router: appRouter,
+		transformer: superjson,
+	});
 	const params = ctx.params;
 	if (!params || !params.postId) {
 		return {
@@ -94,10 +105,17 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 			},
 		};
 	}
+
+	await ssg.posts.getPost.prefetch({ postId: params.postId as string });
+	await ssg.comments.fetchAllComments.prefetch({ postId: params.postId as string });
+	await ssg.posts.getUserLiked.prefetch({ postId: params.postId as string });
+	await ssg.posts.getNumberOfLikes.prefetch({ postId: params.postId as string });
+
 	return {
 		props: {
 			id: params.postId,
 			session,
+			trpcState: ssg.dehydrate(),
 		},
 	};
 };
