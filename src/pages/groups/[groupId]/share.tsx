@@ -14,7 +14,7 @@ interface Props {
 
 const Share: NextPage<Props> = ({ groupId }) => {
 	const [selectedPosts, setSelectedPosts] = React.useState<Set<string>>(new Set());
-	const { data, isLoading: postsLoading } = trpc.posts.getGroupPosts.useQuery({ groupId });
+	const { data, isLoading: postsLoading } = trpc.posts.getGroupPosts.useInfiniteQuery({ groupId });
 
 	const { mutate, isLoading, isSuccess } = trpc.posts.sharePosts.useMutation({
 		onSuccess: async res => {
@@ -56,9 +56,9 @@ const Share: NextPage<Props> = ({ groupId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<main>
-					<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
+					<div className="md:pl-40 md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
 						<ShareHeader />
-						<div className="col-start-2 p-2 justify-center backdrop-sepia-0 bg-white/70 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-md">
+						<div className="col-start-2 p-2 justify-center rounded-md">
 							<form className="form-control">
 								{Array.from({ length: 5 }).map((_, i) => (
 									<SharePostComp.Skeleton key={i} />
@@ -68,6 +68,44 @@ const Share: NextPage<Props> = ({ groupId }) => {
 								</button>
 							</form>
 						</div>
+					</div>
+				</main>
+			</>
+		);
+	}
+
+	if (!data) {
+		return (
+			<>
+				<Head>
+					<title>Group Pray - Share</title>
+					<meta name="description" content="Pray with company" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<main>
+					<div className="md:pl-40 md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
+						<ShareHeader />
+						<div className="col-start-2 p-2 justify-center rounded-md">No posts to share</div>
+					</div>
+				</main>
+			</>
+		);
+	}
+
+	if (!data.pages) {
+		console.log(data);
+
+		return (
+			<>
+				<Head>
+					<title>Group Pray - Share</title>
+					<meta name="description" content="Pray with company" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<main>
+					<div className="md:pl-40 md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
+						<ShareHeader />
+						<div className="col-start-2 p-2 justify-center">No posts to share</div>
 					</div>
 				</main>
 			</>
@@ -101,14 +139,16 @@ const Share: NextPage<Props> = ({ groupId }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
+				<div className="md:pl-40 md:grid md:grid-cols-3 md:p-5 p-2 h-[85vh] ">
 					<ShareHeader />
 					<div className="col-start-2 p-2 justify-center ">
 						<form onSubmit={onSubmit}>
 							<div className="p-2 overflow-y-scroll h-full">
-								{data?.posts?.map(post => (
-									<SharePostComp {...post} key={post.id} onSelect={onSelect} />
-								))}
+								{data.pages.map(page =>
+									page.posts.map(post => (
+										<SharePostComp key={post.id} {...post} onSelect={onSelect} />
+									))
+								)}
 							</div>
 							<button className="bnt btn-primary font-bold py-2 px-4 rounded w-full">
 								{isLoading ? "Loading..." : isSuccess ? "Copied!" : "Share"}

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CreateCommentSchema } from "../schema/comments.schema";
 import { trpc } from "../utils/trpc";
@@ -7,7 +7,7 @@ interface Props {
 	postId: string;
 }
 
-const AddCommentButton: FC<Props> = ({ postId }) => {
+function AddCommentButton({ postId }: Props) {
 	const utils = trpc.useContext();
 	const [clicked, setClicked] = useState(false);
 	const {
@@ -18,14 +18,14 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 	} = useForm<CreateCommentSchema>();
 	const { mutate, isLoading } = trpc.comments.createComments.useMutation({
 		onSuccess: async () => {
-			await utils.comments.fetchAllComments.invalidate({ postId });
 			await utils.comments.fetchAllComments.refetch({ postId });
-			setClicked(false);
 			reset();
 		},
 	});
 
 	const onSubmit = (data: CreateCommentSchema) => {
+		setClicked(false);
+
 		mutate({
 			...data,
 			postId,
@@ -60,6 +60,10 @@ const AddCommentButton: FC<Props> = ({ postId }) => {
 			</button>
 		);
 	}
-};
+}
 
 export default AddCommentButton;
+
+AddCommentButton.Skeleton = function AddCommentButtonSkeleton() {
+	return <button className={`btn btn-primary`}>Add Comment</button>;
+};

@@ -34,8 +34,12 @@ const Post: NextPage<Props> = ({ id }) => {
 				<main>
 					<div className="md:pl-40 m-5 pb-40">
 						<div className="md:flex md:justify-between md:m-5">
-							<PostPage.Skeleton />
-							<Comments.Skeleton />
+							<div>
+								<PostPage.Skeleton />
+							</div>
+							<div>
+								<Comments.Skeleton />
+							</div>
 						</div>
 					</div>
 				</main>
@@ -64,9 +68,11 @@ const Post: NextPage<Props> = ({ id }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:pl-40 m-5 pb-40">
-					<div className="md:flex md:justify-between md:m-5">
+				<div className="md:pl-40 m-5 pb-40 md:flex justify-between">
+					<div className="md:flex md:m-5 h-96 ">
 						<PostPage {...data} />
+					</div>
+					<div className="md:flex md:m-5">
 						<Comments postId={id} />
 					</div>
 				</div>

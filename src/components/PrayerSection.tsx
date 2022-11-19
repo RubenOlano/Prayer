@@ -38,13 +38,42 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 		);
 	}
 
-	if (!data || !data.pages) {
+	if (!data) {
 		return (
 			<div className="p-5">
 				<h1 className="p-5">No posts found</h1>
+				<div className="btn-group">
+					<Link href={`/posts/create?groupId=${groupId}`} className="btn">
+						<Plus dimensions={20} />
+					</Link>
+					<RefreshPosts />
+					<Link href={`/groups/${groupId}/share`} className="btn">
+						<Share dimensions={15} />
+					</Link>
+				</div>
 			</div>
 		);
 	}
+
+	if (!data.pages) {
+		console.log(data);
+
+		return (
+			<div className="p-5">
+				<h1 className="p-5">No posts found</h1>
+				<div className="btn-group">
+					<Link href={`/posts/create?groupId=${groupId}`} className="btn">
+						<Plus dimensions={20} />
+					</Link>
+					<RefreshPosts />
+					<Link href={`/groups/${groupId}/share`} className="btn">
+						<Share dimensions={15} />
+					</Link>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="align-middle text-center pb-40">
 			<div className="btn-group">
