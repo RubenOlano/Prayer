@@ -1,6 +1,5 @@
 import { GroupAdmins } from "@prisma/client";
 import Image from "next/image";
-import { FC } from "react";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
@@ -14,13 +13,13 @@ const x = (
 	</svg>
 );
 
-const AdminComp: FC<Props> = ({ admin }) => {
+function AdminComp({ admin }: Props) {
 	const utils = trpc.useContext();
 	const { data: user } = trpc.users.getUser.useQuery({ id: admin.userId });
 
 	const { mutate, isLoading } = trpc.groups.removeGroupAdmin.useMutation({
 		onSuccess: async () => {
-			await utils.groups.fetchGroupAdmins.invalidate();
+			await utils.groups.fetchGroupAdmins.refetch({ groupId: admin.groupId });
 		},
 	});
 	if (!user) {
@@ -34,13 +33,11 @@ const AdminComp: FC<Props> = ({ admin }) => {
 				alt={user.name || "Member"}
 				width={30}
 				height={30}
-				className="rounded-full"
+				className="rounded-full avatar"
 			/>
 			<h1 className="text-center ml-2">{user.name || "Member"}</h1>
 			<button
-				className={`ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ${
-					isLoading ? "opacity-50 cursor-not-allowed" : ""
-				}`}
+				className={`btn btn-error btn-xs ${isLoading && "disabled"}`}
 				onClick={() => {
 					mutate({ adminId: admin.id });
 				}}
@@ -49,6 +46,16 @@ const AdminComp: FC<Props> = ({ admin }) => {
 			</button>
 		</div>
 	);
-};
+}
 
 export default AdminComp;
+
+AdminComp.Skeleton = function AdminCompSkeleton() {
+	return (
+		<div className="flex flex-row items-center justify-center m-2">
+			<Image src={getImage()} alt={"Member"} width={30} height={30} className="rounded-full avatar" />
+			<h1 className="text-center ml-2">{"Member"}</h1>
+			<button className={`btn btn-error btn-xs disabled`}>{x}</button>
+		</div>
+	);
+};

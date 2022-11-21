@@ -1,11 +1,10 @@
-import { FC } from "react";
 import { iosDetect } from "../utils/checkIOS";
 import { trpc } from "../utils/trpc";
 
 interface Props {
 	groupId: string;
 }
-const InviteButton: FC<Props> = ({ groupId }) => {
+function InviteButton({ groupId }: Props) {
 	const { mutate, isLoading, isSuccess } = trpc.invites.createInvite.useMutation({
 		onSuccess: async ({ id }) => {
 			if (iosDetect(window.navigator)) {
@@ -41,14 +40,16 @@ const InviteButton: FC<Props> = ({ groupId }) => {
 	};
 	return (
 		<button
-			className={`md:ml-2 bg-teal-500 hover:bg-teal-700 text-white font-bold md:py-1 md:px-2 rounded ${
-				isLoading ? "opacity-50 cursor-not-allowed" : ""
-			}`}
+			className={`btn btn-success ${isLoading && "loading disabled"} ${isSuccess && "btn-ghost"}`}
 			onClick={onClick}
 		>
-			{isSuccess ? "Copied to Clipboard!" : "Generate Invite Link"}
+			{isSuccess ? "Copied!" : "Invite"}
 		</button>
 	);
-};
+}
 
 export default InviteButton;
+
+InviteButton.Skeleton = function InviteButtonSkeleton() {
+	return <button className={`btn btn-success disabled btn-ghost`}>Invite</button>;
+};

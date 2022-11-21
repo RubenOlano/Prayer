@@ -8,8 +8,10 @@ const AdminRegUsers = () => {
 
 	if (isLoading) {
 		return (
-			<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
-				Loading...
+			<div className="flex flex-col">
+				{Array.from({ length: 2 }).map((_, i) => (
+					<AdminUserComp.Skeleton key={i} />
+				))}
 			</div>
 		);
 	}
@@ -22,7 +24,7 @@ const AdminRegUsers = () => {
 	}
 
 	return (
-		<div className="flex flex-col flex-wrap justify-center items-center overflow-y-scroll max-h-[50vh]">
+		<div className="flex flex-col">
 			{data.map(member => (
 				<AdminUserComp key={member.id} member={member} />
 			))}
