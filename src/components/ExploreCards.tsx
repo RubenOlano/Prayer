@@ -1,6 +1,5 @@
 import { Group, GroupAdmins, GroupMember, User } from "@prisma/client";
 import Image from "next/image";
-import { FC } from "react";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
@@ -18,7 +17,7 @@ interface Props {
 	};
 }
 
-const ExploreCards: FC<Props> = ({ group }) => {
+function ExploreCards({ group }: Props) {
 	const utils = trpc.useContext();
 	const { mutate, isLoading, isSuccess } = trpc.groups.joinGroup.useMutation({
 		onSuccess: async () => {
@@ -56,6 +55,30 @@ const ExploreCards: FC<Props> = ({ group }) => {
 			</div>
 		</div>
 	);
-};
+}
 
 export default ExploreCards;
+
+ExploreCards.Skeleton = function ExploreCardsSkeleton() {
+	return (
+		<div className="card bg-base-300 animate-pulse">
+			<div className="card-body">
+				<div className="card-title" />
+				<div className="text-gray-500" />
+				<div className="text-gray-500" />
+				<div>
+					<Image
+						src={getImage()}
+						alt="Picture of the author"
+						width={50}
+						height={50}
+						className="rounded-full avatar"
+					/>
+				</div>
+				<div className="card-actions justify-end">
+					<button className="btn btn-primary disabled">Join</button>
+				</div>
+			</div>
+		</div>
+	);
+};
