@@ -93,8 +93,6 @@ const Share: NextPage<Props> = ({ groupId }) => {
 	}
 
 	if (!data.pages) {
-		console.log(data);
-
 		return (
 			<>
 				<Head>

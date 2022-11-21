@@ -7,6 +7,7 @@ export const createGroupSchema = z.object({
 		.describe("Name")
 		.refine(name => name.length > 0),
 	description: z.string().optional(),
+	isPrivate: z.boolean().optional(),
 });
 
 export type createGroupInput = z.TypeOf<typeof createGroupSchema>;

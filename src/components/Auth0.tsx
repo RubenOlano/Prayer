@@ -1,5 +1,5 @@
 import { ClientSafeProvider, signIn } from "next-auth/react";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { FC } from "react";
 
 interface Props {
@@ -7,6 +7,7 @@ interface Props {
 }
 
 const Auth0: FC<Props> = ({ provider }) => {
+	const router = useRouter();
 	const callbackUrl = router.query.callbackUrl as string;
 
 	const onClick = async () => {

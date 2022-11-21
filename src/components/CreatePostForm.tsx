@@ -16,7 +16,7 @@ const CreatePostForm = () => {
 		return null;
 	}
 	const utils = trpc.useContext();
-	const { mutate, isLoading } = trpc.posts.createPost.useMutation({
+	const { mutate, isLoading, isSuccess } = trpc.posts.createPost.useMutation({
 		onSuccess: async res => {
 			await utils.posts.getAuthorPosts.invalidate();
 			await utils.posts.getGroupPosts.invalidate({ groupId: groupId as string });
@@ -26,46 +26,49 @@ const CreatePostForm = () => {
 	});
 
 	const onSubmit = (data: createPostInput) => {
-		console.log(data);
 		mutate({ ...data, groupId: groupId as string });
 		reset();
 	};
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="form-control flex flex-col">
-			<label className="label" htmlFor="title">
-				Title
+		<form onSubmit={handleSubmit(onSubmit)} className="form-control">
+			<label className="label">
+				<span className="label-text">Title</span>
+				<input
+					type="text"
+					id="title"
+					placeholder="Title"
+					className={`input input-sm md:input-md ${errors.title && "input-error"}`}
+					disabled={isLoading}
+					{...register("title", { required: true })}
+				/>
 			</label>
-			<input
-				type="text"
-				id="title"
-				placeholder="Title"
-				className="input input-bordered w-full"
-				disabled={isLoading}
-				{...register("title", { required: true })}
-			/>
-			{errors.title && <p className="text-red-500 text-xs italic">Title is required</p>}
-			<label htmlFor="content">Content</label>
-			<textarea
-				id="content"
-				placeholder="Enter your prayer request here"
-				className="textarea textarea-bordered"
-				disabled={isLoading}
-				{...register("content", { required: true })}
-			/>
-			{errors.content && <p>Content is required</p>}
-			<div>
-				<label htmlFor="Anonymous">Make anonymous?</label>
+			{errors.title && <span className="text-error">Title is required</span>}
+			<label className="label">
+				<span className="label-text">Body</span>
+				<textarea
+					id="content"
+					placeholder="Enter your prayer request here"
+					className={`textarea ${errors.content && "textarea-error"}`}
+					disabled={isLoading}
+					{...register("content", { required: true })}
+				/>
+			</label>
+			{errors.content && <span className="text-error">Content is required</span>}
+			<label className="label">
+				<span className="label-text">Anonymous?</span>
 				<input
 					type="checkbox"
 					className="checkbox checkbox-primary flex justify-center"
-					placeholder="Make Anonymous?"
 					disabled={isLoading}
 					{...register("anonymous", { required: false })}
 				/>
-				<button className={`btn btn-primary mt-2 ${isLoading ? "loading" : ""}`} type="submit">
-					Submit
-				</button>
-			</div>
+			</label>
+			<button
+				className={`btn btn-primary mt-2 ${isLoading ? "loading" : isSuccess && "btn-success disabled"}`}
+				type="submit"
+			>
+				{isLoading ? "Loading..." : isSuccess ? "Success!" : "Submit"}
+			</button>
 		</form>
 	);
 };

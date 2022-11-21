@@ -1,6 +1,5 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createGroupInput } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
@@ -8,7 +7,6 @@ import { trpc } from "../utils/trpc";
 const CreateGroupForm = () => {
 	const { data: session } = useSession();
 	const utils = trpc.useContext();
-	const [text, setText] = useState("Create Group");
 
 	const {
 		register,
@@ -32,7 +30,7 @@ const CreateGroupForm = () => {
 
 	const user = session.user;
 
-	const { mutate, isLoading } = trpc.groups.registerGroup.useMutation({
+	const { mutate, isLoading, isSuccess } = trpc.groups.registerGroup.useMutation({
 		onSuccess: async data => {
 			await utils.groups.getGroups.invalidate();
 			await utils.groups.getGroups.prefetch();
@@ -42,7 +40,6 @@ const CreateGroupForm = () => {
 	});
 
 	const onSubmit = (data: createGroupInput) => {
-		setText("Loading...");
 		if (!user) return signIn(undefined, { callbackUrl: "/groups/create" });
 		mutate({
 			...data,
@@ -51,31 +48,45 @@ const CreateGroupForm = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full m-2">
-			<input
-				type="text"
-				placeholder="Group Name"
-				className="border-2 border-gray-300 p-2 rounded-md flex"
-				disabled={isLoading}
-				{...register("name", { required: true })}
-			/>
-			{errors.name && <span>This field is required</span>}
-			<input
-				type="area"
-				placeholder="Group Description"
-				className="border-2 border-gray-300 p-2 rounded-md flex"
-				disabled={isLoading}
-				{...register("description")}
-			/>
-			{errors.description && <span>This field is required</span>}
+		<form onSubmit={handleSubmit(onSubmit)} className="form-control">
+			<label className="label">
+				<span className="label-text">Group Name</span>
+				<input
+					type="text"
+					placeholder="Name"
+					className={`input input-sm md:input-md ${errors.name && "input-error"}`}
+					disabled={isLoading}
+					{...register("name", { required: true })}
+				/>
+			</label>
+			{errors.name && <span className="text-error">This field is required</span>}
+			<label className="label">
+				<span className="label-text">Group Description</span>
+				<input
+					type="area"
+					placeholder="Description"
+					className={`input md:input-md input-sm ${errors.description && "input-error"}`}
+					disabled={isLoading}
+					{...register("description")}
+				/>
+			</label>
+			{errors.description && <span className="text-error">This field is required</span>}
+			<label className="label">
+				<span className="label-text">Private Group?</span>
+				<span className="label-text">(will not show up in explore)</span>
+				<input
+					type="checkbox"
+					className="checkbox checkbox-primary"
+					disabled={isLoading}
+					{...register("isPrivate")}
+				/>
+			</label>
 			<button
-				className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded flex justify-center items-center ${
-					isLoading ? "opacity-50 cursor-not-allowed" : ""
-				}`}
+				className={`btn btn-primary btn-sm md:btn-md ${isLoading && "disabled"}`}
 				type="submit"
 				disabled={isLoading}
 			>
-				{text}
+				{isLoading ? "Loading..." : isSuccess ? "Created Group!" : "Create Group"}
 			</button>
 		</form>
 	);

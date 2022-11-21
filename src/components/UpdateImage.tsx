@@ -49,7 +49,7 @@ function UpdateImage({ user }: Props) {
 					mutate({ image: data.secure_url, id: user.id });
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err);
 				});
 		},
 

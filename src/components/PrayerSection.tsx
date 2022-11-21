@@ -56,8 +56,6 @@ const PrayerSection: FC<Props> = ({ groupId }) => {
 	}
 
 	if (!data.pages) {
-		console.log(data);
-
 		return (
 			<div className="p-5">
 				<h1 className="p-5">No posts found</h1>

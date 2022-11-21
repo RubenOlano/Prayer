@@ -16,7 +16,7 @@ import {
 
 export const groupRouter = router({
 	registerGroup: protectedProcedure.input(createGroupSchema).mutation(async ({ ctx, input }) => {
-		const { name, description, userId } = input;
+		const { name, description, userId, isPrivate } = input;
 		try {
 			const group = await ctx.prisma.group.create({
 				data: {
@@ -32,6 +32,7 @@ export const groupRouter = router({
 							userId,
 						},
 					},
+					private: isPrivate ?? true,
 				},
 				include: {
 					GroupMembers: true,
@@ -514,13 +515,29 @@ export const groupRouter = router({
 			// Get all groups that the user is not a member of
 			const groups = await ctx.prisma.group.findMany({
 				where: {
-					NOT: {
-						GroupMembers: {
-							some: {
-								userId: userId,
+					AND: [
+						{
+							NOT: {
+								GroupMembers: {
+									some: {
+										userId,
+									},
+								},
 							},
 						},
-					},
+						{
+							NOT: {
+								GroupAdmins: {
+									some: {
+										userId,
+									},
+								},
+							},
+						},
+						{
+							private: false,
+						},
+					],
 				},
 				include: {
 					GroupMembers: {
