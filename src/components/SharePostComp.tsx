@@ -9,7 +9,7 @@ interface Props {
 	id: string;
 	createdAt: Date;
 	groupId: string;
-	authorImage: string | undefined;
+	authorImage?: string | undefined;
 }
 
 function SharePostComp({ onSelect, ...post }: Props) {
