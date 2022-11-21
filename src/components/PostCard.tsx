@@ -12,7 +12,7 @@ interface Props {
 	content: string;
 	createdAt: Date;
 	groupId: string;
-	authorImage?: string;
+	authorImage?: string | null;
 }
 
 function PostCard(post: Props) {
