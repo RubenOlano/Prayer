@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { trpc } from "../../../utils/trpc";
 import AdminUserList from "../../../components/AdminUserList";
 import AdminPosts from "../../../components/AdminPosts";

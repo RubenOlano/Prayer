@@ -25,7 +25,7 @@ const AdminUserComp: FC<Props> = ({ member }) => {
 	});
 
 	const onclick = () => {
-		mutate({ memberId: member.id });
+		mutate({ memberId: member.id, groupId: member.groupId });
 	};
 
 	if (!user) {

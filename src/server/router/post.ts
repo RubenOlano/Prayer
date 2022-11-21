@@ -168,7 +168,7 @@ export const postRouter = router({
 					id: post.id,
 					createdAt: post.createdAt,
 					groupId: post.groupId,
-					authorImage: post.author.image ?? undefined,
+					authorImage: post.anonymous ? null : post.author.image,
 				};
 			});
 

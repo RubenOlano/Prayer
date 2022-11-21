@@ -101,6 +101,7 @@ model Group {
   GroupMembers GroupMember[]
   GroupAdmins  GroupAdmins[]
   GroupInvites GroupInvites[]
+  private      Boolean        @default(true)
 }
 
 model GroupMember {

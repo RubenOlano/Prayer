@@ -17,6 +17,6 @@ export default defineNextConfig({
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
-		domains: ["lh3.googleusercontent.com", "cdn.pixabay.com", "res.cloudinary.com"],
+		domains: ["lh3.googleusercontent.com", "cdn.pixabay.com", "res.cloudinary.com", "s.gravatar.com"],
 	},
 });

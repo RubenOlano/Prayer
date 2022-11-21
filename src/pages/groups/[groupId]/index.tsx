@@ -5,6 +5,7 @@ import { trpc } from "../../../utils/trpc";
 import { unstable_getServerSession } from "next-auth";
 import { options } from "../../api/auth/[...nextauth]";
 import PrayerSection from "../../../components/PrayerSection";
+import { useRouter } from "next/router";
 
 interface Props {
 	groupId: string;
@@ -12,6 +13,7 @@ interface Props {
 
 const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 	const util = trpc.useContext();
+	const router = useRouter();
 
 	const { data } = trpc.groups.getGroup.useQuery(
 		{ id: groupId },
@@ -19,6 +21,11 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 			onSuccess: async () => {
 				await util.groups.fetchUserIsAdmin.prefetch({ groupId });
 				await util.posts.getGroupPosts.prefetchInfinite({ groupId });
+			},
+			onError: err => {
+				if (err.message === "Group not found") {
+					router.replace("/");
+				}
 			},
 		}
 	);

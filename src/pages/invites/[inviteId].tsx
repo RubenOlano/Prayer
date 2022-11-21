@@ -12,7 +12,16 @@ interface Props {
 const Invites: NextPage<Props> = ({ inviteId }) => {
 	const router = useRouter();
 	const { data, isLoading } = trpc.invites.getGroupFromInvite.useQuery({ inviteId });
-
+	const { mutate } = trpc.invites.addUserToGroup.useMutation({
+		onSuccess: () => {
+			router.replace("/groups/" + data?.id);
+		},
+		onError: e => {
+			if (e.data?.code === "CONFLICT") {
+				router.replace("/groups/" + data?.id);
+			}
+		},
+	});
 	if (isLoading) {
 		return (
 			<>
@@ -41,34 +50,6 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 		);
 	}
 
-	const { mutate } = trpc.invites.addUserToGroup.useMutation({
-		onSuccess: () => {
-			router.replace("/groups/" + data.id);
-		},
-		onError: e => {
-			if (e.data?.code === "CONFLICT") {
-				router.replace("/groups/" + data.id);
-			}
-		},
-	});
-
-	if (!data) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Invites</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main>
-					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">
-						Invite not found
-					</div>
-				</main>
-			</>
-		);
-	}
-
 	return (
 		<>
 			<Head>
@@ -85,7 +66,7 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 						onClick={() =>
 							mutate({
-								inviteId: inviteId as string,
+								inviteId,
 							})
 						}
 					>

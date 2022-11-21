@@ -33,6 +33,7 @@ export const removeGroupAdminSchema = z.object({
 
 export const removeUserFromGroupSchema = z.object({
 	memberId: z.string(),
+	groupId: z.string(),
 });
 
 export const deleteGroupSchema = z.object({
@@ -41,4 +42,8 @@ export const deleteGroupSchema = z.object({
 
 export const addGroupAdminSchema = z.object({
 	memberId: z.string(),
+});
+
+export const joinGroupSchema = z.object({
+	groupId: z.string(),
 });

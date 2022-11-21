@@ -13,6 +13,8 @@ const HouseFill = dynamic(() => import("./Icons").then(mod => mod.HouseFill));
 const HouseOutline = dynamic(() => import("./Icons").then(mod => mod.HouseOutline));
 const PeopleOutline = dynamic(() => import("./Icons").then(mod => mod.PeopleOutline));
 const PeopleFill = dynamic(() => import("./Icons").then(mod => mod.PeopleFill));
+const CompassOutline = dynamic(() => import("./Icons").then(mod => mod.Compass));
+const CompassFill = dynamic(() => import("./Icons").then(mod => mod.CompassFill));
 
 interface Props {
 	session: Session;
@@ -59,7 +61,13 @@ const SideBar: FC<Props> = ({ session }) => {
 					Groups
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center  h-1/6 btn-ghost" href="/profile" onClick={clickProfile}>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/explore">
+				<h1 className="text-xl font-bold flex justify-center items-center">
+					{path === "explore" ? <CompassFill /> : <CompassOutline />}
+					Explore
+				</h1>
+			</Link>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/profile" onClick={clickProfile}>
 				{session && session.user ? (
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<Image
@@ -81,15 +89,8 @@ const SideBar: FC<Props> = ({ session }) => {
 				)}
 			</Link>
 			{session && session.user && (
-				<div className="flex flex-row justify-center  h-1/6 btn-ghost">
-					<h1 className="text-xl font-bold flex justify-center items-center">
-						<button
-							className="text-xl font-bold flex justify-center items-center"
-							onClick={() => signOut()}
-						>
-							Sign Out
-						</button>
-					</h1>
+				<div className="flex flex-row justify-center h-1/6 btn-ghost cursor-pointer" onClick={() => signOut()}>
+					<h1 className="text-xl font-bold flex justify-center items-center">Sign Out</h1>
 				</div>
 			)}
 		</div>

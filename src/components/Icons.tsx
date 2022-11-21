@@ -126,3 +126,32 @@ export const Share = ({ dimensions }: Props) => (
 		<path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z" />{" "}
 	</svg>
 );
+
+export const Compass = ({ omitPadding }: Props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		className={`${omitPadding ? "" : "mr-2"}`}
+		fill="currentColor"
+		viewBox="0 0 16 16"
+		width="16"
+		height="16"
+	>
+		{" "}
+		<path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />{" "}
+		<path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />{" "}
+	</svg>
+);
+
+export const CompassFill = ({ omitPadding }: Props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		fill="currentColor"
+		viewBox="0 0 16 16"
+		className={`${omitPadding ? "" : "mr-2"}`}
+	>
+		{" "}
+		<path d="M15.5 8.516a7.5 7.5 0 1 1-9.462-7.24A1 1 0 0 1 7 0h2a1 1 0 0 1 .962 1.276 7.503 7.503 0 0 1 5.538 7.24zm-3.61-3.905L6.94 7.439 4.11 12.39l4.95-2.828 2.828-4.95z" />{" "}
+	</svg>
+);

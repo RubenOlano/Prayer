@@ -33,6 +33,7 @@ const MainFeed = () => {
 					))}
 				</Fragment>
 			))}
+			{isFetchingNextPage && Array.from({ length: 2 }).map((_, i) => <PostCard.Skeleton key={i} />)}
 			{!isLoading && (
 				<button
 					onClick={() => fetchNextPage()}

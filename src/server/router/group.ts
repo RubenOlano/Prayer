@@ -9,6 +9,7 @@ import {
 	fetchGroupNonAdminsSchema,
 	fetchGroupSchema,
 	fetchUserIsAdminSchema,
+	joinGroupSchema,
 	removeGroupAdminSchema,
 	removeUserFromGroupSchema,
 } from "../../schema/group.schema";
@@ -121,6 +122,8 @@ export const groupRouter = router({
 					code: "NOT_FOUND",
 					message: "Group not found",
 				});
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -332,7 +335,7 @@ export const groupRouter = router({
 		}
 	}),
 	removeGroupMember: protectedProcedure.input(removeUserFromGroupSchema).mutation(async ({ ctx, input }) => {
-		const { memberId } = input;
+		const { memberId, groupId } = input;
 		try {
 			const groupMember = await ctx.prisma.groupMember.findUnique({
 				where: {
@@ -349,7 +352,7 @@ export const groupRouter = router({
 
 			await ctx.prisma.group.update({
 				where: {
-					id: groupMember.groupId,
+					id: groupId,
 				},
 				data: {
 					GroupMembers: {
@@ -414,6 +417,9 @@ export const groupRouter = router({
 						deleteMany: {},
 					},
 					GroupAdmins: {
+						deleteMany: {},
+					},
+					GroupInvites: {
 						deleteMany: {},
 					},
 				},
@@ -498,6 +504,137 @@ export const groupRouter = router({
 					code: "INTERNAL_SERVER_ERROR",
 					message: "Something went wrong",
 					cause: err,
+				});
+			}
+		}
+	}),
+	getExploreGroups: protectedProcedure.query(async ({ ctx }) => {
+		const userId = ctx.session.user.id;
+		try {
+			// Get all groups that the user is not a member of
+			const groups = await ctx.prisma.group.findMany({
+				where: {
+					NOT: {
+						GroupMembers: {
+							some: {
+								userId: userId,
+							},
+						},
+					},
+				},
+				include: {
+					GroupMembers: {
+						include: {
+							User: true,
+						},
+					},
+					GroupAdmins: {
+						include: {
+							User: true,
+						},
+					},
+					_count: {
+						select: {
+							GroupMembers: true,
+						},
+					},
+				},
+			});
+
+			return groups;
+		} catch (e) {
+			if (e instanceof PrismaClientKnownRequestError) {
+				if (e.code === "P2002") {
+					throw new TRPCError({
+						code: "CONFLICT",
+						message: e.message,
+					});
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						message: e.message,
+					});
+				}
+			} else if (e instanceof TRPCError) {
+				throw e;
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Something went wrong",
+					cause: e,
+				});
+			}
+		}
+	}),
+	joinGroup: protectedProcedure.input(joinGroupSchema).mutation(async ({ ctx, input }) => {
+		const { groupId } = input;
+		const userId = ctx.session.user.id;
+		try {
+			const group = await ctx.prisma.group.findUnique({
+				where: {
+					id: groupId,
+				},
+			});
+
+			if (!group) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Group not found",
+				});
+			}
+
+			const groupMember = await ctx.prisma.groupMember.findUnique({
+				where: {
+					groupId_userId: {
+						groupId,
+						userId,
+					},
+				},
+			});
+
+			if (groupMember) {
+				throw new TRPCError({
+					code: "CONFLICT",
+					message: "You are already a member of this group",
+				});
+			}
+
+			await ctx.prisma.groupMember.create({
+				data: {
+					Group: {
+						connect: {
+							id: groupId,
+						},
+					},
+					User: {
+						connect: {
+							id: userId,
+						},
+					},
+				},
+			});
+
+			return true;
+		} catch (e) {
+			if (e instanceof PrismaClientKnownRequestError) {
+				if (e.code === "P2002") {
+					throw new TRPCError({
+						code: "CONFLICT",
+						message: e.message,
+					});
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						message: e.message,
+					});
+				}
+			} else if (e instanceof TRPCError) {
+				throw e;
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Something went wrong",
+					cause: e,
 				});
 			}
 		}

@@ -7,6 +7,7 @@ import { Session } from "next-auth";
 import { FC } from "react";
 import { signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import { Compass, CompassFill } from "./Icons";
 
 const HouseFill = dynamic(() => import("./Icons").then(mod => mod.HouseFill));
 const HouseOutline = dynamic(() => import("./Icons").then(mod => mod.HouseOutline));
@@ -47,6 +48,9 @@ const BottomBar: FC<Props> = ({ session }) => {
 			</Link>
 			<Link href="/groups" onClick={clickGroups} className={`${path === "groups" && "active"}`}>
 				{path === "groups" ? <PeopleFill omitPadding /> : <PeopleOutline omitPadding />}
+			</Link>
+			<Link href="explore" className={`${path === "explore" && "active"}`}>
+				{path === "explore" ? <CompassFill omitPadding /> : <Compass omitPadding />}
 			</Link>
 			{session && session.user ? (
 				<Link href="/profile" onClick={clickProfile} className={`${path === "profile" && "active"}`}>
