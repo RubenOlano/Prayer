@@ -7,8 +7,8 @@ const GroupExploreFeed = () => {
 
 	if (isLoading) {
 		return (
-			<div className="w-full p-5">
-				<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
+			<div className="p-5 animate-pulse">
+				<div className="md:grid md:grid-cols-3 gap-2">
 					{Array.from({ length: 5 }).map((_, i) => (
 						<ExploreCards.Skeleton key={i} />
 					))}
@@ -18,8 +18,8 @@ const GroupExploreFeed = () => {
 	}
 
 	return (
-		<div className="w-full p-5">
-			<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
+		<div className="p-5">
+			<div className="md:grid grid-cols-3">
 				{data && data.map(group => <ExploreCards group={group} key={group.id} />)}
 			</div>
 		</div>
