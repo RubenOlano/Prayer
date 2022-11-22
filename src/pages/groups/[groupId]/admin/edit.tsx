@@ -1,11 +1,10 @@
-import AdminHeader from "./../../../components/AdminHeader";
+import AdminHeader from "./../../../../components/AdminHeader";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { trpc } from "../../../utils/trpc";
-import AdminUserList from "../../../components/AdminUserList";
+import { trpc } from "../../../../utils/trpc";
 import { unstable_getServerSession } from "next-auth";
-import { options } from "../../api/auth/[...nextauth]";
-import AdminPrayerList from "../../../components/AdminPrayerList";
+import { options } from "../../../api/auth/[...nextauth]";
+import EditGroupForm from "../../../../components/EditGroupForm";
 
 interface Props {
 	groupId: string;
@@ -24,10 +23,7 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 				</Head>
 				<main className="md:pl-40 pb-20">
 					<AdminHeader.Skeleton />
-					<div className="md:flex">
-						<AdminUserList />
-						<AdminPrayerList />
-					</div>
+					<div className="md:flex"></div>
 				</main>
 			</>
 		);
@@ -41,7 +37,7 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<main>
-					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pl-40">
+					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max md:pl-40">
 						You are not an admin of this group
 					</div>
 				</main>
@@ -56,11 +52,10 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main className="md:pl-40">
+			<main className="md:pl-40 pb-20">
 				<AdminHeader groupId={groupId} />
 				<div className="md:flex">
-					<AdminUserList />
-					<AdminPrayerList />
+					<EditGroupForm />
 				</div>
 			</main>
 		</>

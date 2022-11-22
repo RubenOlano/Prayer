@@ -39,7 +39,7 @@ function PostCard(post: Props) {
 			</div>
 			<div className="border-accent border-y-2 card-body">
 				<h1 className="card-title text-center justify-center">{post.title}</h1>
-				<h3 className="m-2">{post.content}</h3>
+				<p className="m-2">{post.content}</p>
 			</div>
 		</Link>
 	);
@@ -57,7 +57,7 @@ PostCard.Skeleton = function PostCardSkeleton() {
 			</div>
 			<div className="border-accent border-y-2 card-body">
 				<h1 className="card-title text-center justify-center" />
-				<h3 className="m-2" />
+				<p className="m-2" />
 			</div>
 		</div>
 	);

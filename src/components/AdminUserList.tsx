@@ -3,7 +3,7 @@ import AdminUsers from "./AdminUsers";
 
 const AdminUserList = () => {
 	return (
-		<div className="flex flex-col items-center p-5">
+		<div className="flex flex-col items-center p-5 md:w-1/2">
 			<div className="bg-base-300 rounded-sm p-5">
 				<h2 className="text-center text-base md:text-2xl font-extrabold">Group Members</h2>
 				<div className="flex flex-col justify-center">

@@ -16,6 +16,7 @@ export const serverSchema = z.object({
 	AUTH0_CLIENT_ID: z.string(),
 	AUTH0_CLIENT_SECRET: z.string(),
 	AUTH0_DOMAIN: z.string(),
+	ANALYZE: z.string().optional(),
 });
 
 /**
@@ -37,7 +38,6 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
 	// NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
-	NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET:
-		process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+	NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
 	NEXT_PUBLIC_CLOUDINARY_URL: process.env.NEXT_PUBLIC_CLOUDINARY_URL,
 };
