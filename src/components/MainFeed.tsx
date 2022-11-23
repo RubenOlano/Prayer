@@ -14,25 +14,17 @@ const MainFeed = () => {
 		}
 	);
 
-	if (isLoading) {
-		return (
-			<div className="container justify-center text-center">
-				{Array.from({ length: 5 }).map((_, i) => (
-					<PostCard.Skeleton key={i} />
-				))}
-			</div>
-		);
-	}
-
 	return (
 		<div className="container justify-center text-center">
-			{data?.pages.map((page, i) => (
-				<Fragment key={i}>
-					{page.posts.map(post => (
-						<PostCard key={post.id} {...post} />
-					))}
-				</Fragment>
-			))}
+			{isLoading
+				? Array.from({ length: 5 }).map((_, i) => <PostCard.Skeleton key={i} />)
+				: data?.pages.map((page, i) => (
+						<Fragment key={i}>
+							{page.posts.map(post => (
+								<PostCard key={post.id} {...post} />
+							))}
+						</Fragment>
+				  ))}
 			{isFetchingNextPage && Array.from({ length: 2 }).map((_, i) => <PostCard.Skeleton key={i} />)}
 			{!isLoading && (
 				<button

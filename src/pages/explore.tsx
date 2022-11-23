@@ -5,7 +5,7 @@ import ExploreHeader from "../components/ExploreHeader";
 import GroupExploreFeed from "../components/GroupExploreFeed";
 import { options } from "./api/auth/[...nextauth]";
 
-const Profile = () => {
+const Explore = () => {
 	return (
 		<>
 			<Head>
@@ -21,7 +21,7 @@ const Profile = () => {
 	);
 };
 
-export default Profile;
+export default Explore;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
 	const session = await unstable_getServerSession(ctx.req, ctx.res, options);

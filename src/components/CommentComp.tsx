@@ -10,7 +10,7 @@ interface Props {
 
 function Comment({ comment }: Props) {
 	return (
-		<div className="flex flex-col rounded-xl p-5 border-accent m-3 border-2 bg-neutral text-neutral-content">
+		<div className="flex flex-col rounded-xl p-5 border-accent my-3 border-2 bg-neutral text-neutral-content">
 			<h2 className="text-sm font-bold">{comment.content}</h2>
 			<div className="flex flex-row py-2">
 				<Image
@@ -30,7 +30,7 @@ export default Comment;
 
 Comment.Skeleton = function CommentSkeleton() {
 	return (
-		<div className="flex flex-col rounded-xl w-full p-5 border-accent m-3 border-2 bg-neutral text-neutral-content">
+		<div className="flex flex-col rounded-xl p-5 border-accent my-3 border-2 bg-neutral text-neutral-content">
 			<h2 className="text-sm font-bold" />
 			<div className="flex flex-row py-2">
 				<Image

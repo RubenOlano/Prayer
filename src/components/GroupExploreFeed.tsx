@@ -5,14 +5,11 @@ import ExploreCards from "./ExploreCards";
 const GroupExploreFeed = () => {
 	const { data, isLoading } = trpc.groups.getExploreGroups.useQuery();
 
-	if (isLoading) {
+	if (data && data?.length === 0) {
 		return (
-			<div className="p-5 animate-pulse">
-				<div className="md:grid md:grid-cols-3 gap-2">
-					{Array.from({ length: 5 }).map((_, i) => (
-						<ExploreCards.Skeleton key={i} />
-					))}
-				</div>
+			<div className="flex flex-col items-center justify-center pt-5">
+				<h1 className="text-2xl font-bold">No groups found</h1>
+				<p>There are no groups to show. Try creating one!</p>
 			</div>
 		);
 	}
@@ -20,7 +17,9 @@ const GroupExploreFeed = () => {
 	return (
 		<div className="p-5">
 			<div className="md:grid grid-cols-3">
-				{data && data.map(group => <ExploreCards group={group} key={group.id} />)}
+				{isLoading
+					? Array.from({ length: 5 }).map((_, i) => <ExploreCards.Skeleton key={i} />)
+					: data && data.map(group => <ExploreCards group={group} key={group.id} />)}
 			</div>
 		</div>
 	);

@@ -22,20 +22,6 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 			}
 		},
 	});
-	if (isLoading) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Invites</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main>
-					<div className="flex flex-col items-center justify-center min-h-max py-2 h-max">Loading...</div>
-				</main>
-			</>
-		);
-	}
 
 	if (!data) {
 		return (
@@ -60,15 +46,20 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 			<main>
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40">
 					<h1 className="text-3xl font-bold">
-						You have been invited to join <strong className="text-blue-500">{data.name}</strong>
+						{!isLoading && (
+							<p>
+								You have been invited to join <strong className="text-blue-500">{data.name}</strong>
+							</p>
+						)}
 					</h1>
 					<button
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+						className="btn btn-primary mt-4"
 						onClick={() =>
 							mutate({
 								inviteId,
 							})
 						}
+						disabled={isLoading}
 					>
 						Join Group
 					</button>

@@ -10,20 +10,7 @@ interface Props {
 const Share: NextPage<Props> = ({ shareId }) => {
 	const { data, isLoading } = trpc.shares.getSharedPage.useQuery({ shareId });
 
-	if (isLoading) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Loading Shared Posts</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<div className="flex flex-col items-center justify-center h-screen">Loading posts...</div>
-			</>
-		);
-	}
-
-	if (!data) {
+	if (!data && !isLoading) {
 		return (
 			<>
 				<Head>
@@ -46,12 +33,14 @@ const Share: NextPage<Props> = ({ shareId }) => {
 			<div className="flex flex-col items-center min-h-screen p-3">
 				<div className="text-5xl font-bold h-max p-3">Prayers</div>
 				<div className="flex flex-col items-center m-5 p-5 backdrop-filter backdrop-blur-md rounded-md overflow-y-scroll">
-					{data.nonAnonymousPosts.map(post => (
-						<SharedPostsComp key={post.id} content={post.content} name={post.author.name || "Member"} />
-					))}
-					{data.anonymousPosts.map(post => (
-						<SharedPostsComp key={post.id} content={post.content} name="Anonymous" />
-					))}
+					{!isLoading &&
+						data.nonAnonymousPosts.map(post => (
+							<SharedPostsComp key={post.id} content={post.content} name={post.author.name || "Member"} />
+						))}
+					{!isLoading &&
+						data.anonymousPosts.map(post => (
+							<SharedPostsComp key={post.id} content={post.content} name="Anonymous" />
+						))}
 				</div>
 			</div>
 		</>

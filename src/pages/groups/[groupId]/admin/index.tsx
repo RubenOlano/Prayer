@@ -14,24 +14,6 @@ interface Props {
 const Admin: NextPage<Props> = ({ groupId }) => {
 	const { data, isLoading: loadingAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
-	if (loadingAdmin) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Admin</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main className="md:pl-40 pb-20">
-					<AdminHeader.Skeleton />
-					<div className="md:flex">
-						<AdminUserList />
-						<AdminPrayerList />
-					</div>
-				</main>
-			</>
-		);
-	}
 	if (!data) {
 		return (
 			<>
@@ -57,7 +39,7 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main className="md:pl-40 pb-20">
-				<AdminHeader groupId={groupId} />
+				{!loadingAdmin && <AdminHeader groupId={groupId} />}
 				<div className="md:flex">
 					<AdminUserList />
 					<AdminPrayerList />

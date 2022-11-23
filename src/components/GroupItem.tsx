@@ -29,7 +29,7 @@ export default GroupItem;
 GroupItem.Skeleton = function GroupItemSkeleton() {
 	return (
 		<div className="card card-bordered bg-info hover:bg-secondary-focus animate-pulse">
-			<div className="card-body">
+			<div className="card-body animate-pulse">
 				<h2 className="card-title" />
 				<p className="card-content" />
 			</div>

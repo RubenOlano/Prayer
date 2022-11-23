@@ -7,52 +7,18 @@ import { Plus } from "./Icons";
 const GroupList = () => {
 	const { data, isLoading } = trpc.groups.getGroups.useQuery();
 
-	if (isLoading) {
-		return (
-			<div className="w-full p-5">
-				<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
-					<Link
-						href="/groups/create"
-						className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
-					>
-						<Plus dimensions={60} />
-					</Link>
-					{Array.from({ length: 6 }).map((_, i) => (
-						<GroupItem.Skeleton key={i} />
-					))}
-				</div>
-			</div>
-		);
-	}
-
-	if (!data || data.length === 0) {
-		return (
-			<div className="text-center mx-3">
-				<h2 className="text-lg md:text-2xl justify-center font-bold flex p-5">Groups</h2>
-				<div className="overflow-y-scroll h-[55vh]">
-					<Link
-						href="/groups/create"
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					>
-						Create a group
-					</Link>
-				</div>
-			</div>
-		);
-	}
-
 	return (
 		<div className="w-full p-5">
-			<div className="grid md:grid-cols-3 gap-2 grid-flow-row">
+			<div className="grid md:grid-cols-3 gap-2 h-24">
 				<Link
 					href="/groups/create"
 					className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
 				>
 					<Plus dimensions={60} />
 				</Link>
-				{data.map(group => (
-					<GroupItem key={group.id} group={group} />
-				))}
+				{isLoading
+					? Array.from({ length: 6 }).map((_, i) => <GroupItem.Skeleton key={i} />)
+					: data?.map(group => <GroupItem key={group.id} group={group} />)}
 			</div>
 		</div>
 	);

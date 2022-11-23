@@ -15,17 +15,13 @@ const x = (
 
 function AdminComp({ admin }: Props) {
 	const utils = trpc.useContext();
-	const { data: user, isLoading: loadUser } = trpc.users.getUser.useQuery({ id: admin.userId });
+	const { data: user } = trpc.users.getUser.useQuery({ id: admin.userId });
 
 	const { mutate, isLoading } = trpc.groups.removeGroupAdmin.useMutation({
 		onSuccess: async () => {
 			await utils.groups.fetchGroupAdmins.refetch({ groupId: admin.groupId });
 		},
 	});
-	if (loadUser) {
-		return <AdminComp.Skeleton />;
-	}
-
 	if (!user) {
 		return null;
 	}

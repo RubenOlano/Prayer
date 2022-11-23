@@ -43,7 +43,7 @@ AdminHeader.Skeleton = function AdminHeaderSkeleton() {
 	return (
 		<div className="btn-group min-w-screen flex justify-center">
 			<div className="btn btn-info">Back</div>
-			<button className={`btn btn-error disabled:`}>Delete</button>
+			<button className={`btn btn-error disabled`}>Delete</button>
 			<InviteButton.Skeleton />
 		</div>
 	);

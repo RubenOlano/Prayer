@@ -7,19 +7,17 @@ function AdminPrayerList() {
 	const groupId = useRouter().query.groupId as string;
 	const { data, isLoading } = trpc.posts.getGroupPosts.useInfiniteQuery({ groupId });
 
-	if (isLoading) {
-		return (
-			<div className="flex flex-col pb-40 w-full">
-				{Array.from({ length: 10 }).map((_, i) => (
-					<AdminPostCard.Skeleton key={i} />
-				))}
-			</div>
-		);
-	}
-
 	return (
 		<div className="flex flex-col pb-40 w-full">
-			{data?.pages?.map(page => page.posts?.map(prayer => <AdminPostCard key={prayer.id} {...prayer} />))}
+			{isLoading ? (
+				<div className="flex flex-col pb-40 w-full">
+					{Array.from({ length: 10 }).map((_, i) => (
+						<AdminPostCard.Skeleton key={i} />
+					))}
+				</div>
+			) : (
+				data?.pages?.map(page => page.posts?.map(prayer => <AdminPostCard key={prayer.id} {...prayer} />))
+			)}
 		</div>
 	);
 }

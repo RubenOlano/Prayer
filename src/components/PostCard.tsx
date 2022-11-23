@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { getImage } from "../utils/defaultUserImage";
-import { trpc } from "../utils/trpc";
 
 interface Props {
 	id: string;
@@ -16,15 +15,10 @@ interface Props {
 }
 
 function PostCard(post: Props) {
-	const utils = trpc.useContext();
-
 	return (
 		<Link
 			href={`/posts/${post.id}`}
 			className="hover:cursor-pointer card card-normal shadow-xl bg-neutral text-neutral-content m-5"
-			onClick={async () => {
-				await utils.posts.getPost.prefetch({ postId: post.id });
-			}}
 		>
 			<div className="card-body justify-center self-center text-2xl">
 				<Image

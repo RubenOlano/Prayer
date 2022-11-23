@@ -39,10 +39,10 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 			</Head>
 			<main>
 				<div className="md:pl-40 p-5">
-					{data?.name ? <GroupTitle {...data} groupId={groupId} /> : <GroupTitle.Skeleton />}
+					<GroupTitle />
 				</div>
 				<div className="md:pl-40 p-5">
-					<PrayerSection groupId={groupId} />
+					<PrayerSection />
 				</div>
 			</main>
 		</>

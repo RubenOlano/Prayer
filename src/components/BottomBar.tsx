@@ -49,7 +49,7 @@ const BottomBar: FC<Props> = ({ session }) => {
 			<Link href="/groups" onClick={clickGroups} className={`${path === "groups" && "active"}`}>
 				{path === "groups" ? <PeopleFill omitPadding /> : <PeopleOutline omitPadding />}
 			</Link>
-			<Link href="explore" className={`${path === "explore" && "active"}`}>
+			<Link href="/explore" className={`${path === "explore" && "active"}`}>
 				{path === "explore" ? <CompassFill omitPadding /> : <Compass omitPadding />}
 			</Link>
 			{session && session.user ? (

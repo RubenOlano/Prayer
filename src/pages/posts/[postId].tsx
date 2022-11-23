@@ -11,68 +11,21 @@ interface Props {
 }
 
 const Post: NextPage<Props> = ({ id }) => {
-	const util = trpc.useContext();
-	const { data, isLoading } = trpc.posts.getPost.useQuery(
-		{ postId: id },
-		{
-			onSuccess: async () => {
-				await util.comments.fetchAllComments.prefetch({ postId: id });
-				await util.posts.getUserLiked.prefetch({ postId: id });
-				await util.posts.getNumberOfLikes.prefetch({ postId: id });
-			},
-		}
-	);
-
-	if (isLoading) {
-		return (
-			<>
-				<Head>
-					<title>Group Pray - Loading</title>
-					<meta name="description" content="Pray with company" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<main>
-					<div className="md:pl-40 m-5 pb-40">
-						<div className="md:flex md:justify-between md:m-5">
-							<div>
-								<PostPage.Skeleton />
-							</div>
-							<div>
-								<Comments.Skeleton />
-							</div>
-						</div>
-					</div>
-				</main>
-			</>
-		);
-	}
-
-	if (!data) {
-		return (
-			<>
-				<Head>
-					<title>Post</title>
-					<meta name="description" content="Post" />
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
-				<div className="flex flex-col justify-center items-center">Post not found</div>
-			</>
-		);
-	}
+	const { data, isLoading } = trpc.posts.getPost.useQuery({ postId: id });
 
 	return (
 		<>
 			<Head>
-				<title>Group Pray - {data.title}</title>
+				<title>Group Pray - {isLoading ? "Loading" : data?.title}</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:pl-40 m-5 pb-40 md:flex justify-between">
-					<div className="md:flex md:m-5 h-96 ">
-						<PostPage {...data} />
+				<div className="md:pl-40 m-5 pb-40 md:flex">
+					<div className="md:flex m-5 h-96 md:w-1/2 ">
+						<PostPage />
 					</div>
-					<div className="md:flex md:m-5">
+					<div className="md:flex m-5 p-3 md:w-1/2">
 						<Comments postId={id} />
 					</div>
 				</div>
