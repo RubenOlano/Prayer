@@ -1,6 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { createPostInput } from "../schema/post.schema";
+import { createPostInput, createPostSchema } from "../schema/post.schema";
 import { trpc } from "../utils/trpc";
 
 const CreatePostForm = () => {
@@ -10,7 +11,9 @@ const CreatePostForm = () => {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<createPostInput>();
+	} = useForm<createPostInput>({
+		resolver: zodResolver(createPostSchema),
+	});
 	const groupId = router.query.groupId as string;
 	if (!groupId) {
 		return null;
@@ -42,7 +45,7 @@ const CreatePostForm = () => {
 					{...register("title", { required: true })}
 				/>
 			</label>
-			{errors.title && <span className="text-error">Title is required</span>}
+			{errors.title && <span className="text-error">{errors.title.message}</span>}
 			<label className="label">
 				<span className="label-text">Body</span>
 				<textarea
@@ -53,7 +56,7 @@ const CreatePostForm = () => {
 					{...register("content", { required: true })}
 				/>
 			</label>
-			{errors.content && <span className="text-error">Content is required</span>}
+			{errors.content && <span className="text-error">{errors.content.message}</span>}
 			<label className="label">
 				<span className="label-text">Anonymous?</span>
 				<input

@@ -9,7 +9,10 @@ export const updateUserNameSchema = z.object({
 	name: z
 		.string()
 		.describe("Name")
-		.refine(name => name.length > 0),
+		.refine(
+			name => name.length > 0,
+			name => ({ message: `Name must be at least 1 character long, got ${name.length} characters` })
+		),
 });
 
 export type updateUserNameInput = z.TypeOf<typeof updateUserNameSchema>;
@@ -19,5 +22,8 @@ export const updateUserPictureSchema = z.object({
 	image: z
 		.string()
 		.describe("Image")
-		.refine(image => image.length > 0),
+		.refine(
+			image => image.length > 0,
+			img => ({ message: `${img} is not more than 10 characters` })
+		),
 });

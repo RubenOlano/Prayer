@@ -5,7 +5,10 @@ export const createGroupSchema = z.object({
 	name: z
 		.string()
 		.describe("Name")
-		.refine(name => name.length > 0),
+		.refine(
+			name => name.length > 0,
+			name => ({ message: `Name must be at least 1 character long, got ${name.length} characters` })
+		),
 	description: z.string().optional(),
 	isPrivate: z.boolean().optional(),
 });

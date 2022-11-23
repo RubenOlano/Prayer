@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { CreateCommentSchema } from "../schema/comments.schema";
+import { createCommentSchema, CreateCommentSchema } from "../schema/comments.schema";
 import { trpc } from "../utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
 	postId: string;
@@ -15,7 +16,7 @@ function AddCommentButton({ postId }: Props) {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<CreateCommentSchema>();
+	} = useForm<CreateCommentSchema>({ resolver: zodResolver(createCommentSchema) });
 	const { mutate, isLoading } = trpc.comments.createComments.useMutation({
 		onSuccess: async () => {
 			await utils.comments.fetchAllComments.refetch({ postId });

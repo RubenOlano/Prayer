@@ -1,5 +1,6 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { updateUserNameInput } from "../schema/user.schema";
+import { updateUserNameInput, updateUserNameSchema } from "../schema/user.schema";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -13,7 +14,7 @@ function UpdateName({ userId }: Props) {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<updateUserNameInput>();
+	} = useForm<updateUserNameInput>({ resolver: zodResolver(updateUserNameSchema) });
 	const { mutate, isLoading, isSuccess } = trpc.users.updateUserName.useMutation({
 		onSuccess: async () => {
 			await utils.users.getUser.refetch({ id: userId });
@@ -24,23 +25,30 @@ function UpdateName({ userId }: Props) {
 		reset();
 	};
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5">
-			<label htmlFor="name" className="text-gray-500">
-				Update Name
-			</label>
-			<input type="text" {...register("name")} className="input input-primary" disabled={isLoading} />
-			<button
-				className={`bg-primary hover:bg-primary-focus text-white font-bold py-2 px-4 rounded ${
-					isLoading && "cursor-not-allowed"
-				} ${isSuccess && "bg-success"}`}
-				type="submit"
-				placeholder="New Name..."
-				disabled={isLoading}
-			>
-				{isSuccess ? "Name Updated!" : "Update Name"}
-			</button>
+		<>
+			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col text-center px-5">
+				<label htmlFor="name" className="text-gray-500">
+					Update Name
+				</label>
+				<input
+					type="text"
+					{...register("name")}
+					className={`input input-primary ${errors.name && "input-error"}`}
+					disabled={isLoading}
+				/>
+				<button
+					className={`bg-primary hover:bg-primary-focus text-white font-bold py-2 px-4 rounded ${
+						isLoading && "disabled"
+					} ${isSuccess && "bg-success"}`}
+					type="submit"
+					placeholder="New Name..."
+					disabled={isLoading}
+				>
+					{isSuccess ? "Name Updated!" : "Update Name"}
+				</button>
+			</form>
 			<div className="text-red-500">{errors.name?.message}</div>
-		</form>
+		</>
 	);
 }
 

@@ -5,13 +5,19 @@ export const createPostSchema = z.object({
 	content: z
 		.string()
 		.describe("Content")
-		.refine(content => content.length > 0),
+		.refine(
+			content => content.length > 0,
+			content => ({ message: `Content must be at least 1 character long, got ${content.length} characters` })
+		),
 	anonymous: z.boolean().optional(),
 	duration: z.number().optional(),
 	title: z
 		.string()
 		.describe("Title")
-		.refine(title => title.length > 0),
+		.refine(
+			title => title.length > 0,
+			title => ({ message: `Title must be at least 1 character long, got ${title.length} characters` })
+		),
 });
 
 export type createPostInput = z.TypeOf<typeof createPostSchema>;

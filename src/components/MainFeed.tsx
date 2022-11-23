@@ -14,6 +14,15 @@ const MainFeed = () => {
 		}
 	);
 
+	if (data?.pages.length === 0) {
+		return (
+			<div className="container justify-center text-center">
+				<h1 className="text-2xl">No posts yet</h1>
+				<p className="text-gray-600">Be the first one to share something</p>
+			</div>
+		);
+	}
+
 	return (
 		<div className="container justify-center text-center">
 			{isLoading

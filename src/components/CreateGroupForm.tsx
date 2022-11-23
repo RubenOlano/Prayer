@@ -1,7 +1,8 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { createGroupInput } from "../schema/group.schema";
+import { createGroupInput, createGroupSchema } from "../schema/group.schema";
 import { trpc } from "../utils/trpc";
 
 const CreateGroupForm = () => {
@@ -12,7 +13,9 @@ const CreateGroupForm = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<createGroupInput>();
+	} = useForm<createGroupInput>({
+		resolver: zodResolver(createGroupSchema),
+	});
 	const router = useRouter();
 
 	if (!session || !session.user) {
@@ -59,7 +62,7 @@ const CreateGroupForm = () => {
 					{...register("name", { required: true })}
 				/>
 			</label>
-			{errors.name && <span className="text-error">This field is required</span>}
+			{errors.name && <span className="text-error">{errors.name.message}</span>}
 			<label className="label">
 				<span className="label-text">Group Description</span>
 				<input
@@ -70,7 +73,6 @@ const CreateGroupForm = () => {
 					{...register("description")}
 				/>
 			</label>
-			{errors.description && <span className="text-error">This field is required</span>}
 			<label className="label">
 				<span className="label-text">Private Group?</span>
 				<span className="label-text">(will not show up in explore)</span>
