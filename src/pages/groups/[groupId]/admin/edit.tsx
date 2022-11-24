@@ -2,9 +2,8 @@ import AdminHeader from "./../../../../components/AdminHeader";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../../../../utils/trpc";
-import { unstable_getServerSession } from "next-auth";
-import { options } from "../../../api/auth/[...nextauth]";
 import EditGroupForm from "../../../../components/EditGroupForm";
+import { getServerAuthSession } from "../../../../server/common/get-server-auth-session";
 
 interface Props {
 	groupId: string;
@@ -63,7 +62,7 @@ const Admin: NextPage<Props> = ({ groupId }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	if (!session || !session.user) {
 		return {
 			redirect: {

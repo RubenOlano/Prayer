@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import ExploreHeader from "../components/ExploreHeader";
 import GroupExploreFeed from "../components/GroupExploreFeed";
-import { options } from "./api/auth/[...nextauth]";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
 
 const Explore = () => {
 	return (
@@ -24,7 +23,7 @@ const Explore = () => {
 export default Explore;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	if (!session || !session.user) {
 		return {
 			redirect: {

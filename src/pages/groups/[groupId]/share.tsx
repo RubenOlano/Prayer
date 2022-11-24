@@ -5,8 +5,7 @@ import React from "react";
 import { trpc } from "../../../utils/trpc";
 import { iosDetect } from "../../../utils/checkIOS";
 import { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
-import { options } from "../../api/auth/[...nextauth]";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 
 interface Props {
 	groupId: string;
@@ -163,7 +162,7 @@ export default Share;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
 	const groupId = ctx.query.groupId as string;
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 
 	if (!session) {
 		return {

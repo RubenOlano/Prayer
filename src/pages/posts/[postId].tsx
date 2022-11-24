@@ -1,10 +1,11 @@
 import { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import Comments from "../../components/Comments";
-import PostPage from "../../components/PostPage";
+import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { trpc } from "../../utils/trpc";
-import { options } from "../api/auth/[...nextauth]";
+
+const PostPage = dynamic(() => import("../../components/PostPage"));
+const Comments = dynamic(() => import("../../components/Comments"));
 
 interface Props {
 	id: string;
@@ -35,7 +36,7 @@ const Post: NextPage<Props> = ({ id }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	if (!session || !session.user) {
 		return {
 			redirect: {

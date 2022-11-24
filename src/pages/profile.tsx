@@ -1,8 +1,9 @@
 import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import ProfileEdit from "../components/ProfileEdit";
-import { options } from "./api/auth/[...nextauth]";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
+
+const ProfileEdit = dynamic(() => import("../components/ProfileEdit"));
 
 const Profile = () => {
 	return (
@@ -22,7 +23,7 @@ const Profile = () => {
 export default Profile;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	if (!session || !session.user) {
 		return {
 			redirect: {

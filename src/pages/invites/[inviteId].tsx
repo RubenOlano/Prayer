@@ -1,9 +1,8 @@
 import { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
-import { options } from "../api/auth/[...nextauth]";
+import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 
 interface Props {
 	inviteId: string;
@@ -72,7 +71,7 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 export default Invites;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	const inviteId = ctx.params?.inviteId as string;
 
 	if (!session) {

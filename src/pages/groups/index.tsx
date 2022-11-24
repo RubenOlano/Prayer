@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import React from "react";
 import GroupList from "../../components/GroupList";
-import { options } from "../api/auth/[...nextauth]";
+import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 
 const Groups = () => {
 	return (
@@ -25,7 +24,7 @@ const Groups = () => {
 export default Groups;
 
 export const getServerSideProps: GetServerSideProps = async context => {
-	const session = await unstable_getServerSession(context.req, context.res, options);
+	const session = await getServerAuthSession(context);
 	if (!session) {
 		return {
 			redirect: {

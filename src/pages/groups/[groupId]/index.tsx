@@ -2,10 +2,9 @@ import { GroupTitle } from "../../../components/GroupTitle";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../../../utils/trpc";
-import { unstable_getServerSession } from "next-auth";
-import { options } from "../../api/auth/[...nextauth]";
 import PrayerSection from "../../../components/PrayerSection";
 import { useRouter } from "next/router";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 
 interface Props {
 	groupId: string;
@@ -45,7 +44,7 @@ const SpecificGroup: NextPage<Props> = ({ groupId }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const session = await unstable_getServerSession(ctx.req, ctx.res, options);
+	const session = await getServerAuthSession(ctx);
 	const params = ctx.params;
 	const groupId = params?.groupId as string;
 

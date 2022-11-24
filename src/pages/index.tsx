@@ -1,8 +1,7 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import { unstable_getServerSession } from "next-auth";
-import { options } from "./api/auth/[...nextauth]";
 import MainFeed from "../components/MainFeed";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
 
 const Home = () => {
 	return (
@@ -24,7 +23,7 @@ const Home = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async context => {
-	const session = await unstable_getServerSession(context.req, context.res, options);
+	const session = await getServerAuthSession(context);
 
 	if (!session) {
 		return {
