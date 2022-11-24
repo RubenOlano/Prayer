@@ -27,6 +27,7 @@ function PostPage() {
 					width={40}
 					height={40}
 					className="md:h-24 md:w-24 avatar rounded-full self-center"
+					priority
 				/>
 			</div>
 			<p>{data && data?.createdAt.toDateString()} </p>

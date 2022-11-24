@@ -26,17 +26,17 @@ const BottomBar: FC<Props> = ({ session }) => {
 
 	return (
 		<div className="md:hidden bg-base-100 btm-nav z-10">
-			<Link href="/" className={`${path === "" && "active"}`}>
+			<Link href="/" className={`${path === "" && "active"}`} aria-label="Navigate to the Home Feed">
 				{path === "" ? <HouseFill omitPadding /> : <HouseOutline omitPadding />}
 			</Link>
-			<Link href="/groups" className={`${path === "groups" && "active"}`}>
+			<Link href="/groups" className={`${path === "groups" && "active"}`} aria-label="View your groups">
 				{path === "groups" ? <PeopleFill omitPadding /> : <PeopleOutline omitPadding />}
 			</Link>
-			<Link href="/explore" className={`${path === "explore" && "active"}`}>
+			<Link href="/explore" className={`${path === "explore" && "active"}`} aria-label="Explore new groups">
 				{path === "explore" ? <CompassFill omitPadding /> : <Compass omitPadding />}
 			</Link>
 			{session && session.user ? (
-				<Link href="/profile" className={`${path === "profile" && "active"}`}>
+				<Link href="/profile" className={`${path === "profile" && "active"}`} aria-label="Edit your profile">
 					<Image
 						src={getImage(session.user.image)}
 						className={`rounded-full h-5 w-5 object-cover avatar ${
@@ -49,7 +49,10 @@ const BottomBar: FC<Props> = ({ session }) => {
 					/>
 				</Link>
 			) : (
-				<h1 className="text-xl font-bold flex justify-center items-center">
+				<h1
+					className="text-xl font-bold flex justify-center items-center"
+					aria-label="Sign in or create an account"
+				>
 					<Link href="/auth/signin">Sign In</Link>
 				</h1>
 			)}

@@ -11,7 +11,13 @@ function RefreshPosts() {
 		setIsLoading(false);
 	};
 	return (
-		<button className={`btn ${isLoading && "loading"}`} type="button" onClick={onClick} disabled={isLoading}>
+		<button
+			className={`btn ${isLoading && "loading"}`}
+			type="button"
+			onClick={onClick}
+			disabled={isLoading}
+			aria-label="Refresh Posts"
+		>
 			{!isLoading && <Refresh dimensions={20} />}
 		</button>
 	);
@@ -21,7 +27,7 @@ export default RefreshPosts;
 
 RefreshPosts.Skeleton = function RefreshPostsSkeleton() {
 	return (
-		<button className="btn btn-disabled" type="button">
+		<button className="btn btn-disabled" type="button" aria-label="Refresh Posts">
 			<Refresh dimensions={20} />
 		</button>
 	);

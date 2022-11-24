@@ -54,19 +54,21 @@ function UpdateImage({ id }: Props) {
 	return (
 		<div className="mb-2 flex items-center align-middle justify-center">
 			<div className="flex flex-col items-center justify-center ">
-				<span className="block mb-2">Choose profile photo</span>
 				<Image src={getImage(data?.image)} alt="user image" width={100} height={100} priority />
-				<input
-					className={`file-input file-input-xs md:file-input-md ${isSuccess && "bg-success"} ${
-						isLoading && "bg-secondary"
-					} `}
-					type="file"
-					name="image"
-					onChange={onFileDrop}
-					multiple={false}
-					accept="image/jpg, image/png, image/jpeg"
-					disabled={isLoading}
-				/>
+				<label className="label flex flex-col">
+					<input
+						className={`file-input file-input-xs md:file-input-md ${isSuccess && "bg-success"} ${
+							isLoading && "bg-secondary"
+						} `}
+						type="file"
+						name="image"
+						onChange={onFileDrop}
+						multiple={false}
+						accept="image/jpg, image/png, image/jpeg"
+						disabled={isLoading}
+					/>
+					<span className="block mb-2 label-text">Choose profile photo</span>
+				</label>
 			</div>
 		</div>
 	);
@@ -76,15 +78,17 @@ UpdateImage.Skeleton = function UpdateImageSkeleton() {
 	return (
 		<div className="mb-2 flex items-center align-middle justify-center">
 			<div className="flex flex-col items-center justify-center ">
-				<span className="block mb-2">Choose profile photo</span>
-				<Image src={getImage()} alt="user image" width={100} height={100} />
-				<input
-					className={`file-input file-input-xs md:file-input-md`}
-					type="file"
-					name="image"
-					multiple={false}
-					accept="image/jpg, image/png, image/jpeg"
-				/>
+				<label className="label label-xs md:label-md">
+					<span className="label-text">Choose profile photo</span>
+					<Image src={getImage()} alt="user image" width={100} height={100} />
+					<input
+						className={`file-input file-input-xs md:file-input-md`}
+						type="file"
+						name="image"
+						multiple={false}
+						accept="image/jpg, image/png, image/jpeg"
+					/>
+				</label>
 			</div>
 		</div>
 	);

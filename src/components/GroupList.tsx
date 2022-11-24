@@ -37,6 +37,7 @@ const GroupList = () => {
 				<Link
 					href="/groups/create"
 					className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"
+					aria-label="Create a group"
 				>
 					<Plus dimensions={60} />
 				</Link>

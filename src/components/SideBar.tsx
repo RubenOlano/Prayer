@@ -32,25 +32,37 @@ const SideBar: FC<Props> = ({ session }) => {
 				<Image src={Icon} className="rounded-full h-10 w-10" alt="Group Pray Logo" priority />
 				<h1 className="text-2xl font-bold">Group Pray</h1>
 			</div>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/">
+			<Link
+				className="flex flex-row justify-center h-1/6 btn-ghost"
+				href="/"
+				aria-label="Navigate to the Home Feed"
+			>
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "" ? <HouseFill /> : <HouseOutline />}
 					Home
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/groups">
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/groups" aria-label="View your Groups">
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "groups" ? <PeopleFill /> : <PeopleOutline />}
 					Groups
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/explore">
+			<Link
+				className="flex flex-row justify-center h-1/6 btn-ghost"
+				href="/explore"
+				aria-label="Explore new groups"
+			>
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "explore" ? <CompassFill /> : <CompassOutline />}
 					Explore
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/profile">
+			<Link
+				className="flex flex-row justify-center h-1/6 btn-ghost"
+				href="/profile"
+				aria-label="Edit your profile"
+			>
 				{session && session.user ? (
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<Image
@@ -66,7 +78,7 @@ const SideBar: FC<Props> = ({ session }) => {
 						Profile
 					</h1>
 				) : (
-					<Link href="/auth/signin">
+					<Link href="/auth/signin" aria-label="Sign in or create an account">
 						<h1 className="text-xl font-bold flex justify-center items-center">Sign In</h1>
 					</Link>
 				)}

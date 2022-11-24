@@ -18,11 +18,11 @@ const PrayerSection = () => {
 	return (
 		<div className="align-middle text-center pb-40">
 			<div className="btn-group">
-				<Link href={`/posts/create?groupId=${groupId}`} className="btn">
+				<Link href={`/posts/create?groupId=${groupId}`} className="btn" aria-label="Create a new post">
 					<Plus dimensions={20} />
 				</Link>
 				<RefreshPosts />
-				<Link href={`/groups/${groupId}/share`} className="btn">
+				<Link href={`/groups/${groupId}/share`} className="btn" aria-label="Share posts from this group">
 					<Share dimensions={15} />
 				</Link>
 			</div>
