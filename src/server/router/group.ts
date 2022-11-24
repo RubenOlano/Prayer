@@ -16,7 +16,8 @@ import {
 
 export const groupRouter = router({
 	registerGroup: protectedProcedure.input(createGroupSchema).mutation(async ({ ctx, input }) => {
-		const { name, description, userId, isPrivate } = input;
+		const { name, description, isPrivate } = input;
+		const userId = ctx.session.user.id;
 		try {
 			const group = await ctx.prisma.group.create({
 				data: {

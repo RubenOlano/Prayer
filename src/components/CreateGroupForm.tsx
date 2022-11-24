@@ -40,14 +40,11 @@ const CreateGroupForm = () => {
 
 	const onSubmit = (data: createGroupInput) => {
 		if (!user) return signIn(undefined, { callbackUrl: "/groups/create" });
-		mutate({
-			...data,
-			userId: user.id,
-		});
+		mutate(data);
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="form-control">
+		<form id="createGroup" onSubmit={handleSubmit(onSubmit)} className="form-control">
 			<label className="label">
 				<span className="label-text">Group Name</span>
 				<input
@@ -69,6 +66,7 @@ const CreateGroupForm = () => {
 					{...register("description")}
 				/>
 			</label>
+			{errors.description && <span className="text-error">{errors.description.message}</span>}
 			<label className="label">
 				<span className="label-text">Private Group?</span>
 				<span className="label-text">(will not show up in explore)</span>
@@ -79,10 +77,11 @@ const CreateGroupForm = () => {
 					{...register("isPrivate")}
 				/>
 			</label>
+			{errors.isPrivate && <span className="text-error">{errors.isPrivate.message}</span>}
 			<button
-				className={`btn btn-primary btn-sm md:btn-md ${isLoading && "disabled"}`}
+				className={`btn btn-primary btn-sm md:btn-md ${(isLoading && "disabled") || ""}`}
 				type="submit"
-				disabled={isLoading}
+				form="createGroup"
 			>
 				{isLoading ? "Loading..." : isSuccess ? "Created Group!" : "Create Group"}
 			</button>

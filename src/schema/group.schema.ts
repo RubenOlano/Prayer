@@ -1,7 +1,6 @@
 import z from "zod";
 
 export const createGroupSchema = z.object({
-	userId: z.string(),
 	name: z
 		.string()
 		.describe("Name")
