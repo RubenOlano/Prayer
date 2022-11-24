@@ -1,5 +1,6 @@
 import { Group, GroupAdmins, GroupMember, User } from "@prisma/client";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
@@ -18,11 +19,10 @@ interface Props {
 }
 
 function ExploreCards({ group }: Props) {
-	const utils = trpc.useContext();
+	const router = useRouter();
 	const { mutate, isLoading, isSuccess } = trpc.groups.joinGroup.useMutation({
-		onSuccess: async () => {
-			await utils.groups.getGroups.invalidate();
-			await utils.groups.getExploreGroups.invalidate();
+		onSuccess: () => {
+			router.push(`/group/${group.id}`);
 		},
 	});
 

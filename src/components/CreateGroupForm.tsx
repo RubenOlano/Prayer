@@ -7,7 +7,6 @@ import { trpc } from "../utils/trpc";
 
 const CreateGroupForm = () => {
 	const { data: session } = useSession();
-	const utils = trpc.useContext();
 
 	const {
 		register,
@@ -34,10 +33,7 @@ const CreateGroupForm = () => {
 	const user = session.user;
 
 	const { mutate, isLoading, isSuccess } = trpc.groups.registerGroup.useMutation({
-		onSuccess: async data => {
-			await utils.groups.getGroups.invalidate();
-			await utils.groups.getGroups.prefetch();
-			await utils.groups.getGroup.prefetch({ id: data.id });
+		onSuccess: data => {
 			router.push(`/groups/${data.id}`);
 		},
 	});

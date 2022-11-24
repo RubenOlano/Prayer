@@ -38,9 +38,6 @@ function AdminPostCard(post: Props) {
 		<Link
 			href={`/posts/${post.id}`}
 			className="cursor-pointer card card-compact shadow-xl bg-neutral text-neutral-content m-5"
-			onClick={async () => {
-				await utils.posts.getPost.prefetch({ postId: post.id });
-			}}
 		>
 			<div className="card-actions">
 				<button className="btn btn-ghost" onClick={() => mutate({ postId: post.id })}>

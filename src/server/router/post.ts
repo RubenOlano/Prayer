@@ -2,7 +2,6 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "./";
 import {
-	createPostOutput,
 	createPostSchema,
 	deletePostSchema,
 	fetchAuthorPostsSchema,
@@ -47,7 +46,7 @@ export const postRouter = router({
 				},
 			});
 
-			await ctx.prisma.group.update({
+			const group = await ctx.prisma.group.update({
 				where: {
 					id: groupId,
 				},
@@ -73,12 +72,9 @@ export const postRouter = router({
 				},
 			});
 			return {
-				anonymous: post.anonymous,
-				content: post.content,
-				groupId: post.groupId,
-				postId: post.id,
-				userId: post.authorId,
-			} as createPostOutput;
+				post,
+				group,
+			};
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {

@@ -7,7 +7,6 @@ import { getImage } from "../utils/defaultUserImage";
 import { Session } from "next-auth";
 import { FC } from "react";
 import { signOut } from "next-auth/react";
-import { trpc } from "../utils/trpc";
 
 const HouseFill = dynamic(() => import("./Icons").then(mod => mod.HouseFill));
 const HouseOutline = dynamic(() => import("./Icons").then(mod => mod.HouseOutline));
@@ -22,26 +21,10 @@ interface Props {
 
 const SideBar: FC<Props> = ({ session }) => {
 	const path = useRouter().pathname.split("/")[1];
-	const utils = trpc.useContext();
 
 	if (!session) {
 		return <></>;
 	}
-
-	const clickGroups = async () => {
-		if (path === "groups") return;
-		await utils.groups.getGroups.prefetch();
-	};
-
-	const clickHome = async () => {
-		if (path === "") return;
-		await utils.posts.getPostFeed.prefetchInfinite({ cursor: null, limit: 5 });
-	};
-
-	const clickProfile = async () => {
-		if (path === "profile" || !session || !session.user) return;
-		await utils.users.getUser.prefetch({ id: session.user.id });
-	};
 
 	return (
 		<div className="h-screen w-40 hidden md:block fixed top-0 left-0 navbar bg-base-100">
@@ -49,13 +32,13 @@ const SideBar: FC<Props> = ({ session }) => {
 				<Image src={Icon} className="rounded-full h-10 w-10" alt="Group Pray Logo" priority />
 				<h1 className="text-2xl font-bold">Group Pray</h1>
 			</div>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/" onClick={clickHome}>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/">
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "" ? <HouseFill /> : <HouseOutline />}
 					Home
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/groups" onClick={clickGroups}>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/groups">
 				<h1 className="text-xl font-bold flex justify-center items-center">
 					{path === "groups" ? <PeopleFill /> : <PeopleOutline />}
 					Groups
@@ -67,7 +50,7 @@ const SideBar: FC<Props> = ({ session }) => {
 					Explore
 				</h1>
 			</Link>
-			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/profile" onClick={clickProfile}>
+			<Link className="flex flex-row justify-center h-1/6 btn-ghost" href="/profile">
 				{session && session.user ? (
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<Image
