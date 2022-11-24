@@ -1,9 +1,7 @@
 import { GetServerSideProps } from "next";
-import dynamic from "next/dynamic";
 import Head from "next/head";
+import CreateGroupForm from "../../components/CreateGroupForm";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
-
-const CreateGroupForm = dynamic(() => import("../../components/CreateGroupForm"));
 
 const Create = () => {
 	return (

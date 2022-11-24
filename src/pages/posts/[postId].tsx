@@ -1,11 +1,9 @@
 import { GetServerSideProps, NextPage } from "next";
-import dynamic from "next/dynamic";
 import Head from "next/head";
+import Comments from "../../components/Comments";
+import PostPage from "../../components/PostPage";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { trpc } from "../../utils/trpc";
-
-const PostPage = dynamic(() => import("../../components/PostPage"));
-const Comments = dynamic(() => import("../../components/Comments"));
 
 interface Props {
 	id: string;

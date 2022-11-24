@@ -1,9 +1,7 @@
 import { GetServerSideProps } from "next";
-import dynamic from "next/dynamic";
 import Head from "next/head";
+import CreatePostForm from "../../components/CreatePostForm";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
-
-const CreatePostForm = dynamic(() => import("../../components/CreatePostForm"));
 
 const CreatePost = () => {
 	return (
