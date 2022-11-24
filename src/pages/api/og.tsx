@@ -40,7 +40,7 @@ const handler: NextApiHandler = async req => {
 				</div>
 			</div>
 		),
-		{ width: 1200, height: 630 }
+		{ width: 1200, height: 600 }
 	);
 };
 export default handler;

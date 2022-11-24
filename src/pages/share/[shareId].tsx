@@ -33,7 +33,7 @@ const Share: NextPage<Props> = ({ shareId }) => {
 				<title>Group Pray - Share</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
-				<meta property="og:title" content={imgUrl} />
+				<meta property="og:image" content={imgUrl} />
 			</Head>
 			<div className="flex flex-col items-center min-h-screen p-3">
 				<div className="text-5xl font-bold h-max p-3">Prayers</div>

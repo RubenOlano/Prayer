@@ -11,12 +11,14 @@ interface Props {
 }
 
 const SignIn: NextPage<Props> = ({ providers }) => {
+	const imgUrl = `${getBaseURL()}/api/og?title=Sign%20in&description=Sign%20in%20to%20Group%20Pray`;
 	return (
 		<>
 			<Head>
 				<title>Prayer App Sign in</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
+				<meta property="og:image" content={imgUrl} />
 			</Head>
 
 			<main className="flex flex-col min-h-screen py-5 relative">
@@ -49,4 +51,11 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	return {
 		props: { providers, session },
 	};
+};
+
+const getBaseURL = () => {
+	if (process.env.NODE_ENV === "development") {
+		return "http://localhost:3000";
+	}
+	return "https://group-pray.vercel.app";
 };

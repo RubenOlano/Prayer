@@ -42,7 +42,7 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 				<title>Group Pray - Invites</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
-				<meta property="og:title" content={imgUrl} />
+				<meta property="og:image" content={imgUrl} />
 			</Head>
 			<main>
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40">
