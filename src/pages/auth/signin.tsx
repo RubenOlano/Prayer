@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SignIn: NextPage<Props> = ({ providers }) => {
-	const imgUrl = `${getBaseURL()}/api/og?title=Sign%20in&description=Sign%20in%20to%20Group%20Pray`;
+	const imgUrl = `${getBaseURL()}/api/og?title=Group%20Pray&description=Sign%20in%20to%20Group%20Pray`;
 	return (
 		<>
 			<Head>
