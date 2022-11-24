@@ -12,16 +12,11 @@ interface Props {
 }
 
 const SpecificGroup: NextPage<Props> = ({ groupId }) => {
-	const util = trpc.useContext();
 	const router = useRouter();
 
 	const { data } = trpc.groups.getGroup.useQuery(
 		{ id: groupId },
 		{
-			onSuccess: async () => {
-				await util.groups.fetchUserIsAdmin.prefetch({ groupId });
-				await util.posts.getGroupPosts.prefetchInfinite({ groupId });
-			},
 			onError: err => {
 				if (err.message === "Group not found") {
 					router.replace("/");

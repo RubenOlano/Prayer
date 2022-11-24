@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 export function GroupTitle() {
 	const id = useRouter().query.groupId as string;
 	const { data, isLoading } = trpc.groups.getGroup.useQuery({ id });
+	const { data: isAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId: id });
 
 	return (
 		<div className="navbar p-5 bg-base-200">
@@ -16,7 +17,7 @@ export function GroupTitle() {
 				</div>
 			</div>
 			<div className="navbar-end">
-				{!isLoading && data && (
+				{!isLoading && isAdmin && (
 					<Link href={`/groups/${id}/admin`} className="btn btn-primary">
 						Admin
 					</Link>
