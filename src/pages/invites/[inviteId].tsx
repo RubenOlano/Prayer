@@ -35,12 +35,14 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 		);
 	}
 
+	const imgUrl = `${getBaseURL()}/api/og?title=${data?.name}&description=${data?.description}`;
 	return (
 		<>
 			<Head>
 				<title>Group Pray - Invites</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
+				<meta property="og:title" content={imgUrl} />
 			</Head>
 			<main>
 				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40">
@@ -89,4 +91,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 			inviteId,
 		},
 	};
+};
+
+const getBaseURL = () => {
+	if (process.env.NODE_ENV === "development") {
+		return "http://localhost:3000";
+	} else {
+		return "https://group-pray.vercel.app";
+	}
 };

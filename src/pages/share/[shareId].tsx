@@ -23,12 +23,17 @@ const Share: NextPage<Props> = ({ shareId }) => {
 		);
 	}
 
+	const imgUrl = `${getBaseURL()}/api/og?title=Prayers&description=${new URLSearchParams(
+		"Prayers shared with you"
+	).toString()}`;
+
 	return (
 		<>
 			<Head>
 				<title>Group Pray - Share</title>
 				<meta name="description" content="Pray with company" />
 				<link rel="icon" href="/favicon.ico" />
+				<meta property="og:title" content={imgUrl} />
 			</Head>
 			<div className="flex flex-col items-center min-h-screen p-3">
 				<div className="text-5xl font-bold h-max p-3">Prayers</div>
@@ -61,4 +66,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	return {
 		props: { shareId },
 	};
+};
+
+const getBaseURL = () => {
+	if (process.env.NODE_ENV === "development") {
+		return "http://localhost:3000";
+	}
+
+	return "https://group-pray.vercel.app";
 };
