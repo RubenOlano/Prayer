@@ -1,7 +1,7 @@
 {
 	"WillLuke.nextjs.addTypesOnSave": false,
 	"WillLuke.nextjs.hasPrompted": true,
-	"cSpell.words": ["CLOUDINARY", "Moji", "Parens", "tanstack"],
+	"cSpell.words": ["CLOUDINARY", "datepicker", "Moji", "Parens", "tanstack"],
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"search.useIgnoreFiles": false

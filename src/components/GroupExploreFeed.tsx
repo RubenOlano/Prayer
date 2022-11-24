@@ -16,7 +16,7 @@ const GroupExploreFeed = () => {
 
 	return (
 		<div className="p-5">
-			<div className="md:grid grid-cols-3">
+			<div className="md:grid grid-cols-3 md:gap-3 m-3">
 				{isLoading
 					? Array.from({ length: 5 }).map((_, i) => <ExploreCards.Skeleton key={i} />)
 					: data && data.map(group => <ExploreCards group={group} key={group.id} />)}

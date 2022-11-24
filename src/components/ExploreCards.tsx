@@ -27,7 +27,7 @@ function ExploreCards({ group }: Props) {
 	});
 
 	return (
-		<div className="card bg-base-300 ">
+		<div className="card bg-base-300 m-3 md:m-0">
 			<div className="card-body">
 				<div className="card-title">{group.name}</div>
 				<div className="text-gray-500">{group.description}</div>

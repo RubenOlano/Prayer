@@ -14,9 +14,9 @@ const MainFeed = () => {
 		}
 	);
 
-	if (data?.pages.length === 0) {
+	if (data?.pages.length === 0 || data?.pages[0]?.posts.length === 0) {
 		return (
-			<div className="container justify-center text-center">
+			<div className="container justify-center text-center m-5">
 				<h1 className="text-2xl">No posts yet</h1>
 				<p className="text-gray-600">Be the first one to share something</p>
 			</div>

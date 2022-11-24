@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 
 const CreatePostForm = () => {
 	const router = useRouter();
+
 	const {
 		register,
 		handleSubmit,
@@ -14,10 +15,9 @@ const CreatePostForm = () => {
 	} = useForm<createPostInput>({
 		resolver: zodResolver(createPostSchema),
 	});
+
 	const groupId = router.query.groupId as string;
-	if (!groupId) {
-		return null;
-	}
+
 	const utils = trpc.useContext();
 	const { mutate, isLoading, isSuccess } = trpc.posts.createPost.useMutation({
 		onSuccess: async res => {
