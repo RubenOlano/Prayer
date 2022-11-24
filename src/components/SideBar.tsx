@@ -72,7 +72,7 @@ const SideBar: FC<Props> = ({ session }) => {
 					<h1 className="text-xl font-bold flex justify-center items-center">
 						<Image
 							src={getImage(session.user.image)}
-							className={`rounded-full h-10 w-10 object-cover mr-2 ${
+							className={`rounded-full h-10 w-10 object-cover mr-2 avatar${
 								path === "profile" ? "border-2 border-secondary" : ""
 							}`}
 							height={10}

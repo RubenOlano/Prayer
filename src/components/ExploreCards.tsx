@@ -34,8 +34,8 @@ function ExploreCards({ group }: Props) {
 				<div className="text-gray-500">{`${group._count.GroupMembers} ${
 					group._count.GroupMembers > 1 ? "members" : "member"
 				}`}</div>
-				<div>
-					{group.GroupAdmins.map(admin => (
+				<div className="avatar-group">
+					{group.GroupMembers.map(admin => (
 						<div key={admin.id}>
 							<Image
 								src={getImage(admin.User.image)}

@@ -56,7 +56,7 @@ const BottomBar: FC<Props> = ({ session }) => {
 				<Link href="/profile" onClick={clickProfile} className={`${path === "profile" && "active"}`}>
 					<Image
 						src={getImage(session.user.image)}
-						className={`rounded-full h-5 w-5 object-cover ${
+						className={`rounded-full h-5 w-5 object-cover avatar ${
 							path === "profile" && "border-2 border-accent"
 						}`}
 						height={5}

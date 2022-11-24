@@ -21,7 +21,7 @@ const UserComp: FC<Props> = ({ user }) => {
 				alt={`${user.User.name} ${user.User.name}`}
 				width={30}
 				height={30}
-				className="rounded-full"
+				className="rounded-full avatar"
 			/>
 			<h1 className="text-center ml-2">{user.User.name || "Member"}</h1>
 		</div>
