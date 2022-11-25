@@ -64,6 +64,7 @@ const CreatePostForm = () => {
 					{...register("anonymous", { required: false })}
 				/>
 			</label>
+			<input type="hidden" {...register("groupId")} />
 			<button
 				className={`btn btn-primary mt-2 ${isLoading ? "loading" : isSuccess && "btn-success disabled"}`}
 				type="submit"
