@@ -15,10 +15,6 @@ function PostPage() {
 				<h1 className={`md:text-2xl font-bold text-center ${isLoading && "animate-pulse"}`}>
 					{data?.title || "Loading..."}
 				</h1>
-				<p className="md:text-xl text-sm text-center">{data?.content}</p>
-			</div>
-			<br />
-			<div className="card-body justify-center">
 				<h2 className="text-sm md:text-xl font-bold">Author</h2>
 				<p className="text-base md:text-lg">{data?.authorName}</p>
 				<Image
@@ -29,6 +25,10 @@ function PostPage() {
 					className="md:h-24 md:w-24 avatar rounded-full self-center"
 					priority
 				/>
+			</div>
+			<br />
+			<div className="card-body justify-center">
+				<p className="md:text-xl text-sm text-center">{data?.content}</p>
 			</div>
 			<p>{data && data?.createdAt.toDateString()} </p>
 			<div className="flex flex-row items-center justify-center hover:cursor-pointer">

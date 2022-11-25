@@ -20,8 +20,8 @@ const Post: NextPage<Props> = ({ id }) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:pl-40 m-5 pb-40 md:flex">
-					<div className="md:flex m-5 h-96 md:w-1/2 ">
+				<div className="md:pl-40 m-5 pb-40 md:pb-0 md:flex">
+					<div className="md:flex m-5 md:w-1/2 ">
 						<PostPage />
 					</div>
 					<div className="md:flex m-5 p-3 md:w-1/2">
