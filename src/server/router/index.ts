@@ -1,6 +1,5 @@
 // src/server/router/index.ts
-import { createRouter } from "./context";
-import { TRPCError } from "@trpc/server";
+import { createProtectedRouter, createRouter } from "./context";
 
 const t = createRouter();
 
@@ -9,17 +8,4 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 export const mergeRouters = t.mergeRouters;
 
-const protectedRouter = t.middleware(({ ctx, next }) => {
-	if (!ctx.session || !ctx.session.user) {
-		throw new TRPCError({ code: "UNAUTHORIZED" });
-	}
-	return next({
-		ctx: {
-			...ctx,
-			// infers that `session` is non-nullable to downstream resolvers
-			session: { ...ctx.session, user: ctx.session.user },
-		},
-	});
-});
-
-export const protectedProcedure = t.procedure.use(protectedRouter);
+export const protectedProcedure = t.procedure.use(createProtectedRouter());

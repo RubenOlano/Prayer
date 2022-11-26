@@ -1,5 +1,5 @@
 export const iosDetect = (navigator: Navigator): boolean => {
-	const { userAgent } = navigator;
+	const { userAgent, share } = navigator;
 
-	return navigator?.share !== undefined && userAgent.includes("iPhone");
+	return share !== undefined && userAgent.includes("iPhone");
 };

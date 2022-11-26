@@ -6,10 +6,10 @@ export const createGroupSchema = z.object({
 		.describe("Name")
 		.refine(
 			name => name.length > 0,
-			name => ({ message: `Name must be at least 1 character long, got ${name.length} characters` })
+			name => ({ message: `${name} is an invalid group name, please try again` })
 		),
-	description: z.string().optional(),
-	isPrivate: z.boolean().optional(),
+	description: z.string().optional().describe("A group's description"),
+	isPrivate: z.boolean().optional().describe("Whether or not a group is private").default(true),
 });
 
 export type createGroupInput = z.TypeOf<typeof createGroupSchema>;

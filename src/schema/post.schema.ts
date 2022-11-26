@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export const createPostSchema = z.object({
 	groupId: z.string(),
@@ -7,33 +7,20 @@ export const createPostSchema = z.object({
 		.describe("Content")
 		.refine(
 			content => content.length > 0,
-			content => ({ message: `Content must be at least 1 character long, got ${content.length} characters` })
+			content => ({ message: `${content} is not a valid input, please try again` })
 		),
-	anonymous: z.boolean().optional(),
+	anonymous: z.boolean().optional().default(false),
 	duration: z.number().optional(),
 	title: z
 		.string()
 		.describe("Title")
 		.refine(
 			title => title.length > 0,
-			title => ({ message: `Title must be at least 1 character long, got ${title.length} characters` })
+			title => ({ message: `${title} is not a valid input, please try again` })
 		),
 });
 
 export type createPostInput = z.TypeOf<typeof createPostSchema>;
-
-const createPostOutputSchema = z.object({
-	postId: z.string(),
-	userId: z.string(),
-	groupId: z.string(),
-	content: z
-		.string()
-		.describe("Content")
-		.refine(content => content.length > 0),
-	anonymous: z.boolean(),
-});
-
-export type createPostOutput = z.TypeOf<typeof createPostOutputSchema>;
 
 export const fetchGroupPostsSchema = z.object({
 	groupId: z.string(),

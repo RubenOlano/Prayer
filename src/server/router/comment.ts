@@ -37,7 +37,7 @@ export const commentRouter = router({
 			}
 		}
 	}),
-	createComments: protectedProcedure.input(createCommentSchema).mutation(async ({ ctx, input }) => {
+	createComment: protectedProcedure.input(createCommentSchema).mutation(async ({ ctx, input }) => {
 		const { postId, content } = input;
 		const userId = ctx.session.user.id;
 		try {

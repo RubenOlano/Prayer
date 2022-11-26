@@ -22,7 +22,7 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 		},
 	});
 
-	if (!data) {
+	if (!data && !isLoading) {
 		return (
 			<>
 				<Head>
@@ -48,27 +48,31 @@ const Invites: NextPage<Props> = ({ inviteId }) => {
 				<meta property="og:image:width" content="1200" />
 				<meta property="og:image:height" content="600" />
 			</Head>
-			<main>
-				<div className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40">
-					<h1 className="text-3xl font-bold">
-						{!isLoading && (
-							<p>
-								You have been invited to join <strong className="text-blue-500">{data.name}</strong>
-							</p>
-						)}
-					</h1>
-					<button
-						className="btn btn-primary mt-4"
-						onClick={() =>
-							mutate({
-								inviteId,
-							})
-						}
-						disabled={isLoading}
-					>
-						Join Group
-					</button>
-				</div>
+			<main className="flex flex-col items-center justify-center min-h-max py-2 h-max pb-40 m-10">
+				{!isLoading && (
+					<div className="text-center card card-normal">
+						<div className="card-title">
+							<h1>You have been invited to join:</h1>
+						</div>
+						<div className="card-body">
+							<h2 className="text-primary font-extrabold text-2xl">{data.name}</h2>
+							{data.description && <h2 className="text-xl">{data.description}</h2>}
+							<div className="card-actions justify-center m-2">
+								<button
+									className="btn btn-primary"
+									onClick={() =>
+										mutate({
+											inviteId,
+										})
+									}
+									disabled={isLoading}
+								>
+									Join Group
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</main>
 		</>
 	);
