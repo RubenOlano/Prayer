@@ -32,8 +32,8 @@ const GroupList = () => {
 	}
 
 	return (
-		<div className="w-full p-5">
-			<div className="grid md:grid-cols-3 gap-2 h-24">
+		<div className="w-full md:p-5">
+			<div className="grid md:grid-cols-3 gap-2 last:pb-10">
 				<Link
 					href="/groups/create"
 					className="bg-accent hover:bg-accent-focus text-white font-bold rounded flex items-center justify-center m-2 p-3 text-5xl"

@@ -12,16 +12,20 @@ const LikesComp = () => {
 	const { data: liked } = trpc.posts.getUserLiked.useQuery({ postId });
 	const { data: numLikes } = trpc.posts.getNumberOfLikes.useQuery({ postId });
 	const { mutate } = trpc.posts.toggleLikePost.useMutation({
-		onMutate: async () => {
+		onSuccess: async () => {
 			await utils.posts.getUserLiked.refetch({ postId });
 			await utils.posts.getNumberOfLikes.refetch({ postId });
 		},
 	});
 
 	return (
-		<div className="btn btn-secondary" onClick={() => mutate({ postId })}>
+		<div className={`btn btn-primary btn-outline ${liked && "btn-active"}`} onClick={() => mutate({ postId })}>
 			<label className="swap swap-rotate">
-				<input type="checkbox" defaultChecked={liked} />
+				{liked !== undefined ? (
+					<input type="checkbox" defaultChecked={liked} />
+				) : (
+					<input type="checkbox" defaultChecked={false} />
+				)}
 				<Image src={Liked} width="20" height="20" alt="Icon" className="swap-on" />
 				<Image src={NotLiked} width="20" height="20" alt="Icon" className="swap-off" />
 			</label>

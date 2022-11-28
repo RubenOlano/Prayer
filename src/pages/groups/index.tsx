@@ -13,7 +13,7 @@ const Groups = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main>
-				<div className="md:pl-40 align-center justify-center pb-40">
+				<div className="md:pl-40 align-center justify-center pb-10">
 					<GroupList />
 				</div>
 			</main>

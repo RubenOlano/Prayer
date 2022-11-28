@@ -9,7 +9,7 @@ module.exports = {
 			sans: ["Kanit"],
 		},
 	},
-	plugins: [require("daisyui")],
+	plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
 	daisyui: {
 		themes: ["cupcake", "halloween"],
 		darkTheme: "halloween",

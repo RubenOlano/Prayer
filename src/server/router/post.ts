@@ -365,7 +365,7 @@ export const postRouter = router({
 						liked: !likedPost.liked,
 					},
 				});
-				return false;
+				return !likedPost.liked;
 			}
 			await ctx.prisma.likedPost.create({
 				data: {

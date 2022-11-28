@@ -11,7 +11,7 @@ function GroupItem({ group }: Props) {
 			href={`/groups/${group.id}`}
 			className="card card-bordered bg-info hover:scale-105 transition text-info-content"
 		>
-			<div className="card-body">
+			<div className="card-body ">
 				<h2 className="card-title  text-info-content">{group.name}</h2>
 				<p className="card-content  text-info-content">{group.description}</p>
 			</div>

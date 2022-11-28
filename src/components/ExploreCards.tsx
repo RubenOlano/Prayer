@@ -61,7 +61,7 @@ export default ExploreCards;
 
 ExploreCards.Skeleton = function ExploreCardsSkeleton() {
 	return (
-		<div className="card bg-base-300 animate-pulse">
+		<div className="card bg-base-300 m-3 md:m-0 animate-pulse">
 			<div className="card-body">
 				<div className="card-title" />
 				<div className="text-gray-500" />

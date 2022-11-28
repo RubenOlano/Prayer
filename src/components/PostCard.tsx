@@ -33,7 +33,7 @@ function PostCard(post: Props) {
 			</div>
 			<div className="border-accent border-y-2 card-body">
 				<h1 className="card-title text-center justify-center">{post.title}</h1>
-				<p className="m-2">{post.content}</p>
+				<p className="m-2 line-clamp-2">{post.content}</p>
 			</div>
 		</Link>
 	);
