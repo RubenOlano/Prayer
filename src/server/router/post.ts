@@ -355,7 +355,12 @@ export const postRouter = router({
 		const userId = ctx.session.user.id;
 		try {
 			const likedPost = await ctx.prisma.likedPost.findUnique({
-				where: { postId_userId: { postId, userId } },
+				where: {
+					postId_userId: {
+						postId,
+						userId,
+					},
+				},
 			});
 
 			if (likedPost) {
@@ -374,6 +379,7 @@ export const postRouter = router({
 					liked: true,
 				},
 			});
+			return true;
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === "P2002") {

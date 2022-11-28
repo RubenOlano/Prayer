@@ -26,8 +26,20 @@ const LikesComp = () => {
 				) : (
 					<input type="checkbox" defaultChecked={false} />
 				)}
-				<Image src={Liked} width="20" height="20" alt="Icon" className="swap-on" />
-				<Image src={NotLiked} width="20" height="20" alt="Icon" className="swap-off" />
+				<Image
+					src={Liked}
+					width="20"
+					height="20"
+					alt="Icon"
+					className={liked !== undefined && liked ? "swap-off" : "swap-on"}
+				/>
+				<Image
+					src={NotLiked}
+					width="20"
+					height="20"
+					alt="Icon"
+					className={liked !== undefined && liked ? "swap-on" : "swap-off"}
+				/>
 			</label>
 			<p className="ml-2">{numLikes || 0}</p>
 		</div>
