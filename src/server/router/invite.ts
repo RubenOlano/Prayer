@@ -59,6 +59,8 @@ export const inviteRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -106,8 +108,12 @@ export const inviteRouter = router({
 			}
 			const groupMember = await ctx.prisma.groupMember.create({
 				data: {
-					groupId: group.id,
-					userId: user.id,
+					Group: {
+						connect: { id: group.id },
+					},
+					User: {
+						connect: { id: user.id },
+					},
 				},
 			});
 			return groupMember;
@@ -124,6 +130,8 @@ export const inviteRouter = router({
 						message: e.message,
 					});
 				}
+			} else if (e instanceof TRPCError) {
+				throw e;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -171,6 +179,8 @@ export const inviteRouter = router({
 						message: e.message,
 					});
 				}
+			} else if (e instanceof TRPCError) {
+				throw e;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",

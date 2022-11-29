@@ -88,6 +88,8 @@ export const postRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -182,6 +184,8 @@ export const postRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -393,6 +397,8 @@ export const postRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",

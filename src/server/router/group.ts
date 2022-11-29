@@ -66,26 +66,47 @@ export const groupRouter = router({
 					code: "CONFLICT",
 					message: error.message,
 				});
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
 					message: "Something went wrong",
+					cause: error,
 				});
 			}
 		}
 	}),
 	getGroups: protectedProcedure.query(async ({ ctx }) => {
 		const { id } = ctx.session.user;
-		const groups = await ctx.prisma.group.findMany({
-			where: {
-				GroupMembers: {
-					some: {
-						userId: id,
+		try {
+			const groups = await ctx.prisma.group.findMany({
+				where: {
+					GroupMembers: {
+						some: {
+							userId: id,
+						},
 					},
 				},
-			},
-		});
-		return groups;
+			});
+
+			return groups;
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError) {
+				throw new TRPCError({
+					code: "CONFLICT",
+					message: error.message,
+				});
+			} else if (error instanceof TRPCError) {
+				throw error;
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Something went wrong",
+					cause: error,
+				});
+			}
+		}
 	}),
 	getGroup: protectedProcedure.input(fetchGroupSchema).query(async ({ ctx, input }) => {
 		const { id } = input;
@@ -168,6 +189,8 @@ export const groupRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -210,6 +233,8 @@ export const groupRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -257,6 +282,8 @@ export const groupRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -327,6 +354,8 @@ export const groupRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -398,6 +427,8 @@ export const groupRouter = router({
 						message: error.message,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
@@ -416,13 +447,13 @@ export const groupRouter = router({
 				},
 				data: {
 					GroupMembers: {
-						deleteMany: {},
+						deleteMany: { groupId },
 					},
 					GroupAdmins: {
-						deleteMany: {},
+						deleteMany: { groupId },
 					},
 					GroupInvites: {
-						deleteMany: {},
+						deleteMany: { groupId },
 					},
 				},
 			});

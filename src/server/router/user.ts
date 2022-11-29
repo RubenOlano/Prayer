@@ -25,11 +25,27 @@ export const userRouter = router({
 				image: user.image,
 			};
 		} catch (e) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				cause: e,
-				message: "Something went wrong",
-			});
+			if (e instanceof PrismaClientKnownRequestError) {
+				if (e.code === "P2002") {
+					throw new TRPCError({
+						code: "CONFLICT",
+						message: e.message,
+					});
+				} else {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						message: e.message,
+					});
+				}
+			} else if (e instanceof TRPCError) {
+				throw e;
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Something went wrong",
+					cause: e,
+				});
+			}
 		}
 	}),
 	updateUserName: protectedProcedure.input(updateUserNameSchema).mutation(async ({ ctx, input }) => {
@@ -57,12 +73,19 @@ export const userRouter = router({
 						message: "Something went wrong",
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
+			} else {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Something went wrong",
+					cause: error,
+				});
 			}
 		}
 	}),
 	updateUserImage: protectedProcedure.input(updateUserPictureSchema).mutation(async ({ ctx, input }) => {
 		const { id, image } = input;
-
 		try {
 			await ctx.prisma.user.update({
 				where: {

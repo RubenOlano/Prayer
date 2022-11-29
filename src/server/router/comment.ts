@@ -29,10 +29,13 @@ export const commentRouter = router({
 						message: err.message,
 					});
 				}
+			} else if (err instanceof TRPCError) {
+				throw err;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
 					message: "Something went wrong",
+					cause: err,
 				});
 			}
 		}
@@ -71,8 +74,11 @@ export const commentRouter = router({
 					throw new TRPCError({
 						code: "INTERNAL_SERVER_ERROR",
 						message: error.message,
+						cause: error,
 					});
 				}
+			} else if (error instanceof TRPCError) {
+				throw error;
 			} else {
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
