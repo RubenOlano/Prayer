@@ -16,7 +16,7 @@ function AddCommentButton({ postId }: Props) {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<CreateCommentSchema>({ resolver: zodResolver(createCommentSchema) });
+	} = useForm<CreateCommentSchema>({ resolver: zodResolver(createCommentSchema), criteriaMode: "all" });
 	const { mutate, isLoading } = trpc.comments.createComment.useMutation({
 		onSuccess: async () => {
 			reset();

@@ -14,6 +14,7 @@ const CreatePostForm = () => {
 		reset,
 	} = useForm<createPostInput>({
 		resolver: zodResolver(createPostSchema),
+		criteriaMode: "all",
 	});
 
 	const groupId = router.query.groupId as string;
@@ -22,6 +23,7 @@ const CreatePostForm = () => {
 	const { mutate, isLoading, isSuccess } = trpc.posts.createPost.useMutation({
 		onSuccess: async res => {
 			await utils.posts.getGroupPosts.invalidate({ groupId });
+			await utils.posts.getPostFeed.invalidate();
 			router.push(`/posts/${res.post.id}`);
 		},
 	});

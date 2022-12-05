@@ -14,6 +14,7 @@ const CreateGroupForm = () => {
 		formState: { errors },
 	} = useForm<createGroupInput>({
 		resolver: zodResolver(createGroupSchema),
+		criteriaMode: "all",
 	});
 	const router = useRouter();
 

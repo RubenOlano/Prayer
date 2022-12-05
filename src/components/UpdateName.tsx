@@ -14,7 +14,7 @@ function UpdateName({ userId }: Props) {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<updateUserNameInput>({ resolver: zodResolver(updateUserNameSchema) });
+	} = useForm<updateUserNameInput>({ resolver: zodResolver(updateUserNameSchema), criteriaMode: "all" });
 	const { mutate, isLoading, isSuccess } = trpc.users.updateUserName.useMutation({
 		onSuccess: async () => {
 			await utils.users.getUser.refetch({ id: userId });
