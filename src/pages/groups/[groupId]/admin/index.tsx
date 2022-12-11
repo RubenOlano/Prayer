@@ -13,7 +13,7 @@ interface Props {
 const Admin: NextPage<Props> = ({ groupId }) => {
 	const { data, isLoading: loadingAdmin } = trpc.groups.fetchUserIsAdmin.useQuery({ groupId });
 
-	if (!data) {
+	if (!data && !loadingAdmin) {
 		return (
 			<>
 				<Head>

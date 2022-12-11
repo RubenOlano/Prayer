@@ -19,14 +19,13 @@ function AddCommentButton({ postId }: Props) {
 	} = useForm<CreateCommentSchema>({ resolver: zodResolver(createCommentSchema), criteriaMode: "all" });
 	const { mutate, isLoading } = trpc.comments.createComment.useMutation({
 		onSuccess: async () => {
+			setClicked(false);
 			reset();
 			await utils.comments.fetchAllComments.refetch({ postId });
 		},
 	});
 
 	const onSubmit = (data: CreateCommentSchema) => {
-		setClicked(false);
-
 		mutate({
 			...data,
 			postId,
@@ -43,6 +42,7 @@ function AddCommentButton({ postId }: Props) {
 						className="border-2 border-black rounded-md p-2 m-2"
 						{...register("content")}
 					/>
+					<input type="hidden" {...register("postId")} value={postId} />
 					<button type="submit" className={`btn btn-primary ${isLoading && "animate-pulse "} `}>
 						Submit
 					</button>

@@ -1,193 +1,65 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from ".";
 import { addUserToGroup, fetchGroupFromInviteSchema, fetchInviteSchema } from "../../schema/invite.schema";
+import { handleError } from "../../utils/errorHandler";
 
 export const inviteRouter = router({
 	createInvite: protectedProcedure.input(fetchInviteSchema).mutation(async ({ input, ctx }) => {
 		const { groupId } = input;
 		const userId = ctx.session.user.id;
 		try {
-			const isAdmin = await ctx.prisma.groupAdmins.findMany({
-				where: {
-					AND: {
-						groupId,
-						userId,
-					},
-				},
+			const { Group } = await ctx.prisma.groupAdmins.findFirstOrThrow({
+				where: { AND: { groupId, userId } },
+				include: { Group: { include: { GroupInvites: true } } },
 			});
-			if (!isAdmin) {
-				throw new TRPCError({
-					code: "FORBIDDEN",
-					message: "Unauthorized request to make an invite",
-				});
-			}
-			const group = await ctx.prisma.group.findUnique({
-				where: {
-					id: groupId,
-				},
-				include: {
-					GroupInvites: true,
-				},
-			});
-			if (!group) {
-				throw new TRPCError({
-					message: "Error finding group",
-					code: "BAD_REQUEST",
-				});
-			}
-			if (group.GroupInvites.length > 0 && group.GroupInvites[0]) {
-				return group.GroupInvites[0];
-			} else {
+
+			const invite = await ctx.prisma.groupInvites.findFirst({ where: { groupId } });
+			if (!invite) {
 				const invite = await ctx.prisma.groupInvites.create({
-					data: {
-						groupId,
-					},
+					data: { Group: { connect: { id: Group.id } } },
 				});
 				return invite;
 			}
+
+			return invite;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else if (error instanceof TRPCError) {
-				throw error;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Something went wrong",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	addUserToGroup: protectedProcedure.input(addUserToGroup).mutation(async ({ ctx, input }) => {
 		const { inviteId } = input;
 		const userId = ctx.session.user.id;
 		try {
-			const invite = await ctx.prisma.groupInvites.findUnique({
-				where: {
-					id: inviteId,
-				},
-				include: {
-					Group: true,
-				},
+			const invite = await ctx.prisma.groupInvites.findUniqueOrThrow({
+				where: { id: inviteId },
+				include: { Group: true },
 			});
-			if (!invite) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "Invite not found",
-				});
-			}
 			const group = invite.Group;
-			if (!group) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "Group not found",
-				});
-			}
-			const user = await ctx.prisma.user.findUnique({
-				where: {
-					id: userId,
-				},
+
+			const user = await ctx.prisma.user.findUniqueOrThrow({
+				where: { id: userId },
 			});
-			if (!user) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "User not found",
-				});
-			}
 			const groupMember = await ctx.prisma.groupMember.create({
 				data: {
-					Group: {
-						connect: { id: group.id },
-					},
-					User: {
-						connect: { id: user.id },
-					},
+					Group: { connect: { id: group.id } },
+					User: { connect: { id: user.id } },
 				},
 			});
 			return groupMember;
 		} catch (e) {
-			if (e instanceof PrismaClientKnownRequestError) {
-				if (e.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: e.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: e.message,
-					});
-				}
-			} else if (e instanceof TRPCError) {
-				throw e;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Something went wrong",
-					cause: e,
-				});
-			}
+			throw handleError(e);
 		}
 	}),
 	getGroupFromInvite: protectedProcedure.input(fetchGroupFromInviteSchema).query(async ({ ctx, input }) => {
 		const { inviteId } = input;
 		try {
-			const invite = await ctx.prisma.groupInvites.findUnique({
-				where: {
-					id: inviteId,
-				},
-				include: {
-					Group: true,
-				},
+			const invite = await ctx.prisma.groupInvites.findUniqueOrThrow({
+				where: { id: inviteId },
+				include: { Group: true },
 			});
-			if (!invite) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "Invite not found",
-				});
-			}
-			const group = invite.Group;
-			if (!group) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "Group not found",
-				});
-			}
-			return group;
+
+			return invite.Group;
 		} catch (e) {
-			if (e instanceof PrismaClientKnownRequestError) {
-				if (e.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: e.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: e.message,
-					});
-				}
-			} else if (e instanceof TRPCError) {
-				throw e;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Something went wrong",
-					cause: e,
-				});
-			}
+			throw handleError(e);
 		}
 	}),
 });

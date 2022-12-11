@@ -18,7 +18,8 @@ interface Props {
 }
 
 const BottomBar: FC<Props> = ({ session }) => {
-	const path = useRouter().pathname.split("/")[1];
+	const router = useRouter();
+	const path = router.pathname.split("/")[1];
 
 	if (!session) {
 		return <></>;

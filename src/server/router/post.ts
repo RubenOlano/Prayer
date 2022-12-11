@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { handleError } from "./../../utils/errorHandler";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "./";
 import {
@@ -18,27 +18,13 @@ export const postRouter = router({
 	createPost: protectedProcedure.input(createPostSchema).mutation(async ({ ctx, input }) => {
 		const { groupId, content, anonymous, duration, title } = input;
 		const userId = ctx.session.user.id;
-		let new_duration = duration;
 		try {
-			if (!new_duration) {
-				// Default duration is 1 week
-				new_duration = 604800000;
-			}
-
-			const final_day = new Date(Date.now() + new_duration);
+			const final_day = new Date(Date.now() + (duration ? duration : 604800000));
 
 			const post = await ctx.prisma.post.create({
 				data: {
-					author: {
-						connect: {
-							id: userId,
-						},
-					},
-					Group: {
-						connect: {
-							id: groupId,
-						},
-					},
+					author: { connect: { id: userId } },
+					Group: { connect: { id: groupId } },
 					content,
 					anonymous,
 					Duration: final_day,
@@ -47,109 +33,40 @@ export const postRouter = router({
 			});
 
 			const group = await ctx.prisma.group.update({
-				where: {
-					id: groupId,
-				},
-				data: {
-					posts: {
-						connect: {
-							id: post.id,
-						},
-					},
-				},
+				where: { id: groupId },
+				data: { posts: { connect: { id: post.id } } },
 			});
 
 			await ctx.prisma.user.update({
-				where: {
-					id: userId,
-				},
-				data: {
-					Posts: {
-						connect: {
-							id: post.id,
-						},
-					},
-				},
+				where: { id: userId },
+				data: { Posts: { connect: { id: post.id } } },
 			});
 			return {
 				post,
 				group,
 			};
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else if (error instanceof TRPCError) {
-				throw error;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Something went wrong",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
-	// Returns all posts from a group (anon and non-anon)
 	getGroupPosts: protectedProcedure.input(fetchGroupPostsSchema).query(async ({ ctx, input }) => {
 		const limit = input.limit ?? 5;
 		const { groupId, cursor } = input;
 		try {
-			// Delete posts that have expired
-			await ctx.prisma.postShare.deleteMany({
-				where: {
-					post: {
-						Duration: {
-							lte: new Date(),
-						},
-					},
-				},
-			});
-			await ctx.prisma.likedPost.deleteMany({
-				where: {
-					Post: {
-						Duration: {
-							lte: new Date(),
-						},
-					},
-				},
-			});
-			await ctx.prisma.postComment.deleteMany({
-				where: {
-					Post: {
-						Duration: {
-							lte: new Date(),
-						},
-					},
-				},
-			});
-			await ctx.prisma.post.deleteMany({
-				where: {
-					Duration: { lte: new Date() },
-				},
-			});
+			// Delete expired posts in the background
+			setTimeout(async () => {
+				await ctx.prisma.postShare.deleteMany({ where: { post: { Duration: { lte: new Date() } } } });
+				await ctx.prisma.likedPost.deleteMany({ where: { Post: { Duration: { lte: new Date() } } } });
+				await ctx.prisma.postComment.deleteMany({ where: { Post: { Duration: { lte: new Date() } } } });
+				await ctx.prisma.post.deleteMany({ where: { Duration: { lte: new Date() } } });
+			}, 0);
+
 			const posts = await ctx.prisma.post.findMany({
 				take: limit + 1,
-				where: {
-					groupId,
-				},
+				where: { groupId },
 				cursor: cursor ? { id: cursor } : undefined,
-				orderBy: {
-					createdAt: "desc",
-				},
-				include: {
-					author: true,
-					Group: true,
-				},
+				orderBy: { createdAt: "desc" },
+				include: { author: true, Group: true },
 			});
 			let nextCursor: typeof cursor | undefined = undefined;
 			if (posts.length > limit) {
@@ -172,105 +89,38 @@ export const postRouter = router({
 
 			return { posts: resPosts, nextCursor };
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else if (error instanceof TRPCError) {
-				throw error;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Something went wrong",
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	getAuthorPosts: protectedProcedure.input(fetchAuthorPostsSchema).query(async ({ ctx, input }) => {
 		const { userId } = input;
 		try {
 			// Delete posts that have expired
-			await ctx.prisma.postShare.deleteMany({
-				where: {
-					post: {
-						Duration: {
-							lte: new Date(),
-						},
-					},
-				},
-			});
-			await ctx.prisma.likedPost.deleteMany({
-				where: {
-					Post: {
-						Duration: {
-							lte: new Date(),
-						},
-					},
-				},
-			});
-			await ctx.prisma.post.deleteMany({
-				where: {
-					Duration: { lte: new Date() },
-				},
-			});
+			await ctx.prisma.postShare.deleteMany({ where: { post: { Duration: { lte: new Date() } } } });
+			await ctx.prisma.likedPost.deleteMany({ where: { Post: { Duration: { lte: new Date() } } } });
+			await ctx.prisma.post.deleteMany({ where: { Duration: { lte: new Date() } } });
+
 			const posts = await ctx.prisma.post.findMany({
-				where: {
-					authorId: userId,
-					Duration: { gt: new Date() },
-				},
-				include: {
-					Group: true,
-				},
+				where: { authorId: userId, Duration: { gt: new Date() } },
+				include: { Group: true },
 			});
 			return posts;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			}
+			throw handleError(error);
 		}
 	}),
 	getPost: protectedProcedure.input(fetchPostWithIdSchema).query(async ({ ctx, input }) => {
 		const { postId } = input;
 		const userId = ctx.session.user.id;
 		try {
-			const post = await ctx.prisma.post.findUnique({
-				where: {
-					id: postId,
-				},
+			const post = await ctx.prisma.post.findUniqueOrThrow({
+				where: { id: postId },
 				include: {
-					Group: {
-						include: {
-							GroupMembers: true,
-						},
-					},
+					Group: { include: { GroupMembers: true } },
 					author: true,
 				},
 			});
 
-			if (!post) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "Post not found",
-				});
-			}
 			const isMember = post.Group?.GroupMembers.some(member => {
 				return member.userId === userId;
 			});
@@ -292,66 +142,22 @@ export const postRouter = router({
 				authorImage: post.anonymous ? undefined : post.author.image ?? undefined,
 			};
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			}
+			throw handleError(error);
 		}
 	}),
 	deletePost: protectedProcedure.input(deletePostSchema).mutation(async ({ ctx, input }) => {
 		const { postId } = input;
 		try {
-			const post = await ctx.prisma.post.findUnique({
-				where: {
-					id: postId,
-				},
-			});
-			if (!post) {
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "Post not found",
-				});
-			}
-
-			await ctx.prisma.postComment.deleteMany({
-				where: {
-					postId,
-				},
-			});
+			await ctx.prisma.postComment.deleteMany({ where: { postId } });
 
 			await ctx.prisma.post.delete({
-				where: {
-					id: postId,
-				},
-				include: {
-					PostComment: true,
-				},
+				where: { id: postId },
+				include: { PostComment: true },
 			});
 
 			return true;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			}
+			throw handleError(error);
 		}
 	}),
 	toggleLikePost: protectedProcedure.input(toggleLikedPostSchema).mutation(async ({ ctx, input }) => {
@@ -359,52 +165,25 @@ export const postRouter = router({
 		const userId = ctx.session.user.id;
 		try {
 			const likedPost = await ctx.prisma.likedPost.findUnique({
-				where: {
-					postId_userId: {
-						postId,
-						userId,
-					},
-				},
+				where: { postId_userId: { postId, userId } },
 			});
-
-			if (likedPost) {
-				await ctx.prisma.likedPost.update({
-					where: { id: likedPost.id },
+			if (!likedPost) {
+				await ctx.prisma.likedPost.create({
 					data: {
-						liked: !likedPost.liked,
+						liked: true,
+						Post: { connect: { id: postId } },
+						User: { connect: { id: userId } },
 					},
 				});
-				return !likedPost.liked;
+				return true;
 			}
-			await ctx.prisma.likedPost.create({
-				data: {
-					Post: { connect: { id: postId } },
-					User: { connect: { id: userId } },
-					liked: true,
-				},
+			await ctx.prisma.likedPost.update({
+				where: { postId_userId: { postId, userId } },
+				data: { liked: !likedPost.liked },
 			});
-			return true;
+			return !likedPost.liked;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else if (error instanceof TRPCError) {
-				throw error;
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	getUserLiked: protectedProcedure.input(getUserLikedSchema).query(async ({ ctx, input }) => {
@@ -416,54 +195,18 @@ export const postRouter = router({
 			});
 			return likedPost?.liked || false;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	getNumberOfLikes: protectedProcedure.input(fetchNumLikesSchema).query(async ({ ctx, input }) => {
 		const { postId } = input;
 		try {
 			const count = await ctx.prisma.likedPost.count({
-				where: {
-					AND: [{ postId }, { liked: true }],
-				},
+				where: { AND: [{ postId }, { liked: true }] },
 			});
 			return count;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	sharePosts: protectedProcedure.input(sharePostsSchema).mutation(async ({ ctx, input }) => {
@@ -472,9 +215,7 @@ export const postRouter = router({
 			const postsToShare = await ctx.prisma.$transaction(
 				postIds.map(postId =>
 					ctx.prisma.postShare.create({
-						data: {
-							post: { connect: { id: postId } },
-						},
+						data: { post: { connect: { id: postId } } },
 					})
 				)
 			);
@@ -487,24 +228,7 @@ export const postRouter = router({
 
 			return sharePage.id;
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 	getPostFeed: protectedProcedure.input(fetchPostFeedSchema).query(async ({ ctx, input }) => {
@@ -514,15 +238,7 @@ export const postRouter = router({
 		try {
 			const posts = await ctx.prisma.post.findMany({
 				take: limit + 1,
-				where: {
-					Group: {
-						GroupMembers: {
-							some: {
-								userId: userId,
-							},
-						},
-					},
-				},
+				where: { Group: { GroupMembers: { some: { userId: userId } } } },
 				include: {
 					author: true,
 					Group: true,
@@ -538,42 +254,23 @@ export const postRouter = router({
 				newCursor = nextItem?.id;
 			}
 
-			const resPosts = posts.map(post => {
-				return {
-					id: post.id,
-					authorName: post.anonymous ? "Anonymous" : post.author.name,
-					groupName: post.Group.name,
-					title: post.title,
-					content: post.content,
-					createdAt: post.createdAt,
-					groupId: post.groupId,
-					authorImage: post.anonymous ? undefined : post.author.image ?? undefined,
-				};
-			});
+			const resPosts = posts.map(post => ({
+				id: post.id,
+				authorName: post.anonymous ? "Anonymous" : post.author.name,
+				groupName: post.Group.name,
+				title: post.title,
+				content: post.content,
+				createdAt: post.createdAt,
+				groupId: post.groupId,
+				authorImage: post.anonymous ? undefined : post.author.image ?? undefined,
+			}));
 
 			return {
 				posts: resPosts,
 				cursor: newCursor,
 			};
 		} catch (error) {
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === "P2002") {
-					throw new TRPCError({
-						code: "CONFLICT",
-						message: error.message,
-					});
-				} else {
-					throw new TRPCError({
-						code: "INTERNAL_SERVER_ERROR",
-						message: error.message,
-					});
-				}
-			} else {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					cause: error,
-				});
-			}
+			throw handleError(error);
 		}
 	}),
 });

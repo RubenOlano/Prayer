@@ -1,10 +1,10 @@
-import { GroupAdmins } from "@prisma/client";
+import { GroupAdmins, User } from "@prisma/client";
 import Image from "next/image";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
 interface Props {
-	admin: GroupAdmins;
+	admin: GroupAdmins & { User: User };
 }
 
 const x = (
@@ -14,17 +14,14 @@ const x = (
 );
 
 function AdminComp({ admin }: Props) {
+	const user = admin.User;
 	const utils = trpc.useContext();
-	const { data: user } = trpc.users.getUser.useQuery({ id: admin.userId });
 
 	const { mutate, isLoading } = trpc.groups.removeGroupAdmin.useMutation({
 		onSuccess: async () => {
 			await utils.groups.fetchGroupAdmins.refetch({ groupId: admin.groupId });
 		},
 	});
-	if (!user) {
-		return null;
-	}
 
 	return (
 		<div className="flex flex-row items-center justify-center m-2">

@@ -1,17 +1,16 @@
-import { GroupMember } from "@prisma/client";
+import { GroupMember, User } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
 import { getImage } from "../utils/defaultUserImage";
 import { trpc } from "../utils/trpc";
 
 interface Props {
-	member: GroupMember;
+	member: GroupMember & { User: User };
 }
 
 function AdminUserComp({ member }: Props) {
+	const user = member.User;
 	const utils = trpc.useContext();
-	const { data: user } = trpc.users.getUser.useQuery({ id: member.userId });
-
 	const { mutate, isLoading } = trpc.groups.removeGroupMember.useMutation({
 		onSuccess: async () => {
 			await utils.groups.fetchGroupNonAdmins.refetch({ groupId: member.groupId });
@@ -21,10 +20,6 @@ function AdminUserComp({ member }: Props) {
 	const onclick = () => {
 		mutate({ memberId: member.id, groupId: member.groupId });
 	};
-
-	if (!user) {
-		return null;
-	}
 
 	return (
 		<div className="flex flex-row items-center justify-center">

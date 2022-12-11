@@ -60,7 +60,7 @@ const CreateGroupForm = () => {
 			<label className="label">
 				<span className="label-text">Group Description</span>
 				<input
-					type="area"
+					type="textarea"
 					placeholder="Description"
 					className={`input md:input-md input-sm ${errors.description && "input-error"}`}
 					disabled={isLoading}

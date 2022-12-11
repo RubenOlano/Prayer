@@ -10,7 +10,7 @@ function PostPage() {
 	const { data, isLoading } = trpc.posts.getPost.useQuery({ postId });
 
 	return (
-		<div className="card card-normal justify-center text-center bg-base-300 w-full p-5">
+		<div className="card justify-center text-center bg-base-300 w-full p-5">
 			<div className="card-title justify-center flex-col">
 				<h1 className={`md:text-2xl font-bold text-center ${isLoading && "animate-pulse"}`}>
 					{data?.title || "Loading..."}
@@ -26,19 +26,20 @@ function PostPage() {
 					priority
 				/>
 			</div>
-			<br />
 			<div className="card-body justify-center">
 				<p className="md:text-xl text-sm text-center">{data?.content}</p>
+				<p>{data && data?.createdAt.toDateString()} </p>
+				<div className="card-actions justify-center">
+					<div className="flex flex-row items-center justify-center hover:cursor-pointer">
+						<LikesComp />
+					</div>
+					{!isLoading && (
+						<Link href={`/groups/${data?.groupId}`} className="btn btn-primary">
+							View Group
+						</Link>
+					)}
+				</div>
 			</div>
-			<p>{data && data?.createdAt.toDateString()} </p>
-			<div className="flex flex-row items-center justify-center hover:cursor-pointer">
-				<LikesComp />
-			</div>
-			{!isLoading && (
-				<Link href={`/groups/${data?.groupId}`} className="btn btn-primary">
-					View Group
-				</Link>
-			)}
 		</div>
 	);
 }

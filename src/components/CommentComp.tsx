@@ -18,7 +18,7 @@ function Comment({ comment }: Props) {
 					height={20}
 					width={20}
 					alt={comment.author.name || "Commenter"}
-					className="avatar rounded-full"
+					className="avatar rounded-full hidden md:block"
 				/>
 				<p className="text-sm italic pl-2">{comment.author.name}</p>
 			</div>
