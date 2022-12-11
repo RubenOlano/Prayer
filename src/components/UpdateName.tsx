@@ -21,7 +21,7 @@ function UpdateName({ userId }: Props) {
 		},
 	});
 	const onSubmit = (data: updateUserNameInput) => {
-		mutate({ ...data, id: userId });
+		mutate({ ...data });
 		reset();
 	};
 	return (

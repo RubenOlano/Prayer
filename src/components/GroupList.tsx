@@ -7,7 +7,7 @@ import { Plus } from "./Icons";
 const GroupList = () => {
 	const { data, isLoading } = trpc.groups.getGroups.useQuery();
 
-	if (data?.length == 0) {
+	if (data?.length == 0 && !isLoading) {
 		return (
 			<div className="w-full p-5">
 				<div className="h-24">

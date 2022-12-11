@@ -1,8 +1,7 @@
+import JoinExploreGroupButton from "./JoinExploreGroupButton";
 import { Group, GroupAdmins, GroupMember, User } from "@prisma/client";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { getImage } from "../utils/defaultUserImage";
-import { trpc } from "../utils/trpc";
 
 interface Props {
 	group: Group & {
@@ -19,13 +18,6 @@ interface Props {
 }
 
 function ExploreCards({ group }: Props) {
-	const router = useRouter();
-	const { mutate, isLoading, isSuccess } = trpc.groups.joinGroup.useMutation({
-		onSuccess: () => {
-			router.push(`/group/${group.id}`);
-		},
-	});
-
 	return (
 		<div className="card bg-base-300 m-3 md:m-0">
 			<div className="card-body">
@@ -47,11 +39,7 @@ function ExploreCards({ group }: Props) {
 						</div>
 					))}
 				</div>
-				<div className="card-actions justify-end" onClick={() => mutate({ groupId: group.id })}>
-					<button className="btn btn-primary">
-						{isLoading ? "Joining..." : isSuccess ? "Joined!" : "Join"}
-					</button>
-				</div>
+				<JoinExploreGroupButton id={group.id} />
 			</div>
 		</div>
 	);

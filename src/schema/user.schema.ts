@@ -5,7 +5,6 @@ export const fetchUserSchema = z.object({
 });
 
 export const updateUserNameSchema = z.object({
-	id: z.string(),
 	name: z
 		.string()
 		.describe("Name")
@@ -18,6 +17,5 @@ export const updateUserNameSchema = z.object({
 export type updateUserNameInput = z.TypeOf<typeof updateUserNameSchema>;
 
 export const updateUserPictureSchema = z.object({
-	id: z.string(),
 	image: z.string().describe("Image").url("Image must be a valid URL"),
 });

@@ -20,7 +20,8 @@ export const userRouter = router({
 		}
 	}),
 	updateUserName: protectedProcedure.input(updateUserNameSchema).mutation(async ({ ctx, input }) => {
-		const { id, name } = input;
+		const id = ctx.session.user.id;
+		const { name } = input;
 		try {
 			const user = await ctx.prisma.user.update({
 				where: { id },
@@ -32,7 +33,8 @@ export const userRouter = router({
 		}
 	}),
 	updateUserImage: protectedProcedure.input(updateUserPictureSchema).mutation(async ({ ctx, input }) => {
-		const { id, image } = input;
+		const id = ctx.session.user.id;
+		const { image } = input;
 		try {
 			await ctx.prisma.user.update({
 				where: { id },
