@@ -1,7 +1,8 @@
 import { useCallback } from "react";
+
 import { env } from "../env/client.mjs";
-import { debounce } from "../utils/debounce.js";
-import { trpc } from "../utils/trpc.js";
+import { debounce } from "../utils/debounce";
+import { trpc } from "../utils/trpc";
 
 const CLOUDINARY_UPLOAD_PRESET = env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_URL = env.NEXT_PUBLIC_CLOUDINARY_URL;
