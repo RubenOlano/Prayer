@@ -6,16 +6,16 @@ import Auth0 from "./Auth0";
 import GoogleSignIn from "./GoogleSignIn";
 
 interface Props {
-	providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
+  providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
 }
 
 const Login: FC<Props> = ({ providers }) => {
-	return (
-		<div className="flex flex-col items-center justify-center ">
-			<Auth0 provider={providers.auth0} />
-			<GoogleSignIn provider={providers.google} />
-		</div>
-	);
+  return (
+    <div className="flex flex-col items-center justify-center ">
+      <Auth0 provider={providers.auth0} />
+      <GoogleSignIn provider={providers.google} />
+    </div>
+  );
 };
 
 export default Login;
