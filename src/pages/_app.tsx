@@ -8,29 +8,29 @@ import BottomBar from "../components/BottomBar";
 import { Kanit } from "@next/font/google";
 
 const kanit = Kanit({
-	weight: ["300", "400", "500", "600", "700"],
-	subsets: ["latin-ext"],
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin-ext"],
 });
 
 const MyApp: AppType<{
-	session: Session;
+  session: Session;
 }> = ({ Component, pageProps: { session, ...pageProps } }) => {
-	return (
-		<>
-			<style jsx global>
-				{`
-					html {
-						font-family: ${kanit.style.fontFamily};
-					}
-				`}
-			</style>
-			<SessionProvider session={session}>
-				<SideBar session={session} />
-				<BottomBar session={session} />
-				<Component {...pageProps} />
-			</SessionProvider>
-		</>
-	);
+  return (
+    <>
+      <style jsx global>
+        {`
+          html {
+            font-family: ${kanit.style.fontFamily};
+          }
+        `}
+      </style>
+      <SessionProvider session={session}>
+        <SideBar session={session} />
+        <BottomBar session={session} />
+        <Component {...pageProps} />
+      </SessionProvider>
+    </>
+  );
 };
 
 export default trpc.withTRPC(MyApp);
