@@ -24,10 +24,10 @@ const SignIn: NextPage<Props> = ({ providers }) => {
         <meta property="og:image:height" content="600" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="text-3xl pb-3 text-center">Welcome to Group Pray</h1>
-          <h3 className="text-2xl pb-2 text-center">Sign in to get started</h3>
+      <main className="flex flex-col items-center justify-center min-h-screen bg-base-100">
+        <div className="flex flex-col items-center justify-center p-8 bg-base-300 rounded-lg shadow-lg">
+          <h1 className="text-3xl pb-3 text-center text-base-content">Welcome to Group Pray</h1>
+          <h3 className="text-2xl pb-2 text-center text-base-content">Sign in to get started</h3>
           <div className="flex">
             <Login providers={providers} />
           </div>
