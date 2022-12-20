@@ -11,7 +11,7 @@ interface Props {
 
 const Login: FC<Props> = ({ providers }) => {
   return (
-    <div className="flex flex-col items-center justify-center ">
+    <div className="btn-group btn-group-vertical">
       <Auth0 provider={providers.auth0} />
       <GoogleSignIn provider={providers.google} />
     </div>

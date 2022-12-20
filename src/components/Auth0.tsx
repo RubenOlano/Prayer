@@ -8,14 +8,14 @@ interface Props {
 
 const Auth0: FC<Props> = ({ provider }) => {
   const router = useRouter();
-  const callbackUrl = router.query.callbackUrl as string;
+  const callbackUrl = router.query.callbackUrl;
 
   const onClick = async () => {
-    await signIn(provider.id, { callbackUrl: callbackUrl || "/" });
+    await signIn(provider.id, { callbackUrl: (callbackUrl as string) || "/" });
   };
 
   return (
-    <button className="btn btn-primary btn-lg" onClick={onClick}>
+    <button className="btn btn-primary btn-outline" onClick={onClick}>
       {provider.name === "Auth0" && "Email Login"}
     </button>
   );

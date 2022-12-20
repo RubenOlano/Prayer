@@ -13,14 +13,14 @@ const GoogleSignIn: FC<Props> = ({ provider }) => {
   const onClick = async () => await signIn(provider.id, { callbackUrl });
 
   return (
-    <button className="btn btn-primary btn-lg mt-5" onClick={onClick}>
+    <button className="btn btn-primary btn-outline" onClick={onClick}>
       Sign in with
       <Image
         src="/Google__G__Logo.svg"
         alt="Google Logo"
-        width={30}
-        height={30}
-        className="avatar avatar-sm rounded-full justify-center self-center"
+        width={20}
+        height={20}
+        className="avatar avatar-sm rounded-full justify-center self-center pl-2"
       />
     </button>
   );
