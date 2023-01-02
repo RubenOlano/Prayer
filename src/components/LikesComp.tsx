@@ -9,7 +9,7 @@ const LikesComp = () => {
   const postId = useRouter().query.postId as string;
   const utils = trpc.useContext();
 
-  const { data: liked } = trpc.posts.getUserLiked.useQuery({ postId });
+  const { data: liked, isLoading } = trpc.posts.getUserLiked.useQuery({ postId });
   const { data: numLikes } = trpc.posts.getNumberOfLikes.useQuery({ postId });
   const { mutate } = trpc.posts.toggleLikePost.useMutation({
     onSuccess: async () => {
@@ -19,29 +19,15 @@ const LikesComp = () => {
   });
 
   return (
-    <div className={`btn btn-primary btn-outline ${liked && "btn-active"}`} onClick={() => mutate({ postId })}>
-      <label className="swap swap-rotate">
-        {liked !== undefined ? (
-          <input type="checkbox" defaultChecked={liked} />
-        ) : (
-          <input type="checkbox" defaultChecked={false} />
-        )}
-        <Image
-          src={Liked}
-          width="20"
-          height="20"
-          alt="Icon"
-          className={liked !== undefined && liked ? "swap-off" : "swap-on"}
-        />
-        <Image
-          src={NotLiked}
-          width="20"
-          height="20"
-          alt="Icon"
-          className={liked !== undefined && liked ? "swap-on" : "swap-off"}
-        />
-      </label>
-      <p className="ml-2">{numLikes || 0}</p>
+    <div className="btn btn-primary btn-outline" onClick={() => mutate({ postId })}>
+      {isLoading ? (
+        <Image src={NotLiked} alt="Not Liked" width={20} height={20} className="loading" />
+      ) : liked ? (
+        <Image src={Liked} alt="Liked" width={20} height={20} className="liked" />
+      ) : (
+        <Image src={NotLiked} alt="Not Liked" width={20} height={20} className="not-liked" />
+      )}
+      {!isLoading && <p className="ml-2">{numLikes || 0}</p>}
     </div>
   );
 };

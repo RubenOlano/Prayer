@@ -43,22 +43,18 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerAuthSession(ctx);
   const providers = await getProviders();
 
-  if (session) {
+  if (session)
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
+      redirect: { destination: "/", permanent: false },
     };
-  }
+
   return {
     props: { providers, session },
   };
 };
 
 const getBaseURL = () => {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:3000";
-  }
+  if (process.env.NODE_ENV === "development") return "http://localhost:3000";
+
   return "https://group-pray.vercel.app";
 };

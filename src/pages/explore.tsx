@@ -24,16 +24,7 @@ export default Explore;
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerAuthSession(ctx);
-  if (!session || !session.user) {
-    return {
-      redirect: {
-        destination: "/auth/signin",
-        permanent: false,
-      },
-    };
-  }
+  if (!session || !session.user) return { redirect: { destination: "/auth/signin", permanent: false } };
 
-  return {
-    props: { session },
-  };
+  return { props: { session } };
 };
